@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "public": "dist/smart-bch-explorer",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

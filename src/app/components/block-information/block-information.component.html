@@ -1,0 +1,60 @@
+<h3>Block #{{block?.number}}</h3>
+
+<div *ngIf="block">
+  <div class="row" >
+    <div class="left-column">Block Height</div>
+    <div class="middle-column">
+      {{block.number}}
+      <div class="buttons" *ngIf="(blockHeight$ | async); let height;">
+        <button (click)="previous()" [disabled]="!(block.number > 1)"><</button>
+        <button (click)="next()" [disabled]="!(block.number < height)">></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" >
+    <div class="left-column">Timestamp</div>
+    <div class="middle-column">
+      {{block.timestamp | timeElapsed: 'full' }} ago
+      <span *ngIf="timestamp">
+        &nbsp;({{ timestamp * 1000 | date }})
+      </span>
+    </div>
+  </div>
+
+  <div class="row" >
+    <div class="left-column">Transactions</div>
+    <div class="middle-column">
+      {{block.transactions.length}} transaction <span *ngIf="block.transactions.length > 1">s</span> in this block
+    </div>
+  </div>
+
+  <div class="row" >
+    <div class="left-column">Mined by</div>
+    <div class="middle-column"><a routerLink="/address/{{block.miner}}">{{block.miner}}</a></div>
+  </div>
+
+  <div class="row" >
+    <div class="left-column">Size</div>
+    <div class="middle-column">{{block.size}} bytes</div>
+  </div>
+
+  <div class="row" >
+    <div class="left-column">Gas Used</div>
+    <div class="middle-column">{{block.gasUsed}} ({{gasPercentageUsed}}%)
+    </div>
+  </div>
+
+  <div class="row" >
+    <div class="left-column">Gas Limit</div>
+    <div class="middle-column">{{block.gasLimit}}</div>
+  </div>
+
+  <div class="row" *ngIf="block.extraData && block.extraData !== '0x'">
+    <div class="left-column">Extra Data</div>
+    <div class="middle-column" *ngIf="block.extraData">
+      {{block.extraData | hextostring}}
+      <span>(Hex: block.extraData)</span>
+    </div>
+  </div>
+</div>

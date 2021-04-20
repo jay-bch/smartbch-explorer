@@ -1,0 +1,7 @@
+<!-- <div *ngIf="bchprice">
+  {{bchprice | currency}}
+</div> -->
+
+<div *ngIf="(blockHeight$ | async); let height;">
+  {{height}}
+</div>

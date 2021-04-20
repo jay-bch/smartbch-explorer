@@ -1,0 +1,34 @@
+<h3>Latest Blocks</h3>
+<div *ngFor="let block of blocks">
+  <nb-card class="row">
+    <nb-card-body>
+      <div class="row">
+        <div class="left-column">
+          <div>
+            <a routerLink="/block/{{block.number}}">
+              {{block.number}}
+            </a>
+          </div>
+          <div>{{block.timestamp | timeElapsed }} ago </div>
+          <div>{{block.timestamp | hextodate | date:'HH:mm:ss'}} </div>
+        </div>
+
+        <div class="middle-column">
+          <div>
+            Miner
+            <a routerLink="/address/{{block.miner}}">
+              {{block.miner}}
+            </a>
+          </div>
+          <div>
+            {{block.transactions.length}} txns
+          </div>
+        </div>
+
+        <div class="right-column">
+          {{block.gasUsed}}
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>

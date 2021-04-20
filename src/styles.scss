@@ -1,0 +1,14 @@
+@import 'themes';
+
+@import '~@nebular/theme/styles/globals';
+
+@include nb-install() {
+  @include nb-theme-global();
+};
+/* You can add global styles to this file, and also import other style files */
+@import './styles/animations.scss';
+@import './styles/layout.scss';
+
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing.connect-dialog-open {
+  background-color: #74DD54;
+}

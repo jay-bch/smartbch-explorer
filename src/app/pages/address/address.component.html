@@ -1,0 +1,31 @@
+<nb-card *ngIf="initialized">
+  <nb-card-body>
+    <h2 *ngIf="!code">Address</h2>
+    <h2 *ngIf="code">Contract</h2>
+    <h4>{{address}}</h4>
+    <div>
+      Account balance: {{balance | wei: 'ether'}}
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="initialized">
+  <nb-card-body>
+    <h3>Transactions</h3>
+    <app-address-transactions-list [address]="address"></app-address-transactions-list>
+  </nb-card-body>
+</nb-card>
+
+<app-address-ecr20-list *ngIf="initialized" [address]="address"></app-address-ecr20-list>
+
+<nb-card *ngIf="code && initialized">
+  <nb-card-body>
+    <pre>{{code}}</pre>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="notFound">
+  <nb-card-body>
+    <h2>Address {{address}} not found!</h2>
+  </nb-card-body>
+</nb-card>

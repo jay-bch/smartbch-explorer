@@ -1,0 +1,42 @@
+<nb-layout>
+
+  <nb-layout-header fixed>
+    <nav class="fixed">
+      <div class="content-center">
+        <app-top-navigation></app-top-navigation>
+      </div>
+    </nav>
+  </nb-layout-header>
+
+  <nb-layout-column>
+    <router-outlet></router-outlet>
+  </nb-layout-column>
+
+  <nb-layout-footer fixed>
+    <div class="footer">
+      <div>
+        SmartBCH explorer v0.1.3 (04202021)
+      </div>
+      <div>
+        Design and development by JayDizzz
+      </div>
+
+      <div>
+        bitcoincash:qzfmdcqcx6gd5qktmpz44reenn57jjl3sqtyhtxf8j
+      </div>
+    </div>
+  <!-- Insert footer here -->
+  </nb-layout-footer>
+
+</nb-layout>
+
+<!-- <nb-layout *ngIf="!session?.initialized">
+  <nb-layout-column>
+    <div  class="initialize-wrapper" >
+      <nb-card class="loader" [nbSpinner]="true" nbSpinnerStatus="basic">
+        <img class="image fade-in" *ngIf="true || !session || !session.apiOffline" src="assets/images/logo.png" />
+      </nb-card>
+      <router-outlet></router-outlet>
+    </div>
+  </nb-layout-column>
+</nb-layout> -->

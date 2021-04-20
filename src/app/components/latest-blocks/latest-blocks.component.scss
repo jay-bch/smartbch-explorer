@@ -1,0 +1,17 @@
+.row {
+  display: flex;
+  margin: 0;
+}
+
+.left-column {
+  width: 250px;
+}
+
+.middle-column {
+  width: 100%;
+}
+.right-column {
+  display: flex;
+  justify-content: flex-end;
+  width: 200px;
+}

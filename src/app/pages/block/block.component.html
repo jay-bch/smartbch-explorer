@@ -1,0 +1,18 @@
+
+<nb-card>
+  <nb-card-body>
+    <app-block-information [block]="block"></app-block-information>
+  </nb-card-body>
+</nb-card>
+
+<nb-card>
+  <nb-card-body>
+    <app-block-transactions-list [blocknumber]="block?.number" [transactions]="transactions"></app-block-transactions-list>
+  </nb-card-body>
+</nb-card>
+
+<nb-card>
+  <nb-card-body>
+    <pre>{{block | json}}</pre>
+  </nb-card-body>
+</nb-card>

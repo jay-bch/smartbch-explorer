@@ -1,0 +1,31 @@
+.row {
+  display: flex;
+  margin: 0;
+}
+
+.left-column {
+  min-width: 300px;
+}
+
+.middle-column {
+  width: 100%;
+}
+.right-column {
+  font-size: 12px;
+  display: block;
+  text-align: start;
+  width: 300px;
+}
+
+.address, .block {
+  display: flex;
+
+  .address-label, .block-label {
+    display: table;
+    width: 100px;
+  }
+}
+
+.current-address {
+  font-weight: bold;
+}

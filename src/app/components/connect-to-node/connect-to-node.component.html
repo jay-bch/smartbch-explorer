@@ -1,0 +1,15 @@
+<nb-card>
+  <nb-card-header><img class="image logo" src="assets/images/text_logo.png" /></nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="endpointForm">
+      <input type="text" nbInput fullWidth status="basic" placeholder="wss://" formControlName="endpoint">
+      <div class="example">Example: wss://smartbch-wss.greyh.at</div>
+    </form>
+
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="success" (click)="updateEndpoint()">
+      Connect
+    </button>
+  </nb-card-footer>
+</nb-card>
