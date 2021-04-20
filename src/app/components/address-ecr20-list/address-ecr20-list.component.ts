@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { NbTabComponent } from '@nebular/theme';
-import { compact, find, get } from 'lodash';
+import { find } from 'lodash';
 import { UtilHelperService } from 'src/app/services/helpers/util/util-helper.service';
 import { Erc20ResourceService, IErc20Contract } from 'src/app/services/resources/erc20-resource.service';
 

@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { BlockNumber, HttpProvider, Transaction, TransactionConfig, TransactionReceipt, WebsocketProvider } from "web3-core";
-import { Block, Eth } from "web3-eth";
+import { Block } from "web3-eth";
 import { sbch_extensions, smartBCHWeb3 } from "./web3-sbch.extension";
 
 export type Web3ConnectorType = 'ws' | 'http' | null

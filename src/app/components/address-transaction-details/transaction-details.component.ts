@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { TransactionResourceService } from 'src/app/services/resources/transaction-resource.service';
 import { Transaction } from 'web3-eth';
 
 @Component({

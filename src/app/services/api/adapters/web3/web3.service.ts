@@ -10,10 +10,6 @@ import { BlockNumber, Transaction, TransactionConfig, TransactionReceipt } from 
 import { Block } from 'web3-eth';
 import { PagedResponse } from '../../node-api.service';
 
-import abi from 'web3-eth-abi';
-
-
-
 export const DEFAULT_QUERY_SIZE = 100000; // max block range per request
 @Injectable({
   providedIn: 'root'

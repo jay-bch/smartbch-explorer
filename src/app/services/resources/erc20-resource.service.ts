@@ -4,9 +4,7 @@ import { NodeApiService } from '../api/node-api.service';
 import erc20Contracts from '../../../assets/config/contract.json';
 import { compact, find, map } from 'lodash';
 import { UtilHelperService } from '../helpers/util/util-helper.service';
-import { SessionService } from '../session.service';
-import { ITransaction } from './transaction-resource.service';
-import { Transaction, TransactionReceipt } from 'web3-eth';
+import { TransactionReceipt } from 'web3-eth';
 
 export interface IErc20Contract {
   address: string,

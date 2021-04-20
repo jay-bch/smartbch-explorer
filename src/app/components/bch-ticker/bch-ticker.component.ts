@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, timer } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { NodeApiService } from 'src/app/services/api/node-api.service';
 import { BlockResourceService } from 'src/app/services/resources/block-resource.service';
 

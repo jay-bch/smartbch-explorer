@@ -1,7 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ITransaction, TransactionResourceService } from 'src/app/services/resources/transaction-resource.service';
-import { Transaction, TransactionReceipt } from 'web3-eth';
-
 
 @Component({
   selector: 'app-address-transactions-list',

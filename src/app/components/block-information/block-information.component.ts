@@ -1,7 +1,6 @@
-import { Component, Input, OnDestroy, OnInit, SimpleChange } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input, OnInit, SimpleChange } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { BlockResourceService } from 'src/app/services/resources/block-resource.service';
 import { Block } from 'web3-eth';
 

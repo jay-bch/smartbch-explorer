@@ -4,7 +4,7 @@ import { SessionService } from 'src/app/services/session.service';
 import { NodeAdapter } from '../adapter.service';
 import { BasicBrowserAccount, BasicBrowserBlock, BasicBrowserTransactionBasicInfo, BasicBrowserTxs } from './basic-browser.types';
 import { map } from 'lodash';
-import { Block, BlockTransactionString, Transaction, TransactionReceipt } from 'web3-eth';
+import { Block, BlockTransactionString, Transaction, TransactionConfig, TransactionReceipt } from 'web3-eth';
 import { PagedResponse } from '../../node-api.service';
 
 @Injectable({
@@ -15,6 +15,9 @@ export class BasicBrowserAdapter implements NodeAdapter {
     private sessionService: SessionService,
     private httpClient: HttpClient
   ) {
+  }
+  call(transactionConfig: TransactionConfig, returnType: string): Promise<any> {
+    throw new Error('Method not implemented.');
   }
   queryLogs(address: string, data: any[], start: string, end: string): Promise<any> {
     throw new Error('Method not implemented.');

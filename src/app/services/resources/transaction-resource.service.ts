@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { NodeApiService } from '../api/node-api.service';
-import { find, last, sortBy, reverse, get, filter, map, isString, uniqBy } from 'lodash';
+import { find, sortBy, reverse, get, filter, map } from 'lodash';
 import { BlockResourceService } from './block-resource.service';
 import Web3 from 'web3';
 import { BlockNumber, TransactionReceipt } from 'web3-core';
 import { Transaction } from 'web3-eth';
-import { Erc20ResourceService, IErc20Contract, IErc20Transaction, IErc20TransactionInformation } from './erc20-resource.service';
+import { Erc20ResourceService, IErc20TransactionInformation } from './erc20-resource.service';
 
 export const DEFAULT_SCOPE_SIZE = 1000000; // max block range scope
 export const DEFAULT_PAGE_SIZE = 10;
