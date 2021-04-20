@@ -1,4 +1,4 @@
-# SmartBCH Blockchain Explorer
+## SmartBCH Blockchain Explorer
 Goal of this project to create an open source, fully featured web-based blockchain explorer tailored for the upcoming [SmartBCH sidechain](http://www.smartbch.org). SmartBCH will bring smart contracts to Bitcoin Cash.
 
 This project will deliver a web application that can be used by both users and developers to browse and debug their dapps on SBCH chains. The application will use a regular SmartBCH node as a backend.
@@ -8,6 +8,8 @@ The application can then be extended in a second phase to create a public facing
 The software will be released under the Apache 2.0 license on github. This means anyone is free to distribute, modify, or otherwise use software for any purpose.
 
 The front-end application will be built written in TypeScript on top the Angular framework, leveraging the [web3.js](https://web3js.readthedocs.io/en/v1.3.4/) library. Web3.js is a wrapper library for JavaScript/TypeScript that provides easy-to-use access to various functionalities of EVM based blockchains allowing rapid development.
+
+Find more information on http://flipstarter.smartscanner.cash/
 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.7.
