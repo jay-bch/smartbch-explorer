@@ -9,6 +9,7 @@ import Web3 from 'web3';
 import { BlockNumber, Transaction, TransactionConfig, TransactionReceipt } from 'web3-core';
 import { Block } from 'web3-eth';
 import { PagedResponse } from '../../node-api.service';
+import { promise } from 'selenium-webdriver';
 
 export const DEFAULT_QUERY_SIZE = 100000; // max block range per request
 @Injectable({
@@ -36,6 +37,12 @@ export class Web3Adapter implements NodeAdapter{
     }
 
     return Promise.resolve(true);
+  }
+
+  getChainId(): Promise<number> {
+    if(!this.apiConnector) return Promise.reject();
+
+    return this.apiConnector.getChainId();
   }
 
   getBlockHeader(): Promise<number> {
@@ -82,7 +89,7 @@ async getTxsByAccount(address: string, page: number, pageSize: number, searchFro
       if(from < scope) from = scope;
       if(to < scope) to = scope;
 
-      console.log(`Fetching txs from block ${from} to ${to}`)
+      // console.log(`Fetching txs from block ${from} to ${to}`)
       const txInThisPage = await this.apiConnector.queryTxByAddr(
         address,
         Web3.utils.numberToHex(from),
@@ -90,7 +97,7 @@ async getTxsByAccount(address: string, page: number, pageSize: number, searchFro
       )
       if  (txInThisPage.length) {
         txFound = txFound.concat(txInThisPage);
-        console.log(`Found ${txFound.length} transactions`)
+        // console.log(`Found ${txFound.length} transactions`)
       }
 
       to = from - 1;
@@ -119,6 +126,73 @@ async getTxsByAccount(address: string, page: number, pageSize: number, searchFro
       isEmpty: txResults.length === 0,
       total: to < scope ? txFound.length : undefined
     } as PagedResponse<Transaction>;
+  }
+
+  async getLatestTransactions(page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number) {
+    if(!this.apiConnector) return Promise.reject();
+    if(!searchFromBlock) searchFromBlock = await this.getBlockHeader();
+    if(!scopeSize) scopeSize = 0;
+
+    let scope = searchFromBlock - scopeSize; // Will stop searching when this blockId is reached
+    let startIndex = (page - 1) * pageSize;
+    let endIndex = (startIndex + pageSize);
+    let txFound: Transaction[] = [];
+
+    const QuerySize = 1;
+
+    let to = searchFromBlock;
+    let from = to - QuerySize;
+
+    let extendedQueryBy = 1;
+
+    console.log('scope', scope);
+    console.log('from', from);
+    console.log('to', to);
+
+    do {
+      // don't search beyond scope
+      if(from < scope) from = scope;
+      if(to < scope) to = scope;
+
+      console.log('SEARCH BLOCKS', from, to);
+
+      const promises: any[] = [];
+      for(let i = from; i < to; i++) {
+        promises.push(
+          this.apiConnector.getTxListByHeight(Web3.utils.numberToHex(i))
+        );
+      }
+
+      const promiseResults = await Promise.all(promises);
+      const txInThisPage = promiseResults.filter(e => e.length).reduce((a, b) => a.concat(b), []);
+
+      if  (txInThisPage.length) {
+        txFound = txFound.concat(txInThisPage);
+        console.log(`Found ${txFound.length} transactions`);
+        extendedQueryBy = 1;
+      } else {
+        // if we didnt find anything, double query size
+        if(extendedQueryBy < 10000) extendedQueryBy = extendedQueryBy * 2;
+      }
+
+      to = from - 1;
+      from = from - (QuerySize * extendedQueryBy);
+    } while ( txFound.length < (endIndex) && to > scope );
+
+
+    txFound = orderBy(txFound, ['blockNumber'], ['desc']);
+
+    const txResults = txFound.slice(startIndex, endIndex);
+    console.log(`RESULT (Last block ${to})`, txResults);
+
+    return {
+      results: txResults,
+      page,
+      pageSize,
+      isEmpty: txResults.length === 0,
+      total: to < scope ? txFound.length : undefined
+    } as PagedResponse<Transaction>
+
   }
 
   getTxCount(address: string) {

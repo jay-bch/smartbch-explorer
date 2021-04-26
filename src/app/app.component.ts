@@ -3,8 +3,9 @@ import { Router } from '@angular/router';
 import { NbDialogService } from '@nebular/theme';
 import { filter, take } from 'rxjs/operators';
 import { ConnectToNodeComponent } from './components/connect-to-node/connect-to-node.component';
+import { MetamaskService } from './services/metamask/metamask.service';
+import { BlockResourceService } from './services/resources/block-resource.service';
 import { Session, SessionService } from './services/session.service';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -16,9 +17,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(
     private sessionService: SessionService,
     private dialogService: NbDialogService,
-
+    private blockResource: BlockResourceService,
     private router: Router
-  ) {}
+  ) {
+
+  }
 
   ngAfterViewInit(): void {
     this.sessionService.session$.pipe(
@@ -38,7 +41,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.router.navigate(['/']);
         })
       }
-    })
+    });
   }
 
   ngOnInit() {

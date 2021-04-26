@@ -49,9 +49,10 @@ export class NodeApiService {
       .then(() => {
         // now that the adapter is loaded, check if the node is online
         this.getBlockHeader()
-        .then( blockHeight => {
+        .then( async blockHeight => {
           if (blockHeight && blockHeight > 0) {
-            this.sessionService.setEndpointOnline();
+            const chainId = await this.getChainId();
+            this.sessionService.setEndpointOnline(chainId);
             console.log(`[Node-API service]: Successfully retrieved blockheader ${blockHeight}, API is online.`);
           } else {
             this.sessionService.setEndpointOffline();
@@ -63,12 +64,16 @@ export class NodeApiService {
           this.sessionService.setEndpointOffline();
         });
 
-        this.sessionService.setEndpointOnline();
+
       })
       .catch(() => {
         console.error(`[Node-API service]: Error Initializing adapter ${apiConfig.apiType}`);
       });
     });
+  }
+
+  async getChainId() {
+    return await this.apiAdapter?.getChainId();
   }
 
   async getBlockHeader() {
@@ -114,7 +119,7 @@ export class NodeApiService {
   }
 
   public async getTxsByAccount(address: string, page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number) {
-    console.log('NODE SERVICE: getTxsByAccount', address, page, pageSize, searchFromBlock, scopeSize);
+    // console.log('NODE SERVICE: getTxsByAccount', address, page, pageSize, searchFromBlock, scopeSize);
     return await this.apiAdapter?.getTxsByAccount(address, page, pageSize, searchFromBlock, scopeSize);
   }
 
@@ -140,5 +145,9 @@ export class NodeApiService {
 
   public async call(transactionConfig: TransactionConfig, returnType: string) {
     return await this.apiAdapter.call(transactionConfig, returnType);
+  }
+
+  public async getLatestTransactions(page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number) {
+    return await this.apiAdapter?.getLatestTransactions(page, pageSize, searchFromBlock, scopeSize);
   }
 }

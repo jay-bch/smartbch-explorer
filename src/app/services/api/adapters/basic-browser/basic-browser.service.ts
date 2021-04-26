@@ -16,6 +16,9 @@ export class BasicBrowserAdapter implements NodeAdapter {
     private httpClient: HttpClient
   ) {
   }
+  getChainId(): Promise<number> {
+    throw new Error('Method not implemented.');
+  }
   call(transactionConfig: TransactionConfig, returnType: string): Promise<any> {
     throw new Error('Method not implemented.');
   }

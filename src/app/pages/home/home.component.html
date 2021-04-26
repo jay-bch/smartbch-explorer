@@ -6,6 +6,22 @@
 
 <nb-card>
   <nb-card-body>
+    <app-latest-transactions></app-latest-transactions>
+  </nb-card-body>
+</nb-card>
+
+
+<nb-card *ngIf="linkedAddress">
+  <nb-card-body>
+    <h4>Linked Metamask Account: {{linkedAddress}}</h4>
+    <app-address-transactions-list [address]="linkedAddress" [refresh]="true"></app-address-transactions-list>
+  </nb-card-body>
+</nb-card>
+
+
+
+<nb-card>
+  <nb-card-body>
     <h4>Points of interest</h4>
     <span>A few addresses with activity:</span>
     <br /><br />

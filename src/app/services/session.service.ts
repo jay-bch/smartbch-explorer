@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { NodeApiService } from './api/node-api.service';
+import { MetamaskService } from './metamask/metamask.service';
 
 export interface ApiConfig {
   apiEndpoint?: string | null;
@@ -13,7 +15,8 @@ export interface Session {
   bootstrapped: boolean,
   initialized: boolean,
   apiOffline: boolean | undefined,
-  apiConfig: ApiConfig
+  apiConfig: ApiConfig,
+  chainId?: number
 }
 
 export const DEFAULT_SESSION: Session = {
@@ -30,42 +33,7 @@ export class SessionService {
 
   session$: BehaviorSubject<Session> = new BehaviorSubject<Session>(DEFAULT_SESSION)
 
-  constructor(
-    private router: Router
-
-  ) {
-
-
-
-    // let loadedConfig = config;
-    // const storedConfig = localStorage.getItem('config');
-
-    // if(storedConfig && JSON.parse(storedConfig)) {
-    //   loadedConfig = JSON.parse(storedConfig);
-    // }
-
-    // // start session with config settings
-    // if (loadedConfig.ws3Endpoint && loadedConfig.apiType) {
-    //   this.session$.next({ ...DEFAULT_SESSION, ...{ apiConfig: {
-    //     apiEndpoint: loadedConfig.apiEndpoint,
-    //     apiType: loadedConfig.apiType,
-    //     apiVersion: loadedConfig.apiVersion,
-    //     ws3Endpoint: loadedConfig.ws3Endpoint
-    //   } } })
-    // } else {
-    //   localStorage.removeItem('config');
-    // }
-
-    // // set `initialized` when api reports online
-    // this.session$
-    //   .pipe(
-    //     filter( session => session.apiOffline === false && session.initialized === false)
-    //   )
-    //   .subscribe( session => {
-    //     session.initialized = true;
-    //     this.session$.next(session);
-    // });
-  }
+  constructor() {}
 
   resetSession() {
     this.session$.next(DEFAULT_SESSION);
@@ -113,11 +81,9 @@ export class SessionService {
   setEndpointOffline() {
     console.log('offline!')
     this.session$.next({...this.session$.getValue(), apiOffline: true, bootstrapped: true});
-
-    // this.router.navigate(['/connect']);
   }
 
-  setEndpointOnline() {
-    this.session$.next({...this.session$.getValue(), apiOffline: false, initialized: true, bootstrapped: true});
+  async setEndpointOnline(chainId: number) {
+    this.session$.next({...this.session$.getValue(), apiOffline: false, initialized: true, bootstrapped: true, chainId: chainId});
   }
 }

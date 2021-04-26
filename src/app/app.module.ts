@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule, NbDialogModule, NbCardModule, NbInputModule, NbSpinnerModule, NbButtonModule, NbTabsetModule } from '@nebular/theme';
+import { NbThemeModule, NbLayoutModule, NbDialogModule, NbCardModule, NbInputModule, NbSpinnerModule, NbButtonModule, NbTabsetModule, NbToastrModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { ConnectToNodeComponent } from './components/connect-to-node/connect-to-node.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -36,6 +36,9 @@ import { Erc20RowComponent } from './components/address-transactions-list/row/er
 import { ContractCreateRowComponent } from './components/address-transactions-list/row/contract-create-row/contract-create-row.component';
 import { ContractCallRowComponent } from './components/address-transactions-list/row/contract-call-row/contract-call-row.component';
 import { AddressEcr20ListComponent } from './components/address-ecr20-list/address-ecr20-list.component';
+import { MetamaskService } from './services/metamask/metamask.service';
+import { MetaMaskConnectComponent } from './components/metamask/meta-mask-connect/meta-mask-connect.component';
+import { LatestTransactionsComponent } from './components/latest-transactions/latest-transactions/latest-transactions.component';
 
 export function appInit(sessionApiService: SessionService) {
   return () => sessionApiService.bootstrapSession( config );
@@ -67,13 +70,15 @@ export function appInit(sessionApiService: SessionService) {
     Erc20RowComponent,
     ContractCreateRowComponent,
     ContractCallRowComponent,
-    AddressEcr20ListComponent
+    AddressEcr20ListComponent,
+    MetaMaskConnectComponent,
+    LatestTransactionsComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    BrowserAnimationsModule,
     ReactiveFormsModule,
     NbThemeModule.forRoot({ name: 'default' }),
     NbLayoutModule,
@@ -83,7 +88,8 @@ export function appInit(sessionApiService: SessionService) {
     NbInputModule,
     NbSpinnerModule,
     NbButtonModule,
-    NbTabsetModule
+    NbTabsetModule,
+    NbToastrModule.forRoot(config),
   ],
   providers: [
     SessionService,

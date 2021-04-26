@@ -1,6 +1,6 @@
 <h3>Latest Blocks</h3>
-<div *ngFor="let block of blocks">
-  <nb-card class="row">
+<div class="block-wrapper" >
+  <nb-card class="row" *ngFor="let block of blocks; trackBy: trackByMethod" @fadeIn>
     <nb-card-body>
       <div class="row">
         <div class="left-column">

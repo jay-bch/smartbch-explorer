@@ -1,7 +1,7 @@
 
 <span>Page {{page}}</span>
-<div *ngIf="!loading">
-  <nb-card class="row" *ngFor="let transaction of transactions">
+<div *ngIf="!loading" class="transaction-wrapper">
+  <nb-card class="row" *ngFor="let transaction of transactions; trackBy: trackByMethod" @fadeIn>
     <nb-card-body>
       <app-default-row *ngIf='transaction.type === "transaction"'  [transaction]="transaction" [address]="address" ></app-default-row>
       <app-contract-call-row *ngIf='transaction.type === "contract-call"'  [transaction]="transaction" [address]="address" >`</app-contract-call-row>

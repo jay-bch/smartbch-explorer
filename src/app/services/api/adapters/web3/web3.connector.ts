@@ -60,6 +60,12 @@ export class Web3Connector {
     return this.web3;
   }
 
+  getChainId(): Promise<number> {
+    if(!this.web3) return Promise.reject();
+
+    return this.web3.eth.getChainId();
+  }
+
   getBlockNumber(): Promise<number> {
     if(!this.web3) return Promise.reject();
     return this.web3.eth.getBlockNumber();

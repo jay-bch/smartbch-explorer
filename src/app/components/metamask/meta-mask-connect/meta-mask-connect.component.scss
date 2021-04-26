@@ -1,0 +1,52 @@
+:host {
+  margin: 10px;
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.logo {
+  width: 40px;
+
+  &.unavailable {
+    opacity: 0.5;
+    filter: grayscale(100%);
+  }
+
+  &.notlinked {
+    opacity: 0.5;
+    background-color: yellow;
+    cursor: pointer;
+  }
+
+  &.linked {
+    background-color: green;
+  }
+}
+
+.circle {
+
+  display: block;
+  position: relative;
+  right: 10px;
+  bottom: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid white;
+
+  &.unavailable {
+    background-color: #f00;
+  }
+
+  &.notlinked {
+    background: rgb(255, 187, 0);
+  }
+
+  &.linked {
+    background-color: green;
+  }
+}

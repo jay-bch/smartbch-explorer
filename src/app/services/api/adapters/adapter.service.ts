@@ -5,6 +5,7 @@ import { PagedResponse } from '../node-api.service';
 export abstract class NodeAdapter {
 
   abstract init(endpoint: string): Promise<boolean>;
+  abstract getChainId(): Promise<number>;
   abstract getBlockHeader(): Promise<number>
   abstract getBlock(blockId: BlockNumber): Promise<Block>;
   abstract getTxsByBlock(blockId: BlockNumber): Promise<Transaction[]>;
@@ -32,6 +33,6 @@ export abstract class NodeAdapter {
     searchFromBlock?: number,
     scopeSize?: number): Promise<PagedResponse<Transaction>>;
 
-
+  abstract getLatestTransactions(page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number): Promise<PagedResponse<Transaction>>;
   abstract hasMethodFromAbi(address: string, method: string, abi: any): Promise<boolean>;
 }

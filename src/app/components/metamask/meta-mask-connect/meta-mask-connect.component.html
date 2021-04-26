@@ -1,0 +1,12 @@
+<div *ngIf="state && state !== 'unavailable'" class="logo-wrapper">
+  <img src="assets/images/MetaMask_Fox.svg"
+    class="logo"
+    [class.notlinked]="state === 'connected'"
+
+    (click)="metamaskAction()" />
+
+    <span *ngIf="state === 'linked'" class="circle linked"></span>
+    <span *ngIf="state === 'connected' || state === 'error:wrongchain'" class="circle notlinked"></span>
+    <!-- <span *ngIf="state === 'unavailable'" class="circle unavailable"></span> -->
+
+</div>

@@ -1,0 +1,21 @@
+<h4>Transactions in the last 1000 blocks</h4>
+<div *ngIf="!loading" class="transaction-wrapper">
+  <span *ngIf="transactions && transactions.length > 0">Page {{page}}</span>
+  <span *ngIf="!transactions || (transactions && transactions.length === 0)">No transactions found!</span>
+  <nb-card class="row" *ngFor="let transaction of transactions; trackBy: trackByMethod" @fadeIn>
+    <nb-card-body>
+      <app-default-row *ngIf='transaction.type === "transaction"'  [transaction]="transaction"  ></app-default-row>
+      <app-contract-call-row *ngIf='transaction.type === "contract-call"'  [transaction]="transaction" ></app-contract-call-row>
+      <app-contract-create-row *ngIf='transaction.type === "contract-create"'  [transaction]="transaction"  ></app-contract-create-row>
+      <app-erc20-row *ngIf='transaction.type === "erc20-transfer"'  [transaction]="transaction"  ></app-erc20-row>
+    </nb-card-body>
+  </nb-card>
+  <div>
+    <button *ngIf="hasPreviousPage()" (click)="previousPage()">Previous</button>
+    <button *ngIf="hasNextPage()" (click)="nextPage()">Next</button>
+  </div>
+</div>
+
+<div *ngIf="loading" class="transaction-wrapper">
+  <img class="loader" src="assets/images/loader.svg" />
+</div>

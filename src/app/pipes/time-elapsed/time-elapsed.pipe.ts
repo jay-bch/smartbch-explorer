@@ -8,8 +8,8 @@ const DRIFT_COMPENTSATION = 0;
 })
 export class TimeElapsedPipe implements PipeTransform {
 
-  transform(timestamp: number | string, ...args: unknown[]): string {
-    return this.secondsToHms( (new Date().getTime() - ( (Number(timestamp) + DRIFT_COMPENTSATION) * 1000)) / 1000 );
+  transform(timestamp: number | string, ...args: unknown[]) {
+    return this.secondsToHms( (new Date().getTime() - ( (Number(timestamp) + DRIFT_COMPENTSATION) * 1000)) / 1000 )
   }
 
   private secondsToHms(seconds: number): string {

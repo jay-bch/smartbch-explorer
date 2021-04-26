@@ -1,21 +1,42 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Subject, timer } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ITransaction, TransactionResourceService } from 'src/app/services/resources/transaction-resource.service';
+import { Transaction } from 'web3-eth';
+
+const REFRESH_INTERVAL = 5000;
 
 @Component({
   selector: 'app-address-transactions-list',
   templateUrl: './address-transactions-list.component.html',
-  styleUrls: ['./address-transactions-list.component.scss']
+  styleUrls: ['./address-transactions-list.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: '0', backgroundColor: '#C7E351' }),
+        animate('1s ease-in', style({ opacity: '1', backgroundColor: '#74DD54' })),
+        animate('1s ease-out', style({ backgroundColor: '#FFFFFF' })),
+      ]),
+    ]),
+  ],
 })
-export class AddressTransactionsListComponent implements OnInit, OnChanges {
+export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input()
   address: string | undefined;
-  transactions: ITransaction[] | undefined;
+
+  @Input()
+  refresh: boolean = false;
+
+  transactions: ITransaction[] = [];
   page = 1;
   pageSize = 10;
   placeholders: number[] = [];
   lastPage: number | undefined;
   loading = true;
+
+  stop$ = new Subject();
 
   constructor(
     private transactionResource: TransactionResourceService
@@ -23,6 +44,13 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges {
 
 
   async ngOnInit(): Promise<void> {
+    if(this.refresh) {
+      timer(REFRESH_INTERVAL, REFRESH_INTERVAL).pipe(takeUntil(this.stop$)).subscribe( async () => {
+        if(this.address) {
+          this.getTransactionsByPage(this.address, this.page, this.pageSize);
+        }
+      });
+    }
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -60,8 +88,10 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges {
   }
 
   private async getTransactionsByPage(address: string, page: number, pageSize: number) {
-    this.loading = true;
-    this.transactions = [];
+    if(!this.refresh || !this.transactions) {
+      this.loading = true;
+      this.transactions = [];
+    }
 
     if(page && page > 0) {
       this.page = page;
@@ -84,5 +114,15 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges {
 
     this.loading = false;
     this.transactions = txPage.transactions;
+  }
+
+
+  trackByMethod(index:number, el: ITransaction): number {
+    return el?.data.blockNumber ?? 0;
+  }
+
+
+  ngOnDestroy() {
+    this.stop$.next();
   }
 }

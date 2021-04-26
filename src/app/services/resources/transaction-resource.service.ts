@@ -28,7 +28,7 @@ export interface ITransaction {
 }
 
 export interface IAddressTransactions {
-  address: string;
+  address?: string;
   transactions: ITransaction[];
   page: number;
   pageSize: number;
@@ -95,7 +95,6 @@ export class TransactionResourceService {
 
     const web3Txs = await this.apiService.getTxsByAccount(address, page, pageSize, undefined, DEFAULT_SCOPE_SIZE);
     const txs = this.sortTransactions(web3Txs.results);
-    const waitForPromises: Promise<any>[] = [];
 
     const addressTransactions: IAddressTransactions = {
       address,
@@ -103,52 +102,37 @@ export class TransactionResourceService {
       pageSize,
       isEmpty: web3Txs.isEmpty,
       total: web3Txs.total,
-      transactions: map(txs, (tx) => {
-        const mappedTx: ITransaction = {
-          data: tx,
-          type: 'transaction',
-          txFee: Web3.utils.hexToNumber(tx.gas) * Web3.utils.hexToNumber(tx.gasPrice)
-        };
-
-        if (tx.to && tx.to === '0x0000000000000000000000000000000000000000') {
-          mappedTx.type = 'contract-create';
-        } else if (tx.input && tx.input !== '0x') {
-          mappedTx.type = 'contract-call';
-
-
-        }
-
-        return mappedTx;
-      })
+      transactions: await this.mapTransactions(txs, true, true)
     }
 
-    // fet all receipts
-    addressTransactions.transactions.forEach( async (tx) => {
-      if(tx.type !== 'transaction') {
-        const promise = this.apiService.getTxReceiptByHash(tx.data.hash);
-        waitForPromises.push(promise)
-        tx.receipt = await promise;
-      }
-    });
-    await Promise.all(waitForPromises);
+    return addressTransactions;
+  }
 
-    // is contract-call this call is a erc20transfer?
-    addressTransactions.transactions.forEach( async (tx) => {
-      if(tx.type === 'contract-call' && tx.receipt) {
-        const erc20Contract = this.erc20ResourceService.getErc20TransactionInformation(tx.receipt);
-        waitForPromises.push(erc20Contract);
+  async getLatestTransactions(
+    page?: number,
+    pageSize?: number,
+    searchFromBlock?: number,
+    scopeSize?: number) {
 
-        erc20Contract.then( (contract) => {
-          if(contract) {
-            tx.type = 'erc20-transfer';
-            tx.erc20info = contract;
-          }
-        });
-      }
-    });
-    await Promise.all(waitForPromises);
+    if(!page) page = 1;
+    if(!pageSize) pageSize = DEFAULT_PAGE_SIZE;
+    if(!scopeSize) scopeSize =- DEFAULT_SCOPE_SIZE
+
+    const web3Txs = await this.apiService.getLatestTransactions(page, pageSize, searchFromBlock, scopeSize);
+
+    const txs = this.sortTransactions(web3Txs.results);
+
+    const addressTransactions: IAddressTransactions = {
+      address: undefined,
+      page,
+      pageSize,
+      isEmpty: web3Txs.isEmpty,
+      total: web3Txs.total,
+      transactions: await this.mapTransactions(txs, true, true)
+    }
 
     return addressTransactions;
+
   }
 
   private getFromCache(keys: string[], values: any[][]): Transaction[] {
@@ -184,4 +168,58 @@ export class TransactionResourceService {
       return tx.blockNumber;
     }));
   }
+
+  private async mapTransactions(txs: Transaction[], includeReceipts?: boolean, erc20check?: boolean): Promise<ITransaction[]> {
+    const waitForPromises: Promise<any>[] = [];
+
+    const mappedTransactions = map(txs, (tx) => {
+      const mappedTx: ITransaction = {
+        data: tx,
+        type: 'transaction',
+        txFee: Web3.utils.hexToNumber(tx.gas) * Web3.utils.hexToNumber(tx.gasPrice)
+      };
+
+      if (tx.to && tx.to === '0x0000000000000000000000000000000000000000') {
+        mappedTx.type = 'contract-create';
+      } else if (tx.input && tx.input !== '0x') {
+        mappedTx.type = 'contract-call';
+
+
+      }
+
+      return mappedTx;
+    });
+
+    if(includeReceipts) {
+      mappedTransactions.forEach( async (tx) => {
+        if(tx.type !== 'transaction') {
+          const promise = this.apiService.getTxReceiptByHash(tx.data.hash);
+          waitForPromises.push(promise)
+          tx.receipt = await promise;
+        }
+      });
+      await Promise.all(waitForPromises);
+    }
+
+    if(erc20check) {
+      mappedTransactions.forEach( async (tx) => {
+        if(tx.type === 'contract-call' && tx.receipt) {
+          const erc20Contract = this.erc20ResourceService.getErc20TransactionInformation(tx.receipt);
+          waitForPromises.push(erc20Contract);
+
+          erc20Contract.then( (contract) => {
+            if(contract) {
+              tx.type = 'erc20-transfer';
+              tx.erc20info = contract;
+            }
+          });
+        }
+      });
+      await Promise.all(waitForPromises);
+    }
+
+    return mappedTransactions;
+  }
+
+
 }
