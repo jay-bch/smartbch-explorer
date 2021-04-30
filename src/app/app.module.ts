@@ -39,7 +39,6 @@ import { AddressEcr20ListComponent } from './components/address-ecr20-list/addre
 import { MetamaskService } from './services/metamask/metamask.service';
 import { MetaMaskConnectComponent } from './components/metamask/meta-mask-connect/meta-mask-connect.component';
 import { LatestTransactionsComponent } from './components/latest-transactions/latest-transactions/latest-transactions.component';
-
 export function appInit(sessionApiService: SessionService) {
   return () => sessionApiService.bootstrapSession( config );
 }
@@ -100,7 +99,8 @@ export function appInit(sessionApiService: SessionService) {
       multi: true,
       deps: [SessionService]
     },
-    SessionRouteGuard
+    SessionRouteGuard,
+    TimeElapsedPipe
   ],
   bootstrap: [AppComponent]
 })

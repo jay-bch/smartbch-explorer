@@ -16,6 +16,9 @@ export class BasicBrowserAdapter implements NodeAdapter {
     private httpClient: HttpClient
   ) {
   }
+  getLatestTransactions(page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number): Promise<PagedResponse<Transaction>> {
+    throw new Error('Method not implemented.');
+  }
   getChainId(): Promise<number> {
     throw new Error('Method not implemented.');
   }

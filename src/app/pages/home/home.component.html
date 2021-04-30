@@ -1,38 +1,50 @@
-<nb-card>
-  <nb-card-body>
-    <app-latest-blocks></app-latest-blocks>
-  </nb-card-body>
-</nb-card>
+<!-- <div class="home-hero">
+  <div class="page-wrapper">
+  <nb-card>
+    <nb-card-body>
+      <app-latest-blocks></app-latest-blocks>
+    </nb-card-body>
+  </nb-card>
+  </div>
+</div> -->
 
-<nb-card>
-  <nb-card-body>
-    <app-latest-transactions></app-latest-transactions>
-  </nb-card-body>
-</nb-card>
+<div class="page-wrapper">
+  <nb-card>
+    <nb-card-body>
+      <app-latest-blocks></app-latest-blocks>
+    </nb-card-body>
+  </nb-card>
+
+  <nb-card>
+    <nb-card-body>
+      <app-latest-transactions></app-latest-transactions>
+    </nb-card-body>
+  </nb-card>
 
 
-<nb-card *ngIf="linkedAddress">
-  <nb-card-body>
-    <h4>Linked Metamask Account: {{linkedAddress}}</h4>
-    <app-address-transactions-list [address]="linkedAddress" [refresh]="true"></app-address-transactions-list>
-  </nb-card-body>
-</nb-card>
+  <nb-card *ngIf="linkedAddress">
+    <nb-card-body>
+      <h4>Linked Metamask Account: {{linkedAddress}}</h4>
+      <app-address-transactions-list [address]="linkedAddress" [refresh]="true"></app-address-transactions-list>
+    </nb-card-body>
+  </nb-card>
 
 
 
-<nb-card>
-  <nb-card-body>
-    <h4>Points of interest</h4>
-    <span>A few addresses with activity:</span>
-    <br /><br />
-    <div>
-      <a href="#" routerLink="/address/0xe66ffae0ab6bfb46237f985fbbb52d5595ff1e12">0xe66ffae0ab6bfb46237f985fbbb52d5595ff1e12</a>
-    </div>
-    <div>
-      <a href="#" routerLink="/address/0xb5c5133acbb4bbe6b8bf24ca156ec650fe597d3b">0xb5c5133acbb4bbe6b8bf24ca156ec650fe597d3b</a>
-    </div>
-    <div>
-      <a href="#" routerLink="/address/0x78be2785f92a006a853fdb5f4ab7830e951e1f3b">0x78be2785f92a006a853fdb5f4ab7830e951e1f3b</a>
-    </div>
-  </nb-card-body>
-</nb-card>
+  <nb-card>
+    <nb-card-body>
+      <h4>Points of interest</h4>
+      <span>A few addresses with activity:</span>
+      <br /><br />
+      <div>
+        <a href="#" routerLink="/address/0xe66ffae0ab6bfb46237f985fbbb52d5595ff1e12">0xe66ffae0ab6bfb46237f985fbbb52d5595ff1e12</a>
+      </div>
+      <div>
+        <a href="#" routerLink="/address/0xb5c5133acbb4bbe6b8bf24ca156ec650fe597d3b">0xb5c5133acbb4bbe6b8bf24ca156ec650fe597d3b</a>
+      </div>
+      <div>
+        <a href="#" routerLink="/address/0x78be2785f92a006a853fdb5f4ab7830e951e1f3b">0x78be2785f92a006a853fdb5f4ab7830e951e1f3b</a>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>

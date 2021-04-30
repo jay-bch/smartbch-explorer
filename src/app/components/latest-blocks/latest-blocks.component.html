@@ -1,4 +1,65 @@
-<h3>Latest Blocks</h3>
+<!-- <h3>Latest Blocks</h3> -->
+<div class="row info-wrapper">
+  <div class="latestblocks">
+    Latest blocks
+  </div>
+  <div class="gaslimit" *ngIf="blocks[0]">
+    Gas Limit: {{blocks[0].gasLimit}}
+  </div>
+</div>
+<div class="row box-wrapper">
+
+  <div *ngFor="let block of blocks; let i = index; trackBy: trackByMethod"  [@anim]="i">
+    <div class="box" routerLink="/block/{{block.number}}">
+      <div>
+        <div class="row block-info">
+          <div class="blockid">
+            <img class="block-logo" src="assets/images/cube-svgrepo-com.svg" />
+            {{block.number}}
+          </div>
+
+          <div class="age" [@fadeInOut]='block.age'>{{block.age}} ago</div>
+
+        </div>
+
+        <div class="blockhash">
+          <div class="hashlabel">Block hash</div>
+          <div class="hash">
+            {{block.hash | shorthash}}
+          </div>
+        </div>
+        <!-- <div>{{block.timestamp | hextodate | date:'HH:mm:ss'}} </div> -->
+      </div>
+      <div class="miner">
+        <div class="row miner-info">
+          <div class="miner-label">Validator</div>
+          <div class="reward">
+            <span>
+              0 BCH
+            </span>
+          </div>
+        </div>
+        <div class="address">
+          {{block.miner | shorthash}}
+        </div>
+      </div>
+      <div class="row tx-info">
+        <div class="txs" *ngIf="block.transactions.length">{{block.transactions.length}} txn<span *ngIf="block.transactions.length > 1">s</span></div>
+        <div class="empty-block" *ngIf="!block.transactions.length">
+
+          Empty Block
+        </div>
+        <div class="gas" *ngIf="block.transactions.length">({{block.gasPercentageUsed}})</div>
+      </div>
+      <!-- <div class="row tx-info">
+        <div class="txs" >1421 txn<span>s</span></div>
+
+        <div class="gas">(25.3%)</div>
+      </div> -->
+    </div>
+  </div>
+</div>
+<!--
 <div class="block-wrapper" >
   <nb-card class="row" *ngFor="let block of blocks; trackBy: trackByMethod" @fadeIn>
     <nb-card-body>
@@ -31,4 +92,4 @@
       </div>
     </nb-card-body>
   </nb-card>
-</div>
+</div> -->
