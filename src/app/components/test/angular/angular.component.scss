@@ -1,0 +1,6 @@
+@import '~@angular/material/theming';
+
+.mat-toolbar {
+  position: relative;
+  z-index: 2;
+}

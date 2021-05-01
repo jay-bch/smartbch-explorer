@@ -1,47 +1,108 @@
-@import 'themes';
 
-@import '~@nebular/theme/styles/globals';
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
 
-@include nb-install() {
-  @include nb-theme-global();
-};
-/* You can add global styles to this file, and also import other style files */
-@import './styles/animations.scss';
-@import './styles/layout.scss';
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
 
-.cdk-overlay-backdrop.cdk-overlay-backdrop-showing.connect-dialog-open {
-  background-color: #74DD54;
-}
+$smartbch-primary: (
+  Main:#74dd54,
+  Light:#a9ff85,
+  Dark: #3daa21,
+  contrast: (
+      Main: #f5f5f5,
+      Light: #000,
+      Dark: #fff
+  )
+);
 
-.main-wrapper {
-  padding: 0 !important;
-}
+$smartbch-accent: (
+  Main:#c6e351,
+  Light:#fbff83,
+  Dark: #92b118,
+  contrast: (
+      Main: #f5f5f5,
+      Light: #000,
+      Dark: #fff
+  )
+);
 
-nb-card-body {
-  font-family: heebo;
-  border-radius: 5px;
-  background: #f1f1f1;
-  box-shadow: -3px 3px 20px #a6a9ad, 6px -6px 21px #ffffff;
-}
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$smart-bch-explorer-primary: mat-palette($smartbch-primary, Main, Light,);
+$smart-bch-explorer-accent: mat-palette($smartbch-accent, Main, Light, Dark);
 
-.nb-theme-default nb-card {
-  background: none;
-  border: 0;
-  font-family: heebo;
-}
+// The warn palette is optional (defaults to red).
+$smart-bch-explorer-warn: mat-palette($mat-red);
 
-.nb-theme-default nb-layout .layout {
-  background: #ffffff;
-  font-family: heebo;
-  background-image: url("data:image/svg+xml,%3Csvg width='84' height='48' viewBox='0 0 84 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h12v6H0V0zm28 8h12v6H28V8zm14-8h12v6H42V0zm14 0h12v6H56V0zm0 8h12v6H56V8zM42 8h12v6H42V8zm0 16h12v6H42v-6zm14-8h12v6H56v-6zm14 0h12v6H70v-6zm0-16h12v6H70V0zM28 32h12v6H28v-6zM14 16h12v6H14v-6zM0 24h12v6H0v-6zm0 8h12v6H0v-6zm14 0h12v6H14v-6zm14 8h12v6H28v-6zm-14 0h12v6H14v-6zm28 0h12v6H42v-6zm14-8h12v6H56v-6zm0-8h12v6H56v-6zm14 8h12v6H70v-6zm0 8h12v6H70v-6zM14 24h12v6H14v-6zm14-8h12v6H28v-6zM14 8h12v6H14V8zM0 8h12v6H0V8z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
-}
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$smart-bch-explorer-theme: mat-light-theme((
+  color: (
+    primary: $smart-bch-explorer-primary,
+    accent: $smart-bch-explorer-accent,
+    warn: $smart-bch-explorer-warn,
+  )
+));
 
-@font-face {
-  font-family: heebo;
-  src: url(assets/fonts/heebo/heebo-v10-latin-regular.eot), /* IE9 Compat Modes */
-       url(assets/fonts/heebo/heebo-v10-latin-regular.eot?#iefix) format('embedded-opentype'), /* IE6-IE8 */
-       url(assets/fonts/heebo/heebo-v10-latin-regular.woff2) format('woff2'), /* Super Modern Browsers */
-       url(assets/fonts/heebo/heebo-v10-latin-regular.woff) format('woff'), /* Modern Browsers */
-       url(assets/fonts/heebo/Heebo-VariableFont_wght.ttf) format("truetype"), /* Safari, Android, iOS */
-       url(assets/fonts/heebo/heebo-v10-latin-regular.svg#Heebo) format('svg'); /* Legacy iOS */
-}
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($smart-bch-explorer-theme);
+
+
+// @import 'themes';
+
+// @import '~@nebular/theme/styles/globals';
+
+// @include nb-install() {
+//   @include nb-theme-global();
+// };
+// /* You can add global styles to this file, and also import other style files */
+// @import './styles/animations.scss';
+// @import './styles/layout.scss';
+
+// .cdk-overlay-backdrop.cdk-overlay-backdrop-showing.connect-dialog-open {
+//   background-color: #74DD54;
+// }
+
+// .main-wrapper {
+//   padding: 0 !important;
+// }
+
+// nb-card-body {
+//   font-family: heebo;
+//   border-radius: 5px;
+//   background: #f1f1f1;
+//   box-shadow: -3px 3px 20px #a6a9ad, 6px -6px 21px #ffffff;
+// }
+
+// .nb-theme-default nb-card {
+//   background: none;
+//   border: 0;
+//   font-family: heebo;
+// }
+
+// .nb-theme-default nb-layout .layout {
+//   background: #ffffff;
+//   font-family: heebo;
+//   background-image: url("data:image/svg+xml,%3Csvg width='84' height='48' viewBox='0 0 84 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h12v6H0V0zm28 8h12v6H28V8zm14-8h12v6H42V0zm14 0h12v6H56V0zm0 8h12v6H56V8zM42 8h12v6H42V8zm0 16h12v6H42v-6zm14-8h12v6H56v-6zm14 0h12v6H70v-6zm0-16h12v6H70V0zM28 32h12v6H28v-6zM14 16h12v6H14v-6zM0 24h12v6H0v-6zm0 8h12v6H0v-6zm14 0h12v6H14v-6zm14 8h12v6H28v-6zm-14 0h12v6H14v-6zm28 0h12v6H42v-6zm14-8h12v6H56v-6zm0-8h12v6H56v-6zm14 8h12v6H70v-6zm0 8h12v6H70v-6zM14 24h12v6H14v-6zm14-8h12v6H28v-6zM14 8h12v6H14V8zM0 8h12v6H0V8z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+// }
+
+// @font-face {
+//   font-family: heebo;
+//   src: url(assets/fonts/heebo/heebo-v10-latin-regular.eot), /* IE9 Compat Modes */
+//        url(assets/fonts/heebo/heebo-v10-latin-regular.eot?#iefix) format('embedded-opentype'), /* IE6-IE8 */
+//        url(assets/fonts/heebo/heebo-v10-latin-regular.woff2) format('woff2'), /* Super Modern Browsers */
+//        url(assets/fonts/heebo/heebo-v10-latin-regular.woff) format('woff'), /* Modern Browsers */
+//        url(assets/fonts/heebo/Heebo-VariableFont_wght.ttf) format("truetype"), /* Safari, Android, iOS */
+//        url(assets/fonts/heebo/heebo-v10-latin-regular.svg#Heebo) format('svg'); /* Legacy iOS */
+// }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

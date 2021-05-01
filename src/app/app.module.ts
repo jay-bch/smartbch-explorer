@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -39,6 +39,15 @@ import { AddressEcr20ListComponent } from './components/address-ecr20-list/addre
 import { MetamaskService } from './services/metamask/metamask.service';
 import { MetaMaskConnectComponent } from './components/metamask/meta-mask-connect/meta-mask-connect.component';
 import { LatestTransactionsComponent } from './components/latest-transactions/latest-transactions/latest-transactions.component';
+import { NavigationComponent } from './components/common/navigation/navigation.component';
+import { LayoutModule } from '@angular/cdk/layout';
+
+import { AngularMaterialModule } from './angular-material.module';
+import { AngularComponent } from './components/test/angular/angular.component';
+
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSidenavModule } from '@angular/material/sidenav';
+
 export function appInit(sessionApiService: SessionService) {
   return () => sessionApiService.bootstrapSession( config );
 }
@@ -71,7 +80,9 @@ export function appInit(sessionApiService: SessionService) {
     ContractCallRowComponent,
     AddressEcr20ListComponent,
     MetaMaskConnectComponent,
-    LatestTransactionsComponent
+    LatestTransactionsComponent,
+    NavigationComponent,
+    AngularComponent
   ],
   imports: [
     BrowserModule,
@@ -79,6 +90,8 @@ export function appInit(sessionApiService: SessionService) {
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    AngularMaterialModule,
+    LayoutModule,
     NbThemeModule.forRoot({ name: 'default' }),
     NbLayoutModule,
     NbEvaIconsModule,
@@ -102,6 +115,7 @@ export function appInit(sessionApiService: SessionService) {
     SessionRouteGuard,
     TimeElapsedPipe
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

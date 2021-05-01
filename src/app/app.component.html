@@ -1,34 +1,24 @@
-<nb-layout>
+<router-outlet></router-outlet>
 
-  <nb-layout-header fixed>
-    <nav class="fixed">
-      <div class="content-center">
-        <app-top-navigation></app-top-navigation>
-      </div>
-    </nav>
-  </nb-layout-header>
+<!-- <nav class="fixed">
+  <div class="content-center">
+    <app-top-navigation></app-top-navigation>
+    <app-navigation></app-navigation>
+  </div>
+</nav> -->
 
-  <nb-layout-column class="main-wrapper">
-    <router-outlet></router-outlet>
-  </nb-layout-column>
+<!-- <div class="footer">
+  <div>
+    SmartBCH explorer v0.0.5 (04272021)
+  </div>
+  <div>
+    Design and development by JayDizzz
+  </div>
 
-  <nb-layout-footer fixed>
-    <div class="footer">
-      <div>
-        SmartBCH explorer v0.0.5 (04272021)
-      </div>
-      <div>
-        Design and development by JayDizzz
-      </div>
-
-      <div>
-        Check out my <a href="http://flipstarter.smartscanner.cash/">flipstarter</a>. Big thanks to all contributors!
-      </div>
-    </div>
-  <!-- Insert footer here -->
-  </nb-layout-footer>
-
-</nb-layout>
+  <div>
+    Check out my <a href="http://flipstarter.smartscanner.cash/">flipstarter</a>. Big thanks to all contributors!
+  </div>
+</div> -->
 
 <!-- <nb-layout *ngIf="!session?.initialized">
   <nb-layout-column>

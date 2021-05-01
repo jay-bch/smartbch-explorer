@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AngularComponent } from './components/test/angular/angular.component';
 import { AddressComponent } from './pages/address/address.component';
 import { BlockComponent } from './pages/block/block.component';
 import { ConnectComponent } from './pages/connect/connect.component';
@@ -13,6 +14,10 @@ const routes: Routes = [
     component: HomeComponent,
     canActivate: [ SessionRouteGuard ]
 
+  },
+  {
+    path: 'test',
+    component: AngularComponent
   },
   {
     path: 'address/:addressId',
