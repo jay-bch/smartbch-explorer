@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@use '~@angular/material' as mat;
 
 :host {
   position: fixed;
@@ -26,7 +26,7 @@
   h1 {
     margin: 0;
     font-weight: 600;
-    // color: mat-color($primary, darker);
+    // color: mat.get-color-from-palette($primary, darker);
   }
   h4 {
     margin: 0;
