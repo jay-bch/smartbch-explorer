@@ -1,4 +1,4 @@
-<nb-card>
+<!-- <mat-card>
   <nb-card-header><img class="image logo" src="assets/images/text_logo.png" /></nb-card-header>
   <nb-card-body>
     <form [formGroup]="endpointForm">
@@ -12,4 +12,26 @@
       Connect
     </button>
   </nb-card-footer>
-</nb-card>
+</mat-card> -->
+
+
+<div class="modal-wrapper" fxLayout="column" fxLayoutAlign="start start">
+  <h1 mat-dialog-title><img class="image logo" src="assets/images/text_logo.png" /></h1>
+
+  <h5 class="pb-4 warning-color" matTooltip="{{error}}" *ngIf="error">
+    An error occurred connecting to the node. Check the address and try again.
+  </h5>
+  <div mat-dialog-content>
+    <form [formGroup]="endpointForm">
+      <mat-form-field class="endpoint-input">
+        <mat-label>Endpoint</mat-label>
+        <input matInput placeholder="" formControlName="endpoint" >
+      </mat-form-field>
+
+      <div class="example pb-4">Example: https://moeing.app:9545</div>
+    </form>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button color="primary" (click)="updateEndpoint()" cdkFocusInitial>Connect</button>
+  </div>
+</div>

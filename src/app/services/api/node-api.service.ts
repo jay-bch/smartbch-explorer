@@ -1,11 +1,13 @@
 import { SessionService } from '../session.service';
 import { NodeAdapter } from './adapters/adapter.service';
-import { filter, map, take } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { AdapaterLocator } from './adapters/adapter.locator';
 import { Injectable, Injector } from '@angular/core';
 import { Web3Adapter } from './adapters/web3/web3.service';
 import { Block } from 'web3-eth';
 import { BlockNumber, TransactionConfig } from 'web3-core';
+
+export type SBCHSource = 'both' | 'from' | 'to';
 
 export interface PagedResponse<T> {
   results: T[]
@@ -20,6 +22,7 @@ export interface PagedResponse<T> {
 })
 export class NodeApiService {
   private apiAdapter: NodeAdapter;
+  connectionAttempts: any;
 
   constructor(
     private sessionService: SessionService,
@@ -40,7 +43,6 @@ export class NodeApiService {
         return;
       }
 
-
       if(apiConfig.apiType === 'web3') {
         this.apiAdapter = AdapaterLocator.injector.get(Web3Adapter);
       }
@@ -59,16 +61,17 @@ export class NodeApiService {
             console.log('[Node-API service]: Error retrieving block 1, API not online.');
           }
         })
-        .catch( () => {
-          console.log('[Node-API service]: Error retrieving block 1, API not online.');
-          this.sessionService.setEndpointOffline();
+        .catch( (e) => {
+          console.log(`[Node-API service]: Error retrieving block 1, API not online. ${e}`);
+          this.sessionService.setEndpointOffline(e);
         });
-
-
       })
-      .catch(() => {
-        console.error(`[Node-API service]: Error Initializing adapter ${apiConfig.apiType}`);
+      .catch((e) => {
+        console.error(`[Node-API service]: Error Initializing adapter ${apiConfig.apiType}, ${e}`);
+        this.sessionService.setEndpointOffline(e);
       });
+
+      this.connectionAttempts++
     });
   }
 
@@ -118,9 +121,9 @@ export class NodeApiService {
     return await this.apiAdapter?.getTxByHash(hash);
   }
 
-  public async getTxsByAccount(address: string, page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number) {
+  public async getTxsByAccount(address: string, page: number, pageSize: number, type?: SBCHSource, searchFromBlock?: number, scopeSize?: number) {
     // console.log('NODE SERVICE: getTxsByAccount', address, page, pageSize, searchFromBlock, scopeSize);
-    return await this.apiAdapter?.getTxsByAccount(address, page, pageSize, searchFromBlock, scopeSize);
+    return await this.apiAdapter?.getTxsByAccount(address, page, pageSize, type, searchFromBlock, scopeSize);
   }
 
   public async getTxReceiptByHash(hash: string) {

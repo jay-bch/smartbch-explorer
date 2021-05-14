@@ -8,10 +8,10 @@ import { Web3Connector, Web3ConnectorType } from './web3.connector';
 import Web3 from 'web3';
 import { BlockNumber, Transaction, TransactionConfig, TransactionReceipt } from 'web3-core';
 import { Block } from 'web3-eth';
-import { PagedResponse } from '../../node-api.service';
-import { promise } from 'selenium-webdriver';
+import { PagedResponse, SBCHSource } from '../../node-api.service';
+import { Hex } from 'web3-utils';
 
-export const DEFAULT_QUERY_SIZE = 100000; // max block range per request
+export const DEFAULT_QUERY_SIZE = 5; // max block range per request
 @Injectable({
   providedIn: 'root'
 })
@@ -66,7 +66,7 @@ export class Web3Adapter implements NodeAdapter{
     return this.apiConnector.getTransaction(hash);
   }
 
-async getTxsByAccount(address: string, page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number) {
+  async getTxsByAccount(address: string, page: number, pageSize: number, type?: SBCHSource, searchFromBlock?: number, scopeSize?: number) {
     if(!this.apiConnector) return Promise.reject();
     if(!searchFromBlock) searchFromBlock = await this.getBlockHeader();
     if(!scopeSize) scopeSize = 0;
@@ -74,48 +74,86 @@ async getTxsByAccount(address: string, page: number, pageSize: number, searchFro
     let scope = searchFromBlock - scopeSize > 0 ? searchFromBlock - scopeSize : 0; // Will stop searching when this blockId is reached
     let startIndex = (page - 1) * pageSize;
     let endIndex = (startIndex + pageSize);
+    const totalTxInAddress = Web3.utils.hexToNumber(await this.getTxCount(address, type));
+    if(endIndex > totalTxInAddress) {
+      endIndex = totalTxInAddress;
+    }
+
     let txFound: Transaction[] = [];
 
     let to = searchFromBlock;
     let from = to - DEFAULT_QUERY_SIZE;
 
+    let extendQueryBy = 10;
+
+    // console.log('endIndex', endIndex);
+
     // console.log('scope', scope);
     // console.log('from', from);
     // console.log('to', to);
 
-    // get the txs from node. requests will be divided in chuncks set by query size. Will stop when we reach the end of the chain, or when requested txs in page have been found.
-    do {
-      // don't search beyond scope
-      if(from < scope) from = scope;
-      if(to < scope) to = scope;
+    if(totalTxInAddress) {
+      // get the txs from node. requests will be divided in chuncks set by query size. Will stop when we reach the end of the chain, or when requested txs in page have been found.
+      do {
+        // don't search beyond scope
+        if(from < scope) from = scope;
+        if(to < scope) to = scope;
 
-      // console.log(`Fetching txs from block ${from} to ${to}`)
-      const txInThisPage = await this.apiConnector.queryTxByAddr(
-        address,
-        Web3.utils.numberToHex(from),
-        Web3.utils.numberToHex(to)
-      )
-      if  (txInThisPage.length) {
-        txFound = txFound.concat(txInThisPage);
-        // console.log(`Found ${txFound.length} transactions`)
-      }
+        // console.log(`Fetching txs from block ${from} to ${to}`);
+        let txInThisPage: Transaction[] = [];
+        try {
+          if(type === 'both') {
+            txInThisPage = await this.apiConnector.queryTxByAddr(
+              address,
+              Web3.utils.numberToHex(from),
+              Web3.utils.numberToHex(to)
+            )
+          }
 
-      to = from - 1;
-      from = from - DEFAULT_QUERY_SIZE;
-    } while ( txFound.length < (endIndex) && to > scope );
+          if(type === 'from') {
+            txInThisPage = await this.apiConnector.queryTxBySrc(
+              address,
+              Web3.utils.numberToHex(from),
+              Web3.utils.numberToHex(to)
+            )
+          }
 
-    txFound = map(txFound, (tx) => {
-      if(isString(tx.blockNumber)) {
-        // convert blocknumber to int. sbch returns these as hexes, while Web3 Transaction expects them to be number
-        tx.blockNumber = Web3.utils.hexToNumber(tx.blockNumber as any)
+          if(type === 'to') {
+            txInThisPage = await this.apiConnector.queryTxByDst(
+              address,
+              Web3.utils.numberToHex(from),
+              Web3.utils.numberToHex(to)
+            )
+          }
+        } catch(error) {
+          console.error('sbch_queryTx Error!', error);
+        }
+
+        if  (txInThisPage.length) {
+          txFound = txFound.concat(txInThisPage);
+          // console.log(`Found ${txFound.length} transactions`)
+        } else {
+          if(extendQueryBy < 10000) extendQueryBy = extendQueryBy * 2;
+          // console.log('extended query size', extendQueryBy)
+        }
+
+        to = from - 1;
+        from = from - (DEFAULT_QUERY_SIZE * extendQueryBy);
+      } while ( txFound.length < (endIndex) && to > scope );
+
+      txFound = map(txFound, (tx) => {
+        if(isString(tx.blockNumber)) {
+          // convert blocknumber to int. sbch returns these as hexes, while Web3 Transaction expects them to be number
+          tx.blockNumber = Web3.utils.hexToNumber(tx.blockNumber as any)
+
+          return tx;
+        }
 
         return tx;
-      }
+      });
 
-      return tx;
-    });
-
-    txFound = orderBy(txFound, ['blockNumber'], ['desc']);
+      txFound = orderBy(txFound, ['blockNumber'], ['desc']);
+    }
 
     const txResults = txFound.slice(startIndex, endIndex);
 
@@ -123,8 +161,8 @@ async getTxsByAccount(address: string, page: number, pageSize: number, searchFro
       results: txResults,
       page,
       pageSize,
-      isEmpty: txResults.length === 0,
-      total: to < scope ? txFound.length : undefined
+      isEmpty: totalTxInAddress === 0,
+      total: totalTxInAddress
     } as PagedResponse<Transaction>;
   }
 
@@ -138,23 +176,21 @@ async getTxsByAccount(address: string, page: number, pageSize: number, searchFro
     let endIndex = (startIndex + pageSize);
     let txFound: Transaction[] = [];
 
-    const QuerySize = 1;
-
     let to = searchFromBlock;
-    let from = to - QuerySize;
+    let from = to - DEFAULT_QUERY_SIZE;
 
     let extendedQueryBy = 1;
 
-    console.log('scope', scope);
-    console.log('from', from);
-    console.log('to', to);
+    // console.log('scope', scope);
+    // console.log('from', from);
+    // console.log('to', to);
 
     do {
       // don't search beyond scope
       if(from < scope) from = scope;
       if(to < scope) to = scope;
 
-      console.log('SEARCH BLOCKS', from, to);
+      // console.log('SEARCH BLOCKS', from, to);
 
       const promises: any[] = [];
       for(let i = from; i < to; i++) {
@@ -168,7 +204,7 @@ async getTxsByAccount(address: string, page: number, pageSize: number, searchFro
 
       if  (txInThisPage.length) {
         txFound = txFound.concat(txInThisPage);
-        console.log(`Found ${txFound.length} transactions`);
+        // console.log(`Found ${txFound.length} transactions`);
         extendedQueryBy = 1;
       } else {
         // if we didnt find anything, double query size
@@ -176,14 +212,19 @@ async getTxsByAccount(address: string, page: number, pageSize: number, searchFro
       }
 
       to = from - 1;
-      from = from - (QuerySize * extendedQueryBy);
+      from = from - (DEFAULT_QUERY_SIZE * extendedQueryBy);
     } while ( txFound.length < (endIndex) && to > scope );
 
 
     txFound = orderBy(txFound, ['blockNumber'], ['desc']);
 
+    txFound = map(txFound, tx => {
+      tx.blockNumber = Web3.utils.hexToNumber(tx.blockNumber as Hex);
+      return tx;
+    });
+
     const txResults = txFound.slice(startIndex, endIndex);
-    console.log(`RESULT (Last block ${to})`, txResults);
+    // console.log(`RESULT (Last block ${to})`, txResults);
 
     return {
       results: txResults,
@@ -195,10 +236,10 @@ async getTxsByAccount(address: string, page: number, pageSize: number, searchFro
 
   }
 
-  getTxCount(address: string) {
+  getTxCount(address: string, type: SBCHSource = 'both') {
     if(!this.apiConnector) return Promise.reject();
 
-    return this.apiConnector.getTransactionCount(address);
+    return this.apiConnector.getTransactionCount(address, type);
   }
   getAccountBalance(address: string): Promise<string> {
     if(!this.apiConnector) return Promise.reject();

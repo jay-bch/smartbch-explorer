@@ -1,0 +1,25 @@
+<div fxLayout="row" fxFlex="auto" fxLayoutAlign="center center" class="fromto-chip py-1 px-3 mr-2" [ngClass]="method">
+  <div fxLayout="row" fxLayoutAlign="center center" *ngIf="method === 'transaction'">
+    <ng-container *ngIf="fromToLabel">
+      <div fxLayout="row"  fxLayoutAlign="center center" *ngIf="fromToLabel === 'IN'" [ngClass]="fromToLabel">
+        <span>IN</span>
+      </div>
+
+      <div fxLayout="row" *ngIf="fromToLabel === 'OUT'" [ngClass]="fromToLabel">
+        <span>OUT</span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!fromToLabel">
+      <mat-icon style="font-size: 20px">east</mat-icon>
+    </ng-container>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center center" *ngIf="method === 'contract-create'">
+    <span>NEW</span>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center center" *ngIf="method === 'contract-call'">
+    <span>CALL</span>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center center" *ngIf="method === 'erc20-transfer'">
+    <span>CALL</span>
+  </div>
+</div>

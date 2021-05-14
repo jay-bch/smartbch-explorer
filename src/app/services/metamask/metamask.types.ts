@@ -11,9 +11,7 @@ export interface IMetaMask {
   on(event: 'disconnect', callback: (result: {chainId: string}) => void ): void;
   on(event: 'message', callback: (result: {type: string; data: unknown; }) => void ): void;
   on(event: 'accountsChanged', callback: (result: Array<string>) => void ): void;
-
   on(event: 'chainChanged', callback: (result: string) => void ): void;
-
   listeners(event: string): any;
   removeAllListeners(): any;
 }

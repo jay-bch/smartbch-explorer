@@ -1,6 +1,7 @@
 import { BlockNumber, TransactionConfig, TransactionReceipt } from 'web3-core';
 import { Block, Transaction } from 'web3-eth';
-import { PagedResponse } from '../node-api.service';
+import { Hex } from 'web3-utils';
+import { PagedResponse, SBCHSource } from '../node-api.service';
 
 export abstract class NodeAdapter {
 
@@ -11,7 +12,7 @@ export abstract class NodeAdapter {
   abstract getTxsByBlock(blockId: BlockNumber): Promise<Transaction[]>;
   abstract getTxByHash(hash: string): Promise<Transaction>;
   abstract getTxReceiptByHash(hash: string): Promise<TransactionReceipt>;
-  abstract getTxCount(address: string): Promise<number>
+  abstract getTxCount(address: string, type: SBCHSource): Promise<Hex>
   abstract getAccountBalance(address: string): Promise<string>;
   abstract getCode(address: string): Promise<string>;
   abstract queryLogs(address: string, data: any[], start: string, end: string): Promise<any[]>;
@@ -30,6 +31,7 @@ export abstract class NodeAdapter {
     address: string,
     page: number,
     pageSize: number,
+    type?: SBCHSource,
     searchFromBlock?: number,
     scopeSize?: number): Promise<PagedResponse<Transaction>>;
 

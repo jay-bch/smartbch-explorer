@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TransactionResourceService } from 'src/app/services/resources/transaction-resource.service';
-import Web3 from 'web3';
-import { Transaction } from 'web3-eth';
+import { ITransaction, TransactionResourceService } from '../../services/resources/transaction/transaction-resource.service';
+import { Block } from 'web3-eth';
+import { BlockResourceService } from 'src/app/services/resources/block/block-resource.service';
 
 @Component({
   selector: 'app-transaction',
@@ -12,23 +12,29 @@ import { Transaction } from 'web3-eth';
   styleUrls: ['./transaction.component.scss']
 })
 export class TransactionComponent implements OnInit {
-  public transaction: Transaction | undefined;
+
   public stop$ = new Subject();
-  input: any;
+  transaction: ITransaction | undefined;
+  transactionBlock: Block | undefined;
+  blockHeight$: BehaviorSubject<number | undefined> | undefined;
 
   constructor(
     private route: ActivatedRoute,
-    private transactionResource: TransactionResourceService
+    private transactionResource: TransactionResourceService,
+    private blockResource: BlockResourceService
   ) {
     this.route.params.pipe(takeUntil(this.stop$)).subscribe( async params => {
       if (params && params.transactionId) {
         this.transaction = await this.transactionResource.getTxByHash(params.transactionId);
-        this.input = Web3.utils.hexToBytes(this.transaction.input);
+        if(this.transaction && this.transaction.data.blockNumber) {
+          this.transactionBlock = await this.blockResource.getBlock(this.transaction.data.blockNumber);
+        }
       }
     });
   }
 
   async ngOnInit(): Promise<void> {
+    this.blockHeight$ = this.blockResource.blockHeight$;
   }
 
 }

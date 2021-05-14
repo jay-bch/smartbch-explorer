@@ -3,9 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NodeApiService } from 'src/app/services/api/node-api.service';
-import { Erc20ResourceService } from 'src/app/services/resources/erc20-resource.service';
-import { TransactionResourceService } from 'src/app/services/resources/transaction-resource.service';
+import { Erc20ResourceService } from '../../services/resources/erc20/erc20-resource.service';
+import { TransactionResourceService } from '../../services/resources/transaction/transaction-resource.service';
 import Web3 from 'web3';
+import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
 
 @Component({
   selector: 'app-address',
@@ -25,12 +26,13 @@ export class AddressComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private apiService: NodeApiService,
     private transactionResource: TransactionResourceService,
-    private erc20ResourceService: Erc20ResourceService
+    private erc20ResourceService: Erc20ResourceService,
+    private addressService: AddressResourceService
   ) {
     this.route.params.pipe(takeUntil(this.stop$)).subscribe( async params => {
       if (params && params.addressId) {
 
-        this.address = params.addressId;
+        this.address = params.addressId.toLowerCase();
 
         if(this.address) {
           // this.transactions = await this.transactionResource.getTxByAddress(this.address);
@@ -53,8 +55,6 @@ export class AddressComponent implements OnInit, OnDestroy {
             }
 
           });
-
-
         }
       }
     });

@@ -1,3 +1,21 @@
+<div class="header mat-elevation-z3">
+  <div class="page-wrapper" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start center">
+    <div fxFlex="50px" fxLayoutAlign="start center" routerLink="/" class="cursor-pointer">
+      <img class="logo" src="assets/images/logo_smartscan.png" />
+    </div>
+    <div fxFlex="auto" routerLink="/" class="headline cursor-pointer">
+      <h1>SmartScan</h1>
+    </div>
+    <div fxFlex="50px">
+      <app-meta-mask-connect></app-meta-mask-connect>
+    </div>
+    <div>
+      <app-height-ticker></app-height-ticker>
+      <a class="disconnect" href="#" (click)="disconnectFromNode()">Switch node</a>
+    </div>
+  </div>
+</div>
+<!--
 <div class="section left">
   <div>
     <a [routerLink]="['/']">
@@ -16,4 +34,4 @@
     <a href="#" (click)="disconnectFromNode()">Switch node</a>
 
   </div>
-</div>
+</div> -->

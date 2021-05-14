@@ -1,0 +1,58 @@
+<mat-card *ngIf="erc20contracts && erc20contracts.length > 0">
+  <h3>Tokens (SEP20 / ERC20)</h3>
+
+  <mat-tab-group (selectedTabChange)="setActiveTab($event)">
+    <mat-tab  *ngFor="let contract of erc20contracts" label="{{contract.symbol}}"  >
+      <h3 class="py-4">
+        Balance: {{activeBalance}} {{activeErc20Contract?.symbol}}
+      </h3>
+      <div class="pt-4" fxLayout="column" *ngFor="let transaction of activeTxs">
+        <div fxLayout="row" *ngIf="transaction">
+          <div fxFlex="auto">
+            <div>
+              <span class="address">
+                <div class="address-label">
+                  Parent Hash
+                </div>
+                <a title="{{transaction.parentHash}}" routerLink="/transaction/{{transaction.parentHash}}"> {{transaction.parentHash | shorthash}} </a>
+              </span>
+            </div>
+          </div>
+
+          <div fxFlex="auto">
+            <div *ngIf="transaction.from === address">
+              <span class="address">
+                <div class="address-label">
+                  Sent
+                </div>
+                <a routerLink="/address/{{transaction.to}}"> {{transaction.to}} </a>
+              </span>
+            </div>
+
+            <div *ngIf="transaction.to === address">
+              <span class="address">
+                <div class="address-label">
+                  Received
+                </div>
+                <a routerLink="/address/{{transaction.from}}"> {{transaction.from}} </a>
+              </span>
+            </div>
+
+          </div>
+          <div fxFlex="auto">
+            <div>
+              <span *ngIf="transaction.from === address">
+                - {{ transaction.convertedValue }} {{activeErc20Contract?.symbol}}
+              </span>
+            </div>
+            <div>
+              <span *ngIf="transaction.to === address">
+                + {{ transaction.convertedValue }} {{activeErc20Contract?.symbol}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>

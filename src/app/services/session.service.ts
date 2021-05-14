@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
-import { NodeApiService } from './api/node-api.service';
-import { MetamaskService } from './metamask/metamask.service';
+import { ConnectToNodeComponent } from '../components/connect-to-node/connect-to-node.component';
 
 export interface ApiConfig {
   apiEndpoint?: string | null;
@@ -17,6 +16,7 @@ export interface Session {
   apiOffline: boolean | undefined,
   apiConfig: ApiConfig,
   chainId?: number
+  error?: Error
 }
 
 export const DEFAULT_SESSION: Session = {
@@ -75,12 +75,12 @@ export class SessionService {
 
   updateEndpoint(newApiConfig: ApiConfig) {
     localStorage.setItem('config', JSON.stringify(newApiConfig));
+    console.log('update');
     window.location.reload();
   }
 
-  setEndpointOffline() {
-    console.log('offline!')
-    this.session$.next({...this.session$.getValue(), apiOffline: true, bootstrapped: true});
+  setEndpointOffline(error?: Error) {
+    this.session$.next({...this.session$.getValue(), apiOffline: true, bootstrapped: true, initialized: false, error});
   }
 
   async setEndpointOnline(chainId: number) {

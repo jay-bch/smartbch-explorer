@@ -1,9 +1,12 @@
 import Web3 from "web3";
 import { BlockNumber, HttpProvider, Transaction, TransactionConfig, TransactionReceipt, WebsocketProvider } from "web3-core";
 import { Block } from "web3-eth";
+import { SBCHSource } from "../../node-api.service";
 import { sbch_extensions, smartBCHWeb3 } from "./web3-sbch.extension";
 
 export type Web3ConnectorType = 'ws' | 'http' | null
+
+const STAKE_CONTRACT = '0x2710';
 
 // var web3: smartBCHWeb3;
 
@@ -48,6 +51,8 @@ export class Web3Connector {
       console.log('[Node Adapter:Web3] Loading SBCH web3 extensions');
       if(this.web3) {
         this.web3.extend(sbch_extensions);
+
+        this.web3.currentProvider
       }
     } catch(error) {
       console.log('[Node Adapter:Web3] Error connecting to node', error);
@@ -89,9 +94,29 @@ export class Web3Connector {
     }
     return Promise.reject(false);
   }
-  getTransactionCount(address: string) {
+  queryTxBySrc(address: string, from: string | number | 'latest', to: string | number | 'latest'): Promise<Transaction[]> {
     if(!this.web3) return Promise.reject();
-    return this.web3.eth.getTransactionCount(address);
+    if(this.web3.sbch) {
+      return this.web3.sbch?.queryTxBySrc(address, from, to);
+    }
+    return Promise.reject(false);
+  }
+
+  queryTxByDst(address: string, from: string | number | 'latest', to: string | number | 'latest'): Promise<Transaction[]> {
+    if(!this.web3) return Promise.reject();
+    if(this.web3.sbch) {
+      return this.web3.sbch?.queryTxByDst(address, from, to);
+    }
+    return Promise.reject(false);
+  }
+
+  getTransactionCount(address: string, type: SBCHSource = 'both') {
+    if(!this.web3) return Promise.reject();
+
+    if(this.web3.sbch) {
+      return this.web3.sbch.getAddressCount(type, address);
+    }
+    return Promise.reject(false);
   }
   getBalance(address: string): Promise<string> {
     if(!this.web3) return Promise.reject();
@@ -100,6 +125,7 @@ export class Web3Connector {
 
   getCode(address: string): Promise<string> {
     if(!this.web3) return Promise.reject();
+
     return this.web3.eth.getCode(address);
   }
 

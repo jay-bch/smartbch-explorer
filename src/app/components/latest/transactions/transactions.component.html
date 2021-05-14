@@ -1,0 +1,119 @@
+<!-- <h4>Showing transaction from the last {{blockScope}} blocks</h4> -->
+<div fxLayout="column">
+  <div fxLayout="row">
+    <table mat-table [dataSource]="tableData" class="mat-elevation-z4 mt-2 mb-2" fxLayout="column" [trackBy]="trackByTable">
+      <tr mat-header-row *matHeaderRowDef="tableDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableDisplayedColumns;"></tr>
+
+      <!-- Tx Color Swatch-->
+      <ng-container matColumnDef="swatch">
+        <th mat-header-cell *matHeaderCellDef fxFlex="40px" fxLayoutAlign="start center"></th>
+        <td mat-cell *matCellDef="let element" fxFlex="40px" fxLayoutAlign="start center" routerLink="/block/">
+          <div *ngIf="element.swatch" class="table-swatch" [style.backgroundColor]="element.swatch">
+            &nbsp;
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Tx Hash-->
+      <ng-container matColumnDef="hash">
+        <th mat-header-cell *matHeaderCellDef fxFlex="215px" fxLayoutAlign="start center">Hash</th>
+        <td mat-cell *matCellDef="let element" fxFlex="215px" fxLayoutAlign="start center">
+          <mat-icon class="table-warn-icon" color="warn" *ngIf="!element.status" matTooltip="{{element.statusMessage}}">warning</mat-icon>
+          <a routerLink="/transaction/{{element.hash}}">
+            {{element.hash | shorthash}}
+          </a>
+        </td>
+      </ng-container>
+
+      <!-- Tx Method -->
+      <ng-container matColumnDef="method">
+        <th mat-header-cell *matHeaderCellDef fxFlex="185px" fxLayoutAlign="start center">Method</th>
+        <td mat-cell *matCellDef="let element" fxFlex="185px" fxLayoutAlign="start center">
+          <app-transaction-method-chip [method]="element.method"></app-transaction-method-chip>
+        </td>
+      </ng-container>
+
+      <!-- Tx Block-->
+      <ng-container matColumnDef="blockId">
+        <th mat-header-cell *matHeaderCellDef fxFlex="75px" fxLayoutAlign="start center">Block</th>
+        <td mat-cell *matCellDef="let element" fxFlex="75px" fxLayoutAlign="start center">
+          <a routerLink="/block/{{element.blockId}}">
+            {{element.blockId}}
+          </a>
+        </td>
+      </ng-container>
+
+      <!-- Tx From-->
+      <ng-container matColumnDef="from">
+        <th mat-header-cell *matHeaderCellDef fxFlex="200px" fxLayoutAlign="start center">From</th>
+        <td mat-cell *matCellDef="let element" fxFlex="200px" fxLayoutAlign="start center">
+          <a routerLink="/address/{{element.from}}">{{element.from | shorthash}}</a>
+        </td>
+      </ng-container>
+
+      <!-- TX FromTo label -->
+      <ng-container matColumnDef="fromToLabel">
+        <th mat-header-cell *matHeaderCellDef fxFlex="85px" fxLayoutAlign="start center"></th>
+        <td mat-cell *matCellDef="let element" fxFlex="85px" fxLayoutAlign="start center">
+          <app-transaction-fromto-chip [method]="element.method"></app-transaction-fromto-chip>
+        </td>
+      </ng-container>
+
+      <!-- Tx To-->
+      <ng-container matColumnDef="to">
+        <th mat-header-cell *matHeaderCellDef fxFlex="200px" fxLayoutAlign="start center">To</th>
+        <td mat-cell *matCellDef="let element" fxFlex="200px" fxLayoutAlign="start center">
+          <ng-container *ngIf="element.method !== 'contract-create'">
+            <a routerLink="/address/{{element.to}}">{{element.to | shorthash}}</a>
+          </ng-container>
+          <ng-container *ngIf="element.method === 'contract-create' && element.contractAddress">
+            <a routerLink="/address/{{element.contractAddress}}">{{element.contractAddress | shorthash}}</a>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <!-- Tx TokenSent-->
+      <ng-container matColumnDef="tokenSent">
+        <th mat-header-cell *matHeaderCellDef fxFlex="150px" fxLayoutAlign="start center"></th>
+        <td mat-cell *matCellDef="let element" fxFlex="150px" fxLayoutAlign="start center">
+          <div *ngIf="element.tokenSent">
+            {{element.tokenSent}}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Tx value-->
+      <ng-container matColumnDef="value">
+        <th mat-header-cell *matHeaderCellDef fxFlex="auto" fxLayoutAlign="end center">Value</th>
+        <td mat-cell *matCellDef="let element" fxFlex="auto" fxLayoutAlign="end center">
+          {{element.value | wei: 'ether'}} BCH
+        </td>
+      </ng-container>
+
+    </table>
+  </div>
+
+  <div fxLayout="row" fxFlex="auto" fxLayoutAlign="center center"  class="mt-2">
+    <div [style.minHeight]="'40px'" fxLayoutAlign="center center" fxLayoutGap="20px">
+      <button mat-raised-button *ngIf="!loading && tableCurrentSize > tableMinSize"  (click)="reset()">
+        <div fxFlex fxLayoutAlign="space-between center" fxLayoutGap="10px">
+          <mat-icon fxFlex="20px">expand_less</mat-icon> <span fxFlex="auto">Less</span>
+        </div>
+      </button>
+      <button mat-raised-button *ngIf="!loading && hasMore()"  (click)="loadMore()">
+        <div fxFlex fxLayoutAlign="space-between center" fxLayoutGap="10px">
+          <mat-icon fxFlex="20px">expand_more</mat-icon> <span fxFlex="auto">More</span>
+        </div>
+      </button>
+
+      <div *ngIf="!loading && !hasMore()">
+        No more transactions in the last 1000 blocks.
+      </div>
+      <div *ngIf="loading">
+        <span *ngIf="refreshing">Refreshing...</span>
+        <span *ngIf="!refreshing">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>

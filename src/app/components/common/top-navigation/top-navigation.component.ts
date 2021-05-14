@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-top-navigation',
@@ -14,7 +14,7 @@ export class TopNavigationComponent implements OnInit {
   }
 
   disconnectFromNode() {
-    localStorage.removeItem('config');
+    localStorage.setItem('config', JSON.stringify({}));
     window.location.reload();
   }
 

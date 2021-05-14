@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AngularComponent } from './components/test/angular/angular.component';
 import { AddressComponent } from './pages/address/address.component';
 import { BlockComponent } from './pages/block/block.component';
-import { ConnectComponent } from './pages/connect/connect.component';
 import { HomeComponent } from './pages/home/home.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
 import { SessionRouteGuard } from './services/session.route-guard';
@@ -16,10 +14,6 @@ const routes: Routes = [
 
   },
   {
-    path: 'test',
-    component: AngularComponent
-  },
-  {
     path: 'address/:addressId',
     component: AddressComponent,
     canActivate: [ SessionRouteGuard ]
@@ -30,14 +24,15 @@ const routes: Routes = [
     canActivate: [ SessionRouteGuard ]
   },
   {
+    path: 'tx/:addressId',
+    redirectTo: 'transaction/:addressId',
+    pathMatch: 'full',
+  },
+  {
     path: 'transaction/:transactionId',
     component: TransactionComponent,
     canActivate: [ SessionRouteGuard ]
 
-  },
-  {
-    path: 'connect',
-    component: ConnectComponent
   }
 ];
 

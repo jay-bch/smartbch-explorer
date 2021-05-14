@@ -1,0 +1,111 @@
+
+<div fxLayout="row" fxLayoutAlign="start center" *ngIf="block">
+  <img class="block-logo pr-2" src="assets/images/cube-svgrepo-com.svg" />
+  <h1 class="no-margin">Block #{{block?.number}}</h1>
+</div>
+<div fxLayout="column"  fxLayoutAlign="start start" class="mt-5" *ngIf="block">
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Block Height
+    </div>
+    <div fxLayout="row" fxFlex="auto" fxLayoutAlign="start center">
+      <span>
+        <strong>
+          {{block.number}}
+        </strong>
+      </span>
+      <div class="ml-4 buttons" *ngIf="(blockHeight$ | async); let height;" fxLayoutGap="10px">
+        <button mat-icon-button (click)="previous()" [disabled]="!(block.number > 1)">
+          <mat-icon>west</mat-icon>
+        </button>
+        <button mat-icon-button (click)="next()" [disabled]="!(block.number < height)">
+          <mat-icon>east</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Timestamp
+    </div>
+    <div>
+      {{block.timestamp | timeElapsed: 'full' }} ago
+      <span *ngIf="timestamp">
+        &nbsp;({{ timestamp * 1000 | date: 'full' }})
+      </span>
+    </div>
+  </div>
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Transactions
+    </div>
+    <div>
+      {{block.transactions.length}}
+    </div>
+  </div>
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Validator
+    </div>
+    <div>
+      <a routerLink="/address/{{block.miner}}">{{block.miner}}</a>
+    </div>
+  </div>
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Size
+    </div>
+    <div>
+      {{block.size}} bytes
+    </div>
+  </div>
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Gas Used
+    </div>
+    <div>
+      {{block.gasUsed}} ({{gasPercentageUsed}}%)
+    </div>
+  </div>
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Gas Limit
+    </div>
+    <div>
+      {{block.gasLimit}}
+    </div>
+  </div>
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Block Hash
+    </div>
+    <div>
+      {{block.hash}}
+    </div>
+  </div>
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Parent Hash
+    </div>
+    <div>
+      {{block.parentHash}}
+    </div>
+  </div>
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      State Root
+    </div>
+    <div>
+      {{block.stateRoot}}
+    </div>
+  </div>
+</div>

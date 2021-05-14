@@ -1,0 +1,23 @@
+.fromto-chip {
+  // border: 1px solid black;
+  border-radius: 8px;
+  background-color: #b0b9ad26;
+  font-weight: 500;
+  // width: 100%;
+
+  &.contract-create span {
+    color: rgba(85, 85, 248, 0.719);
+  }
+
+  &.contract-call span {
+    color: rgba(15, 104, 92, 0.719);
+  }
+
+  .IN span {
+    color: rgba(0, 243, 53, 0.719);
+  }
+
+  .OUT span {
+    color: rgba(255, 0, 0, 0.719);
+  }
+}

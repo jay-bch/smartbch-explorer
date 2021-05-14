@@ -1,0 +1,33 @@
+@import '~@angular/material/theming';
+
+a {
+  text-decoration: none;
+  color: #3fdb10;
+}
+a:visited {
+  color: #25a000;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.page-wrapper {
+  max-width: 1400px;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.no-margin {
+  margin: 0!important;
+}
+
+.warning-color {
+  color: red;
+}
+
+
+

@@ -21,7 +21,7 @@ export class MetaMaskConnectComponent implements OnInit {
       if(state) {
         this.state = state;
         this.linkedAddress = this.metaMaskService.linkedAddress;
-        console.log('STATE COMP', state, this.linkedAddress);
+        console.log('Metamask:', state, this.linkedAddress);
         // this.cd.markForCheck();
         this.cd.detectChanges();
       }

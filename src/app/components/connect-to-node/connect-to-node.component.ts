@@ -1,13 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NbDialogRef } from '@nebular/theme';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take, filter } from 'rxjs/operators';
-
 import { SessionService } from 'src/app/services/session.service';
-
 import { FormGroup, FormControl } from '@angular/forms';
-
-
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { get } from 'lodash';
 @Component({
   selector: 'app-connect-to-node',
   templateUrl: './connect-to-node.component.html',
@@ -17,16 +14,24 @@ export class ConnectToNodeComponent implements OnInit, OnDestroy {
   destroy$: Subject<boolean> = new Subject();
 
   endpointForm = new FormGroup({
-    endpoint: new FormControl('wss://smartbch-wss.greyh.at'),
+    endpoint: new FormControl('https://moeing.app:9545'),
   });
+  error: Error | undefined;
 
 
   constructor(
-    protected dialogRef: NbDialogRef<ConnectToNodeComponent>,
+    public dialogRef: MatDialogRef<ConnectToNodeComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private sessionService: SessionService,
-  ) { }
+  ) {
+
+
+  }
 
   ngOnInit() {
+    this.error = get(this.data, 'error');
+
+    console.log(this.error);
     // populate form with data from current session
     this.sessionService.session$
       .pipe(

@@ -1,0 +1,133 @@
+
+<div fxLayout="row" fxLayoutAlign="start center" *ngIf="transaction">
+  <h1 class="no-margin">Transaction {{transaction?.data?.hash}}</h1>
+</div>
+<div fxLayout="column"  fxLayoutAlign="start start" class="mt-5" *ngIf="transaction && block">
+
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div class="label" fxFlex="200px">
+    Block
+  </div>
+  <div>
+    <a routerLink="/block/{{block.number}}">{{block.number}}</a> <span class="pl-4" *ngIf="header && block.number">({{header - block.number}} confirmations)</span>
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center" *ngIf="transaction.receipt">
+  <div class="label" fxFlex="200px">
+    Status
+  </div>
+  <div>
+    <span *ngIf="transaction.receipt.status === true">SUCCES</span>
+    <span *ngIf="transaction.receipt.status === false">FAILED: <span *ngIf="statusStr">{{statusStr}}</span></span>
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div class="label" fxFlex="200px">
+    Timestamp
+  </div>
+  <div>
+    {{block.timestamp | timeElapsed: 'full' }} ago
+    <span *ngIf="block.timestamp">
+      &nbsp;({{ timestamp | date: 'full' }})
+    </span>
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div class="label" fxFlex="200px">
+    From
+  </div>
+  <div>
+    <a routerLink="/address/{{transaction.data.from}}">
+      {{transaction.data.from}}
+    </a>
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div class="label" fxFlex="200px">
+    To
+  </div>
+  <div>
+    <a routerLink="/address/{{transaction.data.to}}">
+      {{transaction.data.to}}
+    </a>
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div class="label" fxFlex="200px">
+    Value
+  </div>
+  <div>
+    {{transaction.data.value | wei: 'ether'}} BCH
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center" *ngIf="txFee">
+  <div class="label" fxFlex="200px">
+    Transaction Fee
+  </div>
+  <div>
+    {{transaction.txFee.toString() | wei: 'ether'}} BCH
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center" *ngIf="txFee">
+  <div class="label" fxFlex="200px">
+    Gas Price
+  </div>
+  <div>
+    {{transaction.data.gasPrice | wei: 'ether'}} BCH ({{gSat}} Gsat)
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center" *ngIf="txFee">
+  <div class="label" fxFlex="200px">
+    Gas Limit
+  </div>
+  <div>
+    {{transaction.data.gas | number: '0.'}}
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div class="label" fxFlex="200px">
+    Gas Used by Transaction
+  </div>
+  <div>
+    {{transaction.receipt?.gasUsed | number: '0.'}} ({{gasPercentageUsed | number: '0.2-2'}}%)
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div class="label" fxFlex="200px">
+    Nonce
+  </div>
+  <div>
+    {{transaction.data.nonce}}
+  </div>
+</div>
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+<div fxLayout="row" fxLayoutAlign="start center">
+  <div class="label" fxFlex="200px">
+    Position in block
+  </div>
+  <div>
+    {{transaction.data.transactionIndex}}
+  </div>
+</div>
+
+<ng-container *ngIf="inputData">
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div class="label" fxFlex="200px">
+      Input data
+    </div>
+    <div>
+      {{inputData}}
+    </div>
+  </div>
+</ng-container>

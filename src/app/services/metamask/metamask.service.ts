@@ -6,10 +6,7 @@ import { SessionService } from '../session.service';
 import { IMetaMask, MetaMaskState } from './metamask.types';
 
 import detectEthereumProvider from '@metamask/detect-provider';
-import { ThrowStmt } from '@angular/compiler';
 import { NotificationService } from '../user/notification/notification.service';
-import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition } from '@nebular/theme';
-
 
 declare const ethereum : IMetaMask;
 
@@ -45,15 +42,13 @@ export class MetamaskService {
       return;
     }
 
-
     const provider = await detectEthereumProvider();
-    console.log('privder', provider);
+
     if (provider !== ethereum) {
       console.error('Do you have multiple wallets installed?');
       this.state$.next('error:init');
       return;
     }
-    console.log('INIT', this.chainId !== this.metaMaskChainId);
 
     this.watchStateChanges();
 
@@ -66,19 +61,18 @@ export class MetamaskService {
 
     if(this.chainId !== this.metaMaskChainId) {
       console.log('wrong chain');
-      this.notificationService.showToast(`Wrong network! Expected ID ${this.chainId}. Metamask is connected to ID ${this.metaMaskChainId}. Switch to a smartBCH chain.`, 'MetaMask', NbGlobalLogicalPosition.TOP_END, 'warning', 10000)
+      this.notificationService.showToast(`Wrong network! Expected ID ${this.chainId}. Metamask is connected to ID ${this.metaMaskChainId}. Switch to a smartBCH chain.`, 'MetaMask', 'warning', 10000)
       this.state$.next('error:wrongchain')
       return;
     }
 
     ethereum.request({ method: 'eth_accounts' }).then( (accounts: any) => {
-      console.log('accounts:', accounts);
       if(accounts && accounts.length > 0) {
         this.linkedAddress = accounts[0];
-        this.notificationService.showToast(`Connected to account ${this.linkedAddress}!`, 'MetaMask', NbGlobalLogicalPosition.TOP_END, 'success');
+        this.notificationService.showToast(`Connected to account ${this.linkedAddress}!`, 'MetaMask', 'success');
         this.state$.next('linked');
       } else {
-        this.notificationService.showToast(`Metamask detected, click the fox to link an account.`, 'MetaMask', NbGlobalLogicalPosition.TOP_END, 'info');
+        this.notificationService.showToast(`Metamask detected, click the fox to link an account.`, 'MetaMask', 'info');
         this.state$.next('connected');
       }
     });

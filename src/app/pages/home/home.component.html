@@ -9,42 +9,22 @@
 </div> -->
 
 <div class="page-wrapper">
-  <nb-card>
-    <nb-card-body>
+  <div fxLayout="column" fxLayoutGap="20px" >
+    <mat-card class="mat-elevation-z3">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <img class="block-logo" src="assets/images/cube-svgrepo-com.svg" /><h1 class="no-margin">Latest blocks</h1>
+      </div>
       <app-latest-blocks></app-latest-blocks>
-    </nb-card-body>
-  </nb-card>
+    </mat-card>
 
-  <nb-card>
-    <nb-card-body>
-      <app-latest-transactions></app-latest-transactions>
-    </nb-card-body>
-  </nb-card>
+    <mat-card class="mat-elevation-z3">
+      <h1>Latest transactions</h1>
+      <app-latest-transactions [refresh]="true"></app-latest-transactions>
+    </mat-card>
 
-
-  <nb-card *ngIf="linkedAddress">
-    <nb-card-body>
-      <h4>Linked Metamask Account: {{linkedAddress}}</h4>
+    <mat-card *ngIf="linkedAddress" class="mat-elevation-z3">
+      <h1>Linked Metamask Account: <a routerLink="/address/{{linkedAddress}}">{{linkedAddress}}</a> </h1>
       <app-address-transactions-list [address]="linkedAddress" [refresh]="true"></app-address-transactions-list>
-    </nb-card-body>
-  </nb-card>
-
-
-
-  <nb-card>
-    <nb-card-body>
-      <h4>Points of interest</h4>
-      <span>A few addresses with activity:</span>
-      <br /><br />
-      <div>
-        <a href="#" routerLink="/address/0xe66ffae0ab6bfb46237f985fbbb52d5595ff1e12">0xe66ffae0ab6bfb46237f985fbbb52d5595ff1e12</a>
-      </div>
-      <div>
-        <a href="#" routerLink="/address/0xb5c5133acbb4bbe6b8bf24ca156ec650fe597d3b">0xb5c5133acbb4bbe6b8bf24ca156ec650fe597d3b</a>
-      </div>
-      <div>
-        <a href="#" routerLink="/address/0x78be2785f92a006a853fdb5f4ab7830e951e1f3b">0x78be2785f92a006a853fdb5f4ab7830e951e1f3b</a>
-      </div>
-    </nb-card-body>
-  </nb-card>
+    </mat-card>
+  </div>
 </div>

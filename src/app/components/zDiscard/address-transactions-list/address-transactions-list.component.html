@@ -1,0 +1,259 @@
+<div fxLayout="column">
+  <div fxFlex="auto" fxLayout="row" fxLayoutAlign="end center" *ngIf="address">
+    <mat-form-field>
+      <mat-label>Source</mat-label>
+      <mat-select (selectionChange)="changeType($event)" [value]="selectedType">
+        <mat-option *ngFor="let type of ['both', 'from', 'to']" [value]="type">
+          {{type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row">
+    <table mat-table [dataSource]="tableData" class="mat-elevation-z4 mt-2 mb-2" fxLayout="column" [trackBy]="trackByTable">
+      <tr mat-header-row *matHeaderRowDef="tableDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableDisplayedColumns;"></tr>
+
+      <!-- Tx Color Swatch-->
+      <ng-container matColumnDef="swatch">
+        <th mat-header-cell *matHeaderCellDef fxFlex="40px" fxLayoutAlign="start center"></th>
+        <td mat-cell *matCellDef="let element" fxFlex="40px" fxLayoutAlign="start center" routerLink="/block/">
+          <div *ngIf="element.swatch" class="swatch" [style.backgroundColor]="element.swatch">
+            &nbsp;
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Tx Hash-->
+      <ng-container matColumnDef="hash">
+        <th mat-header-cell *matHeaderCellDef fxFlex="215px" fxLayoutAlign="start center">Hash</th>
+        <td mat-cell *matCellDef="let element" fxFlex="215px" fxLayoutAlign="start center">
+          <mat-icon class="table-warn-icon pr-2" color="warn" *ngIf="!element.status" matTooltip="{{element.statusMessage}}">warning</mat-icon>
+          <a routerLink="/transaction/{{element.hash}}">
+            {{element.hash | shorthash}}
+          </a>
+        </td>
+      </ng-container>
+
+      <!-- Tx Method -->
+      <ng-container matColumnDef="method">
+        <th mat-header-cell *matHeaderCellDef fxFlex="185px" fxLayoutAlign="start center">Method</th>
+        <td mat-cell *matCellDef="let element" fxFlex="185px" fxLayoutAlign="start center">
+          <div fxLayout="row" fxFlex="auto" fxLayoutAlign="start center" class="method-chip py-1 px-3 mr-2" [ngClass]="element.method">
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'transaction'">
+              <mat-icon class="pr-2" >compare_arrows</mat-icon>
+              <div>Transfer</div>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'contract-create'">
+              <mat-icon class="pr-2">dashboard_customize</mat-icon>
+              <div >
+                New Contract
+              </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'contract-call'">
+              <mat-icon class="pr-2">input</mat-icon>
+              <div>
+                Call Contract
+              </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'erc20-transfer'">
+              <mat-icon class="pr-2">monetization_on</mat-icon>
+              <div>
+                SEP20 Transfer
+              </div>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Tx Block-->
+      <ng-container matColumnDef="blockId">
+        <th mat-header-cell *matHeaderCellDef fxFlex="75px" fxLayoutAlign="start center">Block</th>
+        <td mat-cell *matCellDef="let element" fxFlex="75px" fxLayoutAlign="start center">
+          <a routerLink="/block/{{element.blockId}}">
+            {{element.blockId}}
+          </a>
+        </td>
+      </ng-container>
+
+      <!-- Tx TokenSent-->
+      <ng-container matColumnDef="tokenSent">
+        <th mat-header-cell *matHeaderCellDef fxFlex="150px" fxLayoutAlign="start center"></th>
+        <td mat-cell *matCellDef="let element" fxFlex="150px" fxLayoutAlign="start center">
+          <div *ngIf="element.tokenSent">
+            - {{element.tokenSent}}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Tx From-->
+      <ng-container matColumnDef="from">
+        <th mat-header-cell *matHeaderCellDef fxFlex="200px" fxLayoutAlign="start center">From</th>
+        <td mat-cell *matCellDef="let element" fxFlex="200px" fxLayoutAlign="start center">
+          <div *ngIf="!address || (address && element.fromToLabel === 'IN')">
+            <a routerLink="/address/{{element.from}}">{{element.from | shorthash}}</a>
+          </div>
+          <div *ngIf="address && element.fromToLabel === 'OUT'">
+            <i>
+              {{element.from | shorthash}}
+            </i>
+          </div>
+
+        </td>
+      </ng-container>
+
+      <!-- TX FromTo label -->
+      <ng-container matColumnDef="fromToLabel">
+        <th mat-header-cell *matHeaderCellDef fxFlex="85px" fxLayoutAlign="start center"></th>
+        <td mat-cell *matCellDef="let element" fxFlex="85px" fxLayoutAlign="start center">
+          <!-- bch transfer -->
+          <!-- <ng-container *ngIf="element.method === 'transaction'">
+            <div fxLayout="column" *ngIf="element.fromToLabel === 'IN'">
+              <mat-icon color="primary">east</mat-icon>
+              <span>in</span>
+            </div>
+
+            <div fxLayout="column" *ngIf="element.fromToLabel === 'OUT'">
+              <mat-icon color="warn">east</mat-icon>
+              <span>out</span>
+            </div>
+          </ng-container> -->
+
+          <div fxLayout="row" fxFlex="auto" fxLayoutAlign="center center" class="fromto-chip py-1 px-3 mr-2" [ngClass]="element.method">
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'transaction'">
+              <div fxLayout="row"  fxLayoutAlign="center center" *ngIf="element.fromToLabel === 'IN'" [ngClass]="element.fromToLabel">
+                <!-- <mat-icon color="primary">east</mat-icon> -->
+                <span *ngIf="address">IN</span>
+                <span *ngIf="!address"><mat-icon style="font-size: 20px">east</mat-icon></span>
+              </div>
+
+              <div fxLayout="row" *ngIf="element.fromToLabel === 'OUT'" [ngClass]="element.fromToLabel">
+                <!-- <mat-icon color="warn">east</mat-icon> -->
+                <span>OUT</span>
+              </div>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'contract-create'">
+              <span>NEW</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'contract-call'">
+              <span>CALL</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'erc20-transfer'">
+              <span>CALL</span>
+            </div>
+          </div>
+        </td>
+
+
+      </ng-container>
+
+      <!-- Tx To-->
+      <ng-container matColumnDef="to">
+        <th mat-header-cell *matHeaderCellDef fxFlex="200px" fxLayoutAlign="start center">To</th>
+        <td mat-cell *matCellDef="let element" fxFlex="200px" fxLayoutAlign="start center">
+          <ng-container *ngIf="element.method !== 'contract-create'">
+            <div *ngIf="!address || (address && element.fromToLabel === 'OUT')">
+              <a routerLink="/address/{{element.to}}">{{element.to | shorthash}}</a>
+            </div>
+            <div *ngIf="address && element.fromToLabel === 'IN'">
+              <i>
+                {{element.to | shorthash}}
+              </i>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="element.method === 'contract-create' && element.contractAddress">
+            <a routerLink="/address/{{element.contractAddress}}">{{element.contractAddress | shorthash}}</a>
+          </ng-container>
+        </td>
+      </ng-container>
+
+
+      <!-- Tx value-->
+      <ng-container matColumnDef="value">
+        <th mat-header-cell *matHeaderCellDef fxFlex="auto" fxLayoutAlign="end center">Value</th>
+        <td mat-cell *matCellDef="let element" fxFlex="auto" fxLayoutAlign="end center">
+          {{element.value | wei: 'ether'}} BCH
+        </td>
+      </ng-container>
+
+    </table>
+  </div>
+
+  <div [style.minWidth]="'500px'">
+    <mat-paginator
+      *ngIf="txCount < 2000 && address"
+      [length]="txCount"
+      [pageSize]="tableCurrentSize"
+      [pageIndex]="tableCurrentPage"
+      [showFirstLastButtons]="true"
+      [pageSizeOptions]="tablePageSizeOptions"
+      (page)="changeTablePage($event)">
+    </mat-paginator>
+
+    <div *ngIf="txCount >= 2000">
+      <button *ngIf="hasPreviousPage()" (click)="loadPreviousPage()">Previous</button>
+      <button *ngIf="hasNextPage()" (click)="loadNextPage()">Next</button>
+
+      <span>Page {{tableCurrentPage}}</span>
+    </div>
+  </div>
+
+</div>
+
+
+<!--
+<div *ngIf="!loading" class="transaction-wrapper">
+  <nb-card class="row" *ngFor="let transaction of transactions; trackBy: trackByMethod" @fadeIn>
+    <nb-card-body>
+      <app-default-row *ngIf='transaction.type === "transaction"'  [transaction]="transaction" [address]="address" ></app-default-row>
+      <app-contract-call-row *ngIf='transaction.type === "contract-call"'  [transaction]="transaction" [address]="address" >`</app-contract-call-row>
+      <app-contract-create-row *ngIf='transaction.type === "contract-create"'  [transaction]="transaction" [address]="address" ></app-contract-create-row>
+      <app-erc20-row *ngIf='transaction.type === "erc20-transfer"'  [transaction]="transaction" [address]="address" ></app-erc20-row>
+    </nb-card-body>
+  </nb-card>
+  <div>
+    <button *ngIf="hasPreviousPage()" (click)="loadPreviousPage()">Previous</button>
+    <button *ngIf="hasNextPage()" (click)="loadNextPage()">Next</button>
+  </div>
+</div>
+
+<div *ngIf="loading">
+  <nb-card class="row" *ngFor="let placeholder of placeholders">
+    <nb-card-body>
+      <div class="row">
+        <div class="left-column">
+          <img class="loader" src="assets/images/loader.svg" />
+        </div>
+
+        <div class="middle-column">
+          <div>
+            <span class="address">
+              <div class="address-label">
+                &nbsp;
+              </div>
+              &nbsp;
+            </span>
+          </div>
+          <div>
+            <span class="block">
+              <div class="block-label">
+                &nbsp;
+              </div>
+              &nbsp;
+            </span>
+          </div>
+        </div>
+
+        <div class="right-column">
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div> -->
+
+<div *ngIf="txCount === 0 && !loading">
+  This address is empty.
+</div>

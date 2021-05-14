@@ -1,14 +1,11 @@
+<div class="page-wrapper">
+  <div fxLayout="column" fxLayoutGap="20px" >
+    <mat-card>
+      <app-transaction-details [transaction]="transaction" [block]="transactionBlock" [header]="blockHeight$ | async"></app-transaction-details>
+    </mat-card>
 
-<nb-card>
-  <nb-card-body>
-    <app-transaction-details [transaction]="transaction"></app-transaction-details>
-  </nb-card-body>
-</nb-card>
-
-<nb-card>
-  <nb-card-body>
-    <pre>{{transaction | json}}</pre>
-  </nb-card-body>
-</nb-card>
-
-{{ input }}
+    <mat-card>
+      <pre>{{transaction | json}}</pre>
+    </mat-card>
+  </div>
+</div>

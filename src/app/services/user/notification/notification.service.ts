@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import {
+  MatSnackBar,
+  MatSnackBarConfig
+} from '@angular/material/snack-bar';
+
 
 @Injectable({
   providedIn: 'root'
@@ -7,13 +11,28 @@ import { NbGlobalPosition, NbToastrService } from '@nebular/theme';
 export class NotificationService {
   private index: number = 0;
 
-  constructor(private toastrService: NbToastrService) { }
+  constructor(
+    private snackBar: MatSnackBar
+  ) { }
 
-  showToast(message: string, title: string, position: NbGlobalPosition, status: string, duration: number = 3000) {
+  showToast(
+    message: string,
+    title: string,
+    status: string,
+    duration: number = 3000) {
     this.index += 1;
-    this.toastrService.show(
-      message,
-      title,
-      { position, status, duration });
+
+    this.snackBar.open(message, title, {
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+      duration,
+      panelClass: status
+    });
+
+
+    // this.toastrService.show(
+    //   message,
+    //   title,
+    //   { position, status, duration });
   }
 }

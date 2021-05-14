@@ -1,0 +1,37 @@
+// MATERIAL GLOBAL STYLES
+
+// mat card
+mat-card {
+  overflow-x: auto;
+}
+
+// mat tooltip
+.mat-tooltip-nowidth {
+  max-width: unset !important;
+}
+
+// mat table
+.mat-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-swatch {
+  position: relative;
+  left: -22px;
+  height: 43px;
+  padding: 1px 0;
+  display: inline-table;
+  width: 5px;
+  border-radius: 4px
+}
+.table-warn-icon {
+  position: relative;
+  left: -26px;
+  font-size: 20px;
+  width: 0px !important;
+}
+
+.mat-cell, .mat-header-cell {
+  padding: 0 5px;
+}

@@ -1,0 +1,60 @@
+
+//padding, margin spacer vars
+$spacer: 16;
+$max: 5;
+$zero: 0px;
+$one: unquote( ( $spacer * 0.25  ) + 'px' );
+$two: unquote( ( $spacer * 0.5  ) + 'px' );
+$three: unquote( ( $spacer ) + 'px' );
+$four: unquote( ( $spacer * 1.5 ) + 'px' );
+$five: unquote( ( $spacer * 3 ) + 'px' );
+
+$spaces: ($zero, $one, $two, $three, $four, $five); // Adjust this to include the pixel amounts you need.
+$sides: (x, y, all, top, bottom, left, right); // Leave this variable alone
+$i: 0;
+@each $space in $spaces {
+    @each $side in $sides {
+        @if $side == all {
+            .pa-#{$i} {
+                padding: #{$space} #{$space} !important;
+            }
+        } @else if $side == x {
+            .px-#{$i} {
+                padding-left: #{$space} !important;
+                padding-right: #{$space} !important;
+            }
+        } @else if $side == y {
+            .py-#{$i} {
+                padding-top: #{$space} !important;
+                padding-bottom: #{$space} !important;
+            }
+        } @else {
+            .p#{str-slice($side, 0, 1)}-#{$i} {
+                padding-#{$side}: #{$space} !important;
+            }
+        }
+    }
+    @each $side in $sides {
+        @if $side == all {
+            .ma-#{$i} {
+                margin: #{$space} #{$space} !important;
+            }
+        } @else if $side == x {
+            .mx-#{$i} {
+                margin-left: #{$space} !important;
+                margin-right: #{$space} !important;
+            }
+        } @else if $side == y {
+            .my-#{$i} {
+                margin-top: #{$space} !important;
+                margin-bottom: #{$space} !important;
+            }
+        } @else {
+            .m#{str-slice($side, 0, 1)}-#{$i} {
+                margin-#{$side}: #{$space} !important;
+            }
+        }
+    }
+    $i: $i + 1;
+}
+

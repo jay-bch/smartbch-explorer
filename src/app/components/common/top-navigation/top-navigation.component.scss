@@ -1,31 +1,70 @@
+@import '~@angular/material/theming';
+
 :host {
-  display: flex;
+  position: fixed;
   width: 100%;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 10;
 }
 
-.left {
+.header {
+  // background-color: rgba(199, 227, 81, 0.1);
   display: flex;
   justify-content: center;
+  flex-direction: row;
+  height: 64px;
+  z-index: 10;
+}
 
-  width: 12rem;
+.page-wrapper {
+  width: 100%;
+  padding: 0 15px;
+}
 
-  .logo {
-    width: 150px;
+.headline {
+  h1 {
+    margin: 0;
+    font-weight: 600;
+    // color: mat-color($primary, darker);
+  }
+  h4 {
+    margin: 0;
+    font-family: "Heebo";
   }
 }
 
-.middle {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
+.logo {
+  width: 50px;
 }
 
-.right {
-  width: 10rem;
-  display: flex;
-  align-items: center;
-}
+// .left {
+//   display: flex;
+//   justify-content: center;
 
-a {
+//   width: 12rem;
+
+//   .logo {
+//     width: 150px;
+//   }
+// }
+
+// .middle {
+//   width: 100%;
+//   display: flex;
+//   justify-content: space-around;
+// }
+
+// .right {
+//   width: 10rem;
+//   display: flex;
+//   align-items: center;
+// }
+
+// a {
+//   font-size: 10px;
+// }
+
+.disconnect {
   font-size: 10px;
 }

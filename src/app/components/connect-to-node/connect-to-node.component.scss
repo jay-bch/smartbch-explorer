@@ -1,12 +1,5 @@
-
-
-
-nb-card {
-  min-width: 400px;
-  max-width: 600px;
-  max-height: 500px;
-  border: 5px solid #C7E351;
-  border-radius: 10px;
+.modal-wrapper {
+  // width: 500px;
 }
 
 .image.logo {
@@ -16,4 +9,13 @@ nb-card {
 .example {
   margin-top: 10px;
   font-size: 12px;
+}
+
+.form {
+  min-width: 300px;
+}
+
+
+.endpoint-input {
+  min-width: 300px;
 }

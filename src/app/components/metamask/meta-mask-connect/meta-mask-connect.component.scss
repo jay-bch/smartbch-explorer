@@ -37,6 +37,7 @@
   height: 10px;
   border-radius: 50%;
   border: 2px solid white;
+  box-sizing: border-box;
 
   &.unavailable {
     background-color: #f00;

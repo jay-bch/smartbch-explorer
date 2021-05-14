@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BlockResourceService } from 'src/app/services/resources/block-resource.service';
+import { BlockResourceService } from '../../services/resources/block/block-resource.service';
 import { ActivatedRoute } from '@angular/router';
-import { TransactionResourceService } from 'src/app/services/resources/transaction-resource.service';
+import { TransactionResourceService } from '../../services/resources/transaction/transaction-resource.service';
 
 import { Block } from 'web3-eth';
 import { Subject } from 'rxjs';
@@ -13,9 +13,6 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./block.component.scss']
 })
 export class BlockComponent implements OnInit, OnDestroy {
-
-  public transactions: any[] | undefined;
-
   public stop$ = new Subject();
   public block: Block | undefined;
 
@@ -28,8 +25,6 @@ export class BlockComponent implements OnInit, OnDestroy {
     this.route.params.pipe(takeUntil(this.stop$)).subscribe( async params => {
       if (params && params.blockId) {
         this.block = await this.blockResource.getBlock(params.blockId);
-        const blockTransactions = await this.transactionResource.getTxsByBlock(parseInt(params.blockId, 10));
-        this.transactions = blockTransactions;
       }
     });
   }
@@ -41,6 +36,4 @@ export class BlockComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.stop$.next();
   }
-
-
 }
