@@ -1,6 +1,6 @@
 {
-  "apiEndpoint": "https://moeing.app:9545",
-  "ws3Endpoint": "https://moeing.app:9545",
+  "apiEndpoint": "wss://moeing.app:9546",
+  "ws3Endpoint": "wss://moeing.app:9546",
   "apiType": "web3",
   "apiVersion": "v1"
 }

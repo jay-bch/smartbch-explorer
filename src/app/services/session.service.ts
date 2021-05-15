@@ -41,7 +41,7 @@ export class SessionService {
 
   async bootstrapSession(apiConfig?: ApiConfig): Promise<boolean> {
     let loadedConfig = apiConfig;
-    const storedConfig = localStorage.getItem('config');
+    const storedConfig = localStorage.getItem('connection-config');
 
     if(storedConfig && JSON.parse(storedConfig)) {
       loadedConfig = JSON.parse(storedConfig);
@@ -74,7 +74,7 @@ export class SessionService {
   // }
 
   updateEndpoint(newApiConfig: ApiConfig) {
-    localStorage.setItem('config', JSON.stringify(newApiConfig));
+    localStorage.setItem('connection-config', JSON.stringify(newApiConfig));
     console.log('update');
     window.location.reload();
   }

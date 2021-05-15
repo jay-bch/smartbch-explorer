@@ -32,7 +32,7 @@ export class Web3Adapter implements NodeAdapter{
       this.apiConnector = new Web3Connector(endpoint, connectorType)
     } catch(error) {
       console.log('[Node Adapter:Web3] Error connecting to node', error);
-      localStorage.removeItem('config');
+      localStorage.removeItem('connection-config');
       return Promise.reject();
     }
 

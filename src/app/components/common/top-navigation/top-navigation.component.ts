@@ -14,7 +14,7 @@ export class TopNavigationComponent implements OnInit {
   }
 
   disconnectFromNode() {
-    localStorage.setItem('config', JSON.stringify({}));
+    localStorage.setItem('connection-config', JSON.stringify({}));
     window.location.reload();
   }
 
