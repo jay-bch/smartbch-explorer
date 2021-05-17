@@ -87,25 +87,25 @@ export class Web3Connector {
     if(!this.web3) return Promise.reject();
     return this.web3.eth.getTransaction(hash);
   }
-  queryTxByAddr(address: string, from: string | number | 'latest', to: string | number | 'latest'): Promise<Transaction[]> {
+  queryTxByAddr(address: string, from: string | number | 'latest', to: string | number | 'latest', limit = 0): Promise<Transaction[]> {
     if(!this.web3) return Promise.reject();
     if(this.web3.sbch) {
-      return this.web3.sbch?.queryTxByAddr(address, from, to);
+      return this.web3.sbch?.queryTxByAddr(address, from, to, Web3.utils.toHex(limit.toString()));
     }
     return Promise.reject(false);
   }
-  queryTxBySrc(address: string, from: string | number | 'latest', to: string | number | 'latest'): Promise<Transaction[]> {
+  queryTxBySrc(address: string, from: string | number | 'latest', to: string | number | 'latest', limit = 0): Promise<Transaction[]> {
     if(!this.web3) return Promise.reject();
     if(this.web3.sbch) {
-      return this.web3.sbch?.queryTxBySrc(address, from, to);
+      return this.web3.sbch?.queryTxBySrc(address, from, to, Web3.utils.toHex(limit.toString()));
     }
     return Promise.reject(false);
   }
 
-  queryTxByDst(address: string, from: string | number | 'latest', to: string | number | 'latest'): Promise<Transaction[]> {
+  queryTxByDst(address: string, from: string | number | 'latest', to: string | number | 'latest', limit = 0): Promise<Transaction[]> {
     if(!this.web3) return Promise.reject();
     if(this.web3.sbch) {
-      return this.web3.sbch?.queryTxByDst(address, from, to);
+      return this.web3.sbch?.queryTxByDst(address, from, to, Web3.utils.toHex(limit.toString()));
     }
     return Promise.reject(false);
   }
@@ -139,9 +139,9 @@ export class Web3Connector {
     return this.web3.eth.call(transactionConfig);
   }
 
-  queryLogs(address: string, data: any[], start: string, end: string) {
+  queryLogs(address: string, data: any[], start: string, end: string, limit = 0) {
     if(!this.web3) return Promise.reject();
-    return this.web3.sbch.queryLogs(address, data, start, end);
+    return this.web3.sbch.queryLogs(address, data, start, end, Web3.utils.toHex(limit.toString()));
   }
 
   decodeParameter(datType: string, call: string) {

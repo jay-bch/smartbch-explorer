@@ -11,7 +11,7 @@ import { Block } from 'web3-eth';
 import { PagedResponse, SBCHSource } from '../../node-api.service';
 import { Hex } from 'web3-utils';
 
-export const DEFAULT_QUERY_SIZE = 5; // max block range per request
+export const DEFAULT_QUERY_SIZE = 100000000; // max block range per request
 @Injectable({
   providedIn: 'root'
 })
@@ -105,24 +105,27 @@ export class Web3Adapter implements NodeAdapter{
           if(type === 'both') {
             txInThisPage = await this.apiConnector.queryTxByAddr(
               address,
+              Web3.utils.numberToHex(to),
               Web3.utils.numberToHex(from),
-              Web3.utils.numberToHex(to)
+              pageSize * page
             )
           }
 
           if(type === 'from') {
             txInThisPage = await this.apiConnector.queryTxBySrc(
               address,
+              Web3.utils.numberToHex(to),
               Web3.utils.numberToHex(from),
-              Web3.utils.numberToHex(to)
+              pageSize * page
             )
           }
 
           if(type === 'to') {
             txInThisPage = await this.apiConnector.queryTxByDst(
               address,
+              Web3.utils.numberToHex(to),
               Web3.utils.numberToHex(from),
-              Web3.utils.numberToHex(to)
+              pageSize * page
             )
           }
         } catch(error) {

@@ -121,7 +121,6 @@
 
   <div [style.minWidth]="'500px'">
     <mat-paginator
-      *ngIf="txCount < 2000 && address"
       [length]="txCount"
       [pageSize]="tableCurrentSize"
       [pageIndex]="tableCurrentPage"
@@ -129,13 +128,13 @@
       [pageSizeOptions]="tablePageSizeOptions"
       (page)="changeTablePage($event)">
     </mat-paginator>
-
+<!--
     <div *ngIf="txCount >= 2000">
       <button *ngIf="hasPreviousPage()" (click)="loadPreviousPage()">Previous</button>
       <button *ngIf="hasNextPage()" (click)="loadNextPage()">Next</button>
 
       <span>Page {{tableCurrentPage}}</span>
-    </div>
+    </div> -->
   </div>
 
 </div>
