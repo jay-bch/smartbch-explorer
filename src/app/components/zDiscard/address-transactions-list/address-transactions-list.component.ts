@@ -216,7 +216,7 @@ export class AddressTransactionsListComponentOld implements OnInit, OnChanges, O
       hash: tx.data.hash,
       method: tx.type,
       value: Web3.utils.hexToNumberString(tx.data.value),
-      tokenSent: tx.erc20info?.transaction?.convertedValue ? `${tx.erc20info?.transaction?.convertedValue} ${tx.erc20info?.contract?.symbol}` : undefined,
+      tokenSent: tx.sep20info?.transaction?.convertedValue ? `${tx.sep20info?.transaction?.convertedValue} ${tx.sep20info?.contract?.symbol}` : undefined,
       status: tx.receipt && tx.receipt.status === false ? false : true,
       statusMessage: get(tx.receipt, 'statusStr'),
       contractAddress: get(tx.receipt, 'contractAddress'),

@@ -1,10 +1,10 @@
-<mat-card *ngIf="erc20contracts && erc20contracts.length > 0">
-  <h3>Tokens (SEP20 / ERC20)</h3>
+<mat-card *ngIf="sep20contracts && sep20contracts.length > 0">
+  <h3>Sep20 Tokens</h3>
 
   <mat-tab-group (selectedTabChange)="setActiveTab($event)">
-    <mat-tab  *ngFor="let contract of erc20contracts" label="{{contract.symbol}}"  >
+    <mat-tab  *ngFor="let contract of sep20contracts" label="{{contract.symbol}}"  >
       <h3 class="py-4">
-        Balance: {{activeBalance}} {{activeErc20Contract?.symbol}}
+        Balance: {{activeBalance}} {{activeSep20Contract?.symbol}}
       </h3>
       <div class="pt-4" fxLayout="column" *ngFor="let transaction of activeTxs">
         <div fxLayout="row" *ngIf="transaction">
@@ -42,12 +42,12 @@
           <div fxFlex="auto">
             <div>
               <span *ngIf="transaction.from === address">
-                - {{ transaction.convertedValue }} {{activeErc20Contract?.symbol}}
+                - {{ transaction.convertedValue }} {{activeSep20Contract?.symbol}}
               </span>
             </div>
             <div>
               <span *ngIf="transaction.to === address">
-                + {{ transaction.convertedValue }} {{activeErc20Contract?.symbol}}
+                + {{ transaction.convertedValue }} {{activeSep20Contract?.symbol}}
               </span>
             </div>
           </div>

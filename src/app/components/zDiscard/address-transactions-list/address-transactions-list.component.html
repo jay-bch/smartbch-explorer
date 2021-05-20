@@ -58,7 +58,7 @@
                 Call Contract
               </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'erc20-transfer'">
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'sep20-transfer'">
               <mat-icon class="pr-2">monetization_on</mat-icon>
               <div>
                 SEP20 Transfer
@@ -141,7 +141,7 @@
             <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'contract-call'">
               <span>CALL</span>
             </div>
-            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'erc20-transfer'">
+            <div fxLayout="row" fxLayoutAlign="center center" *ngIf="element.method === 'sep20-transfer'">
               <span>CALL</span>
             </div>
           </div>
@@ -202,57 +202,6 @@
   </div>
 
 </div>
-
-
-<!--
-<div *ngIf="!loading" class="transaction-wrapper">
-  <nb-card class="row" *ngFor="let transaction of transactions; trackBy: trackByMethod" @fadeIn>
-    <nb-card-body>
-      <app-default-row *ngIf='transaction.type === "transaction"'  [transaction]="transaction" [address]="address" ></app-default-row>
-      <app-contract-call-row *ngIf='transaction.type === "contract-call"'  [transaction]="transaction" [address]="address" >`</app-contract-call-row>
-      <app-contract-create-row *ngIf='transaction.type === "contract-create"'  [transaction]="transaction" [address]="address" ></app-contract-create-row>
-      <app-erc20-row *ngIf='transaction.type === "erc20-transfer"'  [transaction]="transaction" [address]="address" ></app-erc20-row>
-    </nb-card-body>
-  </nb-card>
-  <div>
-    <button *ngIf="hasPreviousPage()" (click)="loadPreviousPage()">Previous</button>
-    <button *ngIf="hasNextPage()" (click)="loadNextPage()">Next</button>
-  </div>
-</div>
-
-<div *ngIf="loading">
-  <nb-card class="row" *ngFor="let placeholder of placeholders">
-    <nb-card-body>
-      <div class="row">
-        <div class="left-column">
-          <img class="loader" src="assets/images/loader.svg" />
-        </div>
-
-        <div class="middle-column">
-          <div>
-            <span class="address">
-              <div class="address-label">
-                &nbsp;
-              </div>
-              &nbsp;
-            </span>
-          </div>
-          <div>
-            <span class="block">
-              <div class="block-label">
-                &nbsp;
-              </div>
-              &nbsp;
-            </span>
-          </div>
-        </div>
-
-        <div class="right-column">
-        </div>
-      </div>
-    </nb-card-body>
-  </nb-card>
-</div> -->
 
 <div *ngIf="txCount === 0 && !loading">
   This address is empty.

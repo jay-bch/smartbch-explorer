@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NodeApiService } from 'src/app/services/api/node-api.service';
-import { Erc20ResourceService } from '../../services/resources/erc20/erc20-resource.service';
+import { Sep20ResourceService } from '../../services/resources/sep20/sep20-resource.service';
 import { TransactionResourceService } from '../../services/resources/transaction/transaction-resource.service';
 import Web3 from 'web3';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
@@ -26,7 +26,7 @@ export class AddressComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private apiService: NodeApiService,
     private transactionResource: TransactionResourceService,
-    private erc20ResourceService: Erc20ResourceService,
+    private sep20ResourceService: Sep20ResourceService,
     private addressService: AddressResourceService
   ) {
     this.route.params.pipe(takeUntil(this.stop$)).subscribe( async params => {
@@ -51,7 +51,7 @@ export class AddressComponent implements OnInit, OnDestroy {
             this.code = Web3.utils.stripHexPrefix(code);
 
             if (this.code && this.address) {
-              this.erc20ResourceService.getErc20Contract(this.address);
+              this.sep20ResourceService.getSep20Contract(this.address);
             }
 
           });

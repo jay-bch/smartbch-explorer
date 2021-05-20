@@ -16,7 +16,7 @@ export interface IAddress {
 
 export interface ContractInformation {
   logs: any[],
-  type: 'unknown' | 'erc20'
+  type: 'unknown' | 'sep20'
 }
 
 @Injectable({
@@ -32,6 +32,10 @@ export class AddressResourceService {
 
   getAddressInfo(address: string) {
 
+  }
+
+  getMethod(method: any) {
+    this.contractService._decodeMethod(method)
   }
 
 

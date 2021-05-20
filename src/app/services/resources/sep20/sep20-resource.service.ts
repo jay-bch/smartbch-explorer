@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { NodeApiService } from '../../api/node-api.service';
-import erc20Contracts from '../../../../assets/config/contract.json';
+import sep20Contracts from '../../../../assets/config/contract.json';
 import { compact, find, map } from 'lodash';
 import { UtilHelperService } from '../../helpers/util/util-helper.service';
 import { TransactionReceipt } from 'web3-eth';
 
-export interface IErc20Contract {
+export interface ISep20Contract {
   address: string,
   name: string,
   symbol: string,
@@ -16,7 +16,7 @@ export interface IErc20Contract {
   addressesWithBalance?: string[],
 }
 
-export interface IErc20Transaction {
+export interface ISep20Transaction {
   address: string,
   from: string,
   to: string,
@@ -24,17 +24,17 @@ export interface IErc20Transaction {
   parentHash?: string
 }
 
-export interface IErc20TransactionInformation {
-  transaction: IErc20Transaction,
-  contract: IErc20Contract,
+export interface ISep20TransactionInformation {
+  transaction: ISep20Transaction,
+  contract: ISep20Contract,
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class Erc20ResourceService {
+export class Sep20ResourceService {
 
-  contracts: IErc20Contract[] = [];
+  contracts: ISep20Contract[] = [];
 
   constructor(
     private nodeApiService: NodeApiService,
@@ -44,11 +44,11 @@ export class Erc20ResourceService {
   }
 
   async init() {
-    const contracts: Promise<IErc20Contract | undefined>[] = []
+    const contracts: Promise<ISep20Contract | undefined>[] = []
 
-    erc20Contracts.forEach(async (contract: any) => {
+    sep20Contracts.forEach(async (contract: any) => {
       try {
-        const contractInfo = this.getErc20ContractInformation(contract.address);
+        const contractInfo = this.getSep20ContractInformation(contract.address);
         if (contractInfo) {
           contracts.push(contractInfo);
         }
@@ -82,13 +82,13 @@ export class Erc20ResourceService {
   }
 
 /**
- * Gets erc20 contract information by retrieving symbol, name, totalSupply and decimals. If any fails, it's not considered a erc20.
+ * Gets sep20 contract information by retrieving symbol, name, totalSupply and decimals. If any fails, it's not considered a sep20.
  * @param address
- * @returns erc20 contract information
+ * @returns sep20 contract information
  */
-public async getErc20ContractInformation(address: string): Promise<IErc20Contract | undefined> {
+public async getSep20ContractInformation(address: string): Promise<ISep20Contract | undefined> {
 
-    let contract: IErc20Contract | undefined;
+    let contract: ISep20Contract | undefined;
 
     try {
       const symbol = await this.nodeApiService.call({
@@ -127,56 +127,56 @@ public async getErc20ContractInformation(address: string): Promise<IErc20Contrac
     }
   }
 
-  getAllErc20Contracts() {
-    const promises: Promise<IErc20Contract | undefined>[] = [];
-    map(erc20Contracts, async (contract: any) => {
-      promises.push(this.getErc20Contract(contract.address));
+  getAllSep20Contracts() {
+    const promises: Promise<ISep20Contract | undefined>[] = [];
+    map(sep20Contracts, async (contract: any) => {
+      promises.push(this.getSep20Contract(contract.address));
     });
 
     return Promise.all(promises);
   }
 
-  public async getErc20Contract(address: string): Promise<IErc20Contract | undefined> {
+  public async getSep20Contract(address: string): Promise<ISep20Contract | undefined> {
 
     const contract = find(this.contracts, {address: address});
 
     if(!contract) {
-      const newContract = await this.getErc20ContractInformation(address);
+      const newContract = await this.getSep20ContractInformation(address);
       if(newContract) this.contracts.push(newContract);
     }
 
     return find(this.contracts, {address: address});
   }
 
-  public async getErc20TransactionInformation(receipt: TransactionReceipt): Promise<IErc20TransactionInformation | undefined> {
-    const erc20Contract = receipt.to ? await this.getErc20Contract(receipt.to) : await Promise.resolve(undefined);
-    // console.log('ERC20Contract', erc20Contract);
-    let erc20TransactionInformation: IErc20TransactionInformation | undefined;
+  public async getSep20TransactionInformation(receipt: TransactionReceipt): Promise<ISep20TransactionInformation | undefined> {
+    const sep20Contract = receipt.to ? await this.getSep20Contract(receipt.to) : await Promise.resolve(undefined);
+    // console.log('ERC20Contract', sep20Contract);
+    let sep20TransactionInformation: ISep20TransactionInformation | undefined;
     if(
       receipt.to &&
       receipt.status &&
       receipt.logs.length > 0 &&
       receipt.logs[0].topics &&
       receipt.logs[0].topics.length > 2 &&
-      erc20Contract) {
-      erc20TransactionInformation = {
+      sep20Contract) {
+      sep20TransactionInformation = {
         transaction: {
           address: receipt.to,
           from: this.utilHelper.convertTopicAddress(receipt.logs[0].topics[1]),
           to: this.utilHelper.convertTopicAddress(receipt.logs[0].topics[2]),
-          convertedValue: this.utilHelper.convertValue(receipt.logs[0].data, erc20Contract.decimals)
+          convertedValue: this.utilHelper.convertValue(receipt.logs[0].data, sep20Contract.decimals)
         },
-        contract: erc20Contract
+        contract: sep20Contract
       }
     } else {
-      if(erc20Contract) {
+      if(sep20Contract) {
         console.warn('BAD TX', receipt.status, receipt)
       }
     }
-    return Promise.resolve(erc20TransactionInformation);
+    return Promise.resolve(sep20TransactionInformation);
   }
 
-  public async getBalanceForAddress(contractAddress: string, address: string) {
+  public async getSep20BalanceForAddress(contractAddress: string, address: string) {
     // console.log('getBALANCE', address, contractAddress);
     const data: string = Web3.utils.sha3("balanceOf(address)")?.slice(0,10) + "000000000000000000000000" + Web3.utils.stripHexPrefix(address);
     return await this.nodeApiService.call({
@@ -186,7 +186,7 @@ public async getErc20ContractInformation(address: string): Promise<IErc20Contrac
     'uint256') as string;
   }
 
-  public async getTransactionsForAddress(contractAddress: string, address?: string) {
+  public async getSep20TransactionsForAddress(contractAddress: string, address?: string) {
     // console.log('get tx for address');
     const contract = find(this.contracts, contract => {
       if(contract.address.toLocaleLowerCase() === contractAddress.toLocaleLowerCase()) return true;
@@ -210,14 +210,14 @@ public async getErc20ContractInformation(address: string): Promise<IErc20Contrac
       'latest'
     );
 
-    return map(transactions, (erc20tx) => {
+    return map(transactions, (sep20tx) => {
       return {
-        address: erc20tx.address,
-        parentHash: erc20tx.transactionHash,
-        from: this.utilHelper.convertTopicAddress(erc20tx.topics[1]),
-        to: this.utilHelper.convertTopicAddress(erc20tx.topics[2]),
-        convertedValue: this.utilHelper.convertValue(erc20tx.data, contract.decimals)
-      } as IErc20Transaction;
+        address: sep20tx.address,
+        parentHash: sep20tx.transactionHash,
+        from: this.utilHelper.convertTopicAddress(sep20tx.topics[1]),
+        to: this.utilHelper.convertTopicAddress(sep20tx.topics[2]),
+        convertedValue: this.utilHelper.convertValue(sep20tx.data, contract.decimals)
+      } as ISep20Transaction;
     });
 
     // return transactions;
@@ -238,7 +238,7 @@ public async getErc20ContractInformation(address: string): Promise<IErc20Contrac
   //     Web3.utils.numberToHex(block)
   //   );
 
-  //   console.log('erc20transforhash', transaction);
+  //   console.log('sep20transforhash', transaction);
 
   //   return transaction;
 

@@ -5,13 +5,14 @@ import { BlockResourceService } from '../block/block-resource.service';
 import Web3 from 'web3';
 import { BlockNumber, TransactionReceipt } from 'web3-core';
 import { Transaction } from 'web3-eth';
-import { Erc20ResourceService, IErc20TransactionInformation } from '../erc20/erc20-resource.service';
+import { Sep20ResourceService, ISep20TransactionInformation } from '../sep20/sep20-resource.service';
 import { IAddress } from '../address/address-resource.service';
+import { ContractResourceService } from '../contract/contract-resource.service';
 
 export const DEFAULT_SCOPE_SIZE = 1000000; // max block range scope
 export const DEFAULT_PAGE_SIZE = 10;
 
-export type TransactionType = 'transaction' | 'contract-call' | 'contract-create' | 'erc20-transfer';
+export type TransactionType = 'transaction' | 'contract-call' | 'contract-create' | 'sep20-transfer';
 
 
 
@@ -20,7 +21,7 @@ export interface ITransaction {
   txFee: number;
   receipt?: TransactionReceipt;
   type: TransactionType;
-  erc20info?: IErc20TransactionInformation;
+  sep20info?: ISep20TransactionInformation;
 }
 
 export interface IExtendedTransaction {
@@ -55,7 +56,8 @@ export class TransactionResourceService {
   constructor(
     private apiService: NodeApiService,
     private blockResourceService: BlockResourceService,
-    private erc20ResourceService: Erc20ResourceService
+    private sep20ResourceService: Sep20ResourceService,
+    private contractService: ContractResourceService
   ) {}
 
   async getTxsByBlock(blockId: BlockNumber): Promise<IBlockTransactions> {
@@ -194,7 +196,7 @@ export class TransactionResourceService {
     }));
   }
 
-  private async mapTransactions(txs: Transaction[], includeReceipts?: boolean, erc20check?: boolean): Promise<ITransaction[]> {
+  private async mapTransactions(txs: Transaction[], includeReceipts?: boolean, sep20check?: boolean): Promise<ITransaction[]> {
     const waitForPromises: Promise<any>[] = [];
 
     const mappedTransactions = map(txs, (tx) => {
@@ -226,22 +228,29 @@ export class TransactionResourceService {
           const promise = this.apiService.getTxReceiptByHash(tx.data.hash);
           waitForPromises.push(promise)
           tx.receipt = await promise;
+
+          if(tx.receipt && tx.receipt.logs) {
+            console.log('LOGS>>>', this.contractService._decodeLogs(tx.receipt.logs));
+            // console.log('METHOD>>>', this.contractService._decodeMethod(tx.receipt.logs[0].data));
+          }
       });
+
+
       await Promise.all(waitForPromises);
     }
 
     //detect tokens
-    if(erc20check && includeReceipts) {
+    if(sep20check && includeReceipts) {
       mappedTransactions.forEach( async (tx) => {
         if(tx.type === 'contract-call' && tx.receipt && tx.receipt.status) {
 
-          const erc20Contract = this.erc20ResourceService.getErc20TransactionInformation(tx.receipt);
-          waitForPromises.push(erc20Contract);
+          const sep20Contract = this.sep20ResourceService.getSep20TransactionInformation(tx.receipt);
+          waitForPromises.push(sep20Contract);
 
-          erc20Contract.then((contract) => {
+          sep20Contract.then((contract) => {
             if(contract) {
-              tx.type = 'erc20-transfer';
-              tx.erc20info = contract;
+              tx.type = 'sep20-transfer';
+              tx.sep20info = contract;
             }
           });
         }
