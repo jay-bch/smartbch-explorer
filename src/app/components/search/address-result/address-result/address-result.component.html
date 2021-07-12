@@ -1,0 +1,28 @@
+<div fxLayout="row" fxLayoutAlign="start center" fxFlex="100" *ngIf="address">
+  <div fxLayout="column" fxFlex="50%">
+    <div class="title">Address </div>
+    <div>
+      <h5>
+        {{address.address}}
+      </h5>
+    </div>
+  </div>
+
+  <div fxLayout="column" fxFlex="50%" fxLayoutAlign="center end">
+    <div class="title">
+      {{address.balance | wei: 'ether'}} BCH
+    </div>
+
+    <div>
+      <h5>
+        {{address.txCount}} txs
+      </h5>
+    </div>
+  </div>
+<!--
+  <div fxFlex="25%" >
+
+  </div> -->
+
+</div>
+

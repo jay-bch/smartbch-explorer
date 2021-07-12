@@ -1,0 +1,61 @@
+
+
+<div fxLayout="row" class="py-2" fxFlex="100%">
+  <table mat-table [dataSource]="tableData" class="mat-elevation-z4 mt-2 mb-2" fxFlex="100%" fxLayout="column">
+    <tr mat-header-row *matHeaderRowDef="tableDisplayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: tableDisplayedColumns;"></tr>
+    <!-- Index -->
+    <ng-container matColumnDef="index">
+      <th mat-header-cell *matHeaderCellDef fxFlex="40px" fxLayoutAlign="start center">#</th>
+      <td mat-cell *matCellDef="let element" fxFlex="40px" fxLayoutAlign="start center">
+        {{element.index}}
+      </td>
+    </ng-container>
+    <!-- Name -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef fxFlex="140px" fxLayoutAlign="start center">name</th>
+      <td mat-cell *matCellDef="let element" fxFlex="140px" fxLayoutAlign="start center">
+        {{element.name}}
+      </td>
+    </ng-container>
+    <!-- Type -->
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef fxFlex="140px" fxLayoutAlign="start center">type</th>
+      <td mat-cell *matCellDef="let element" fxFlex="140px" fxLayoutAlign="start center">
+        {{element.type}}
+      </td>
+    </ng-container>
+    <!-- Data -->
+    <ng-container matColumnDef="data">
+      <th mat-header-cell *matHeaderCellDef [fxFlex]="showExtra ? '400px' : 'auto'" fxLayoutAlign="start center">data</th>
+      <td mat-cell *matCellDef="let element" fxLayout="column" [fxFlex]="showExtra ? '400px' : 'auto'" fxLayoutAlign="center start">
+        <div class="value-cell mr-2" *ngFor="let value of element.data; index as i">
+          <div *ngIf="element.type === 'address' || element.type === 'address[]' else default" matTooltip="{{element.extraData[i]?.name}}">
+            <a routerLink="/address/{{value}}">
+              {{value}}
+            </a>
+          </div>
+
+          <ng-template #default>
+            <span class="value">
+              {{value}}
+            </span>
+          </ng-template>
+        </div>
+      </td>
+    </ng-container>
+    <!-- Extra Data -->
+    <ng-container matColumnDef="extra" *ngIf="showExtra">
+      <th mat-header-cell *matHeaderCellDef fxFlex="auto" fxLayoutAlign="start center"></th>
+      <td mat-cell *matCellDef="let element" fxLayout="column" fxFlex="auto" fxLayoutAlign="center start" class="extra">
+        <div *ngFor="let value of element.extraData; index as i">
+          <ng-container *ngIf="element.type === 'address' || element.type === 'address[]'">
+            <a *ngIf="element.extraData[i]" routerLink="/address/{{element.extraData[i].value}}">
+              <span>{{element.extraData[i].name}}</span>
+            </a>
+          </ng-container>
+        </div>
+      </td>
+    </ng-container>
+  </table>
+</div>

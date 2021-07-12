@@ -1,0 +1,75 @@
+
+<div class="py-2">
+  <div fxLayout="row" class="mb-4">
+    <div fxFlex="50%">
+      <h2>Input</h2>
+    </div>
+    <div fxFlex="50%" fxLayoutAlign="end start">
+      <mat-button-toggle-group [value]="inputView" (change)="inputView = $event.value">
+        <mat-button-toggle value="default">Default</mat-button-toggle>
+        <mat-button-toggle *ngIf="params" value="decoded">Decoded</mat-button-toggle>
+        <mat-button-toggle value="utf8">UTF-8</mat-button-toggle>
+        <mat-button-toggle value="original">Original</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+
+  <div fxLayout="row" *ngIf="inputView === 'default'">
+    <textarea
+        matInput
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="1"
+        disabled="true"
+      >{{rawInputData}}</textarea>
+  </div>
+
+  <div fxLayout="row" *ngIf="inputView === 'original'">
+    <textarea
+        matInput
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="1"
+        disabled="true"
+      >{{input}}</textarea>
+  </div>
+
+  <div fxLayout="row" *ngIf="inputView === 'decoded'">
+    <div fxLayout="column" fxFlex="100%">
+      <div fxLayout="row" fxFlex="100%">
+        <div class="method" fxFlex="100%" fxLayout="row" fxLayoutAlign="start center">
+          <span class="name pr-1">{{name}}</span>
+          <span class="pr-1">(</span>
+          <div class="param" *ngFor="let param of params; let last = last">
+            <span class="param-name pr-1">{{param.name}}</span>
+            <span class="param-type">{{param.type}}</span>
+            <span *ngIf="!last" class="pr-1">,</span>
+          </div>
+          <span class="pl-1">)</span>
+        </div>
+      </div>
+
+      <div fxLayout="row" fxFlex="100%" *ngIf="params && params.length > 0">
+        <app-decoded-values [params]="params"></app-decoded-values>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" *ngIf="inputView === 'utf8'">
+    <textarea
+        matInput
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="1"
+        disabled="true"
+      >{{utf8}}</textarea>
+  </div>
+
+
+
+
+  <!-- {{rawInputData | json}} -->
+
+<!-- <h4>Showing transaction from the last {{blockScope}} blocks</h4> -->
+
+

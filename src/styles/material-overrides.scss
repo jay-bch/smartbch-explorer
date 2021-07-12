@@ -35,3 +35,25 @@ mat-card {
 .mat-cell, .mat-header-cell {
   padding: 0 5px;
 }
+
+//snackbar container position
+.mat-snack-bar-container {
+  margin-top: 80px!important;
+}
+
+// search panel
+.search-result-autocomplete-panel {
+  margin: 10px 0;
+  // position: fixed!important;
+  // left: 0!important;
+  // background-color: transparent!important;
+  // box-shadow: none!important;
+  .mat-option {
+    line-height: normal;
+  }
+}
+
+//cdk-overlay
+.cdk-overlay-container {
+  z-index: 5000;
+}

@@ -1,0 +1,41 @@
+<form [formGroup]="form">
+
+  <mat-form-field fxFlex="100">
+    <mat-label>Search by address / txn hash / block number</mat-label>
+    <input #autoCompleteInput matInput formControlName="query" [matAutocomplete]="auto">
+    <mat-autocomplete
+      autoActiveFirstOption
+      #auto="matAutocomplete"
+      [displayWith]="displayFn"
+      (optionSelected)="optionSelected($event)"
+      [class]="'search-result-autocomplete-panel'">
+      <mat-option *ngFor="let option of results$ | async" [value]="option" >
+        <div class="result-wrapper" *ngIf="option.type !== 'undefined'">
+          <app-empty-result *ngIf="option.type === 'empty-result'" [query]="option.query"></app-empty-result>
+          <app-block-result *ngIf="option.type === 'block'" [block]="option.data"></app-block-result>
+          <app-tx-result *ngIf="option.type === 'tx'" [tx]="option.data"></app-tx-result>
+          <app-address-result *ngIf="option.type === 'address'" [address]="option.data"></app-address-result>
+        </div>
+
+      </mat-option>
+
+      <div *ngIf="(searchHistory$ | async)?.length" class="header mt-1">Recent searches</div>
+
+      <mat-option *ngFor="let option of searchHistory$ | async" [value]="option" >
+        <div class="result-wrapper" *ngIf="option.type !== 'undefined'">
+          <app-empty-result *ngIf="option.type === 'empty-result'" [query]="option.query"></app-empty-result>
+          <app-block-result *ngIf="option.type === 'block'" [block]="option.data"></app-block-result>
+          <app-tx-result *ngIf="option.type === 'tx'" [tx]="option.data"></app-tx-result>
+          <app-address-result *ngIf="option.type === 'address'" [address]="option.data"></app-address-result>
+        </div>
+
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>
+<!--
+<mat-autocomplete #auto="matAutocomplete">
+  <mat-option *ngFor="let countryName of countries$ | async" [value]="countryName">
+    {{countryName}}
+  </mat-option>
+</mat-autocomplete> -->

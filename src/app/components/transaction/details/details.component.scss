@@ -1,3 +1,7 @@
+:host {
+  max-width: 100%;
+  overflow: hidden;
+}
 .row {
   padding-bottom: 10px;
 }
@@ -9,3 +13,12 @@
 .buttons {
   padding-left: 10px;
 }
+
+// .input-data {
+//   textarea {
+//     width: 100%;
+//   }
+//   overflow: hidden;
+//   overflow-wrap: anywhere;
+// }
+

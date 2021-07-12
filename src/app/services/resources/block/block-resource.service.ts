@@ -59,6 +59,8 @@ export class BlockResourceService {
     this.blocks = orderBy(this.blocks, ['number'], ['desc']);
     this.blocks = uniqBy(this.blocks, 'number');
 
+    console.log('BLOCK', block);
+
     return block;
   }
 

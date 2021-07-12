@@ -14,7 +14,7 @@ export class ConnectToNodeComponent implements OnInit, OnDestroy {
   destroy$: Subject<boolean> = new Subject();
 
   endpointForm = new FormGroup({
-    endpoint: new FormControl('wss://moeing.app:9546'),
+    endpoint: new FormControl('wss://smartbch-wss.greyh.at'),
   });
   error: Error | undefined;
 

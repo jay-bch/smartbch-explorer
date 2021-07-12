@@ -1,0 +1,22 @@
+:host {
+  width: 100%;
+}
+
+.value-cell {
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+
+.value {
+  color: blue;
+}
+
+tr.mat-header-row {
+  height: 30px;
+}
+
+tr.mat-row, tr.mat-footer-row {
+  height: auto;
+  min-height: 30px;
+}
+

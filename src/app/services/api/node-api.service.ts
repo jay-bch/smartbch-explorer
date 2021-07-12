@@ -113,9 +113,20 @@ export class NodeApiService {
     return latestBlocks;
   }
 
-  async getTxsByBlock(blockId: BlockNumber) {
-    return await this.apiAdapter?.getTxsByBlock(blockId);
+  async getTxCount(address: string, type: SBCHSource = 'both') {
+    return await this.apiAdapter?.getTxCount(address, type);
   }
+
+  async getSep20AddressCount(address: string, sep20Contract: string, type: SBCHSource): Promise<any> {
+    return await this.apiAdapter.getSep20AddressCount(address, sep20Contract, type);
+  }
+
+  async getTxsByBlock(blockId: BlockNumber, start: number, end: number) {
+    console.log('api', blockId, start, end);
+    return await this.apiAdapter?.getTxsByBlock(blockId, start, end);
+  }
+
+
 
   async getTxByHash(hash: string) {
     return await this.apiAdapter?.getTxByHash(hash);
@@ -142,8 +153,12 @@ export class NodeApiService {
     return await this.apiAdapter?.hasMethodFromAbi(address, method, abi);
   }
 
-  public async queryLogs(address: string, data: string[], start: string, end: string) {
-    return await this.apiAdapter?.queryLogs(address, data, start, end);
+  public async queryLogs(address: string, data: string[] | null, start: string, end: string, limit: string) {
+    return await this.apiAdapter?.queryLogs(address, data, start, end, limit);
+  }
+
+  public async queryAddressLogs(address: string) {
+    return await this.apiAdapter.queryAddressLogs(address);
   }
 
   public async call(transactionConfig: TransactionConfig, returnType: string) {

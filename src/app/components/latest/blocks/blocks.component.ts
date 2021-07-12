@@ -7,6 +7,7 @@ import { take, takeUntil, filter } from 'rxjs/operators';
 import { TimeElapsedPipe } from 'src/app/pipes/time-elapsed/time-elapsed.pipe';
 import { BlockResourceService } from '../../../services/resources/block/block-resource.service';
 import { Block } from 'web3-eth';
+import { UtilHelperService } from 'src/app/services/helpers/util/util-helper.service';
 
 const CAROUSELCOUNT = 6;
 const TABLECOUNT = 10;
@@ -113,7 +114,8 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
 
   constructor(
     private blockResource: BlockResourceService,
-    private timeElapsedPipe: TimeElapsedPipe
+    private timeElapsedPipe: TimeElapsedPipe,
+    private helper: UtilHelperService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -277,7 +279,7 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
   private mapCarouselBlock(block: Block): ICarouselBlock {
     return {
       ...block,
-      gasPercentageUsed: `${(block.gasUsed / block.gasLimit).toFixed(2)} %`,
+      gasPercentageUsed: `${this.helper.getGasPercentageUsed(block)} %`,
       age: this.timeElapsedPipe.transform(block.timestamp)
     } as ICarouselBlock
   }
@@ -293,7 +295,7 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
       count: block.transactions.length,
       gasLimit: block.gasLimit,
       gasUsed: block.gasUsed,
-      gasPercentageUsed: (block.gasUsed / block.gasLimit).toFixed(4)
+      gasPercentageUsed: this.helper.getGasPercentageUsed(block)
     } as IBlockTableRow
   }
 

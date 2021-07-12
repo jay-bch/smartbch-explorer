@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { NodeApiService } from '../../api/node-api.service';
-import sep20Contracts from '../../../../assets/config/contract.json';
-import { compact, find, map } from 'lodash';
+import { compact, find, map, filter } from 'lodash';
+
 import { UtilHelperService } from '../../helpers/util/util-helper.service';
 import { TransactionReceipt } from 'web3-eth';
+import { ContractResourceService, IContract } from '../contract/contract-resource.service';
+import { map as rxMap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { Sep20HelperService } from '../../helpers/sep20-helper/sep20-helper.service';
+import { promise } from 'selenium-webdriver';
 
 export interface ISep20Contract {
   address: string,
@@ -12,8 +17,8 @@ export interface ISep20Contract {
   symbol: string,
   totalSupply: string,
   decimals: number,
-  transactions?: any,
-  addressesWithBalance?: string[],
+  // transactions?: any,
+  // addressesWithBalance?: string[],
 }
 
 export interface ISep20Transaction {
@@ -34,118 +39,63 @@ export interface ISep20TransactionInformation {
 })
 export class Sep20ResourceService {
 
+  sep20Abi: any;
   contracts: ISep20Contract[] = [];
+  checkedAddresses: string[] = [];
+  contracts$: BehaviorSubject<ISep20Contract[]> = new BehaviorSubject<ISep20Contract[]>([]);
 
   constructor(
+    private contractResource: ContractResourceService,
     private nodeApiService: NodeApiService,
-    private utilHelper: UtilHelperService
+    private utilHelper: UtilHelperService,
+    private sep20Helper: Sep20HelperService
   ) {
-    // this.init();
-  }
 
-  async init() {
-    const contracts: Promise<ISep20Contract | undefined>[] = []
+    this.contractResource.contracts$.pipe(
+      rxMap( (contracts: IContract[]) => filter(contracts, contract => {
+        return contract.type === 'sep20';
+      }) )
+      ).subscribe(contracts => {
+        const currentContracts = this.contracts$.getValue();
 
-    sep20Contracts.forEach(async (contract: any) => {
-      try {
-        const contractInfo = this.getSep20ContractInformation(contract.address);
-        if (contractInfo) {
-          contracts.push(contractInfo);
-        }
+        const promises: Promise<ISep20Contract | undefined>[] = [];
 
-      } catch {
-        return null;
-      }
+        contracts.forEach(async (contract) => {
+          if(!find(this.checkedAddresses, contract.address.toLowerCase())) {
+            this.checkedAddresses.push(contract.address.toLowerCase());
+            if (!contract.sep20) {
+              promises.push(this.sep20Helper.getSep20ContractInformation(contract.address.toLowerCase()))
+            } else {
+              promises.push(Promise.resolve(contract.sep20));
+            }
+          }
+        });
 
-      return;
-    });
+        Promise.all(promises).then(results => {
+          results.forEach( contract => {
+            if (contract && !find(currentContracts, {address: contract.address})) {
+              currentContracts.push(contract);
+            }
+          });
 
-    await Promise.all(contracts).then( results => {
-      this.contracts = compact(results);
+          this.contracts$.next(currentContracts);
 
-
-      // temp test
-      // const contractAddr = '0xbf6D6cfe6153117AdfAD261317d02e0bA244FBD6';
-      // const accountAddr = '0xe66ffae0ab6bfb46237f985fbbb52d5595ff1e12'
-
-      // this.getBalanceForAddress(contractAddr, accountAddr).then( result => {
-      //   console.log('ERC20BALANCE', this.utilHelper.convertValue(result, 18));
-      // });
-
-      // this.getTransactionForAddress(contractAddr, accountAddr).then( result => {
-      //   console.log('TRANS', result);
-      // });
+        });
 
     });
 
-    return Promise.resolve(true);
+    // this.contracts$.subscribe( contract => {
+    //   console.log('contracts$', contract);
+    // })
   }
 
-/**
- * Gets sep20 contract information by retrieving symbol, name, totalSupply and decimals. If any fails, it's not considered a sep20.
- * @param address
- * @returns sep20 contract information
- */
-public async getSep20ContractInformation(address: string): Promise<ISep20Contract | undefined> {
-
-    let contract: ISep20Contract | undefined;
-
-    try {
-      const symbol = await this.nodeApiService.call({
-        to: address,
-        data: Web3.utils.sha3("symbol()")?.slice(0,10) ?? undefined
-      },
-      'string') as string;
-
-      const name = await this.nodeApiService.call({
-        to: address,
-        data: Web3.utils.sha3("name()")?.slice(0,10) ?? undefined
-      },
-      'string') as string;
-
-      const supply = await this.nodeApiService.call({
-        to: address,
-        data: Web3.utils.sha3("totalSupply()")?.slice(0,10) ?? undefined
-      },
-      'uint256') as string;
-
-      const decimals = await this.nodeApiService.call({
-        to: address,
-        data: Web3.utils.sha3("decimals()")?.slice(0,10) ?? undefined
-      },
-      'uint256') as string;
-
-      return {
-        address,
-        decimals: parseInt(decimals, 10),
-        name,
-        symbol,
-        totalSupply: supply
-      }
-    } catch {
-      return undefined;
-    }
-  }
-
-  getAllSep20Contracts() {
-    const promises: Promise<ISep20Contract | undefined>[] = [];
-    map(sep20Contracts, async (contract: any) => {
-      promises.push(this.getSep20Contract(contract.address));
-    });
-
-    return Promise.all(promises);
+  getAllSep20Contracts(): Promise<ISep20Contract[]> {
+    return this.contracts$.toPromise();
   }
 
   public async getSep20Contract(address: string): Promise<ISep20Contract | undefined> {
-
-    const contract = find(this.contracts, {address: address});
-
-    if(!contract) {
-      const newContract = await this.getSep20ContractInformation(address);
-      if(newContract) this.contracts.push(newContract);
-    }
-
-    return find(this.contracts, {address: address});
+    const contract = find(this.contracts$.getValue(), {address: address.toLowerCase()});
+    return Promise.resolve(contract);
   }
 
   public async getSep20TransactionInformation(receipt: TransactionReceipt): Promise<ISep20TransactionInformation | undefined> {
@@ -177,7 +127,9 @@ public async getSep20ContractInformation(address: string): Promise<ISep20Contrac
   }
 
   public async getSep20BalanceForAddress(contractAddress: string, address: string) {
-    // console.log('getBALANCE', address, contractAddress);
+    const count = await this.nodeApiService.getSep20AddressCount(address, contractAddress, 'both');
+    // console.log('getBALANCE', address, contractAddress, count);
+
     const data: string = Web3.utils.sha3("balanceOf(address)")?.slice(0,10) + "000000000000000000000000" + Web3.utils.stripHexPrefix(address);
     return await this.nodeApiService.call({
       to: contractAddress,
@@ -187,13 +139,16 @@ public async getSep20ContractInformation(address: string): Promise<ISep20Contrac
   }
 
   public async getSep20TransactionsForAddress(contractAddress: string, address?: string) {
-    // console.log('get tx for address');
-    const contract = find(this.contracts, contract => {
+    // console.log('get tx for address', this.contracts$.getValue());
+    const contracts = await this.contracts$.getValue();
+    const contract = find(contracts, contract => {
       if(contract.address.toLocaleLowerCase() === contractAddress.toLocaleLowerCase()) return true;
       return false;
     });
 
     if(!contract) return Promise.reject();
+
+    // console.log('SEP20 contract',  contract);
 
     const data: string[] = [
       Web3.utils.keccak256('Transfer(address,address,uint256)')
@@ -207,10 +162,15 @@ public async getSep20ContractInformation(address: string): Promise<ISep20Contrac
       contractAddress,
       data,
       '0x0',
-      'latest'
+      'latest',
+      Web3.utils.toHex(10000),
     );
 
+    // console.log('sep20txs', transactions);
+
     return map(transactions, (sep20tx) => {
+      // console.log('FROM', this.utilHelper.convertTopicAddress(sep20tx.topics[1]));
+      // console.log('TO', this.utilHelper.convertTopicAddress(sep20tx.topics[2]));
       return {
         address: sep20tx.address,
         parentHash: sep20tx.transactionHash,

@@ -1,13 +1,15 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { get, map } from 'lodash';
+import { get, isNumber, map } from 'lodash';
+import { IDecodedMethod } from 'src/app/services/helpers/event-decoder/event-decoder';
 import { IBlockTransactions, ITransaction, TransactionResourceService } from 'src/app/services/resources/transaction/transaction-resource.service';
 import Web3 from 'web3';
 
 const TABLECOUNT = 10;
 export interface ITransactionTableRow {
   swatch: string;
-  method: string;
+  method: IDecodedMethod;
+  type: string;
   nonce: number;
   hash: string;
   blockId: number;
@@ -50,8 +52,8 @@ export class TransactionsListComponent implements OnInit, OnChanges {
     if(this.blocknumber) {
       this.loading = true;
       this.tableData = [];
-      this.blockTransactions = await this.transactionResource.getTxsByBlock(this.blocknumber);
-      this.txCount = this.blockTransactions.total;
+
+
       this.loadPage();
     }
   }
@@ -62,12 +64,17 @@ export class TransactionsListComponent implements OnInit, OnChanges {
     this.loadPage();
   }
 
-  private loadPage() {
-    this.loading = true;
+  private async loadPage() {
+    if(this.blocknumber) {
+      this.blockTransactions = await this.transactionResource.getTxsByBlock(this.blocknumber, this.tableCurrentPage + 1, this.tableCurrentSize);
+      this.txCount = this.blockTransactions.total;
+      this.loading = true;
 
-    const txsToShow = this.blockTransactions?.transactions.slice(this.tableCurrentPage * this.tableCurrentSize,  (this.tableCurrentPage + 1)  * this.tableCurrentSize);
-    this.tableData = map(txsToShow, tx => this.mapTableRow(tx));
-    this.loading = false;
+      // const txsToShow = this.blockTransactions?.transactions.slice(this.tableCurrentPage * this.tableCurrentSize,  (this.tableCurrentPage + 1)  * this.tableCurrentSize);
+
+      this.tableData = map(this.blockTransactions?.transactions, (tx: ITransaction) => this.mapTableRow(tx));
+      this.loading = false;
+    }
   }
 
   private mapTableRow(tx: ITransaction): ITransactionTableRow {
@@ -77,8 +84,9 @@ export class TransactionsListComponent implements OnInit, OnChanges {
       from: tx.data.from,
       to: tx.data.to,
       hash: tx.data.hash,
-      method: tx.type,
-      value: Web3.utils.hexToNumberString(tx.data.value),
+      method: tx.method,
+      type: tx.type,
+      value: isNumber(Number(tx.data.value)) ? tx.data.value : Web3.utils.hexToNumberString(tx.data.value),
       tokenSent: tx.sep20info?.transaction?.convertedValue ? `${tx.sep20info?.transaction?.convertedValue} ${tx.sep20info?.contract?.symbol}` : undefined,
       status: tx.receipt && tx.receipt.status === false ? false : true,
       statusMessage: get(tx.receipt, 'statusStr'),

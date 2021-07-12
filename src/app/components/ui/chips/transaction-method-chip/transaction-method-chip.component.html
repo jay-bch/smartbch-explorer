@@ -1,7 +1,14 @@
-<div fxLayout="row" fxFlex="auto" fxLayoutAlign="start center" class="method-chip py-1 px-3 mr-2" [ngClass]="method">
 
+<div fxLayout="row" fxFlex="auto" fxLayoutAlign="start center" class="method-chip py-1 px-3 mr-2" [ngClass]="method?.name">
+  <div fxLayout="row" fxLayoutAlign="center center" *ngIf="method && method.name !== 'Transaction'">
+    <div>{{method.name}}</div>
+  </div>
 
-  <div fxLayout="row" fxLayoutAlign="center center" *ngIf="method === 'transaction'">
+  <div fxLayout="row" fxLayoutAlign="center center" *ngIf="!method || method.name === 'Transaction'">
+    <div>Transaction</div>
+  </div>
+
+  <!-- <div fxLayout="row" fxLayoutAlign="center center" *ngIf="method === 'transaction'">
     <mat-icon class="pr-2" >compare_arrows</mat-icon>
     <div>Transfer</div>
   </div>
@@ -23,5 +30,5 @@
     <div>
       SEP20 Transfer
     </div>
-  </div>
+  </div> -->
 </div>

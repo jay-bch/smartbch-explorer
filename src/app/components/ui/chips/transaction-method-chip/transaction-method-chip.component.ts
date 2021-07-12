@@ -8,7 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class TransactionMethodChipComponent implements OnInit {
 
   @Input()
-  method: string = '';
+  method: any;
 
   constructor() { }
 

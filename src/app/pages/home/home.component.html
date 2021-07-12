@@ -9,7 +9,13 @@
 </div> -->
 
 <div class="page-wrapper">
+
   <div fxLayout="column" fxLayoutGap="20px" >
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <mat-card fxFlex="50" class="mat-elevation-z3">
+        <app-search></app-search>
+      </mat-card>
+    </div>
     <mat-card class="mat-elevation-z3">
       <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
         <img class="block-logo" src="assets/images/cube-svgrepo-com.svg" /><h1 class="no-margin">Latest blocks</h1>
@@ -23,7 +29,19 @@
     </mat-card>
 
     <mat-card *ngIf="linkedAddress" class="mat-elevation-z3">
-      <h1>Linked Metamask Account: <a routerLink="/address/{{linkedAddress}}">{{linkedAddress}}</a> </h1>
+      <div fxLayout="row">
+        <div class="mr-4">
+          <h1>Linked Metamask Account</h1>
+        </div>
+
+        <div fxFlex="auto" fxLayoutAlign="end center">
+          <h3><a routerLink="/address/{{linkedAddress}}">{{linkedAddress}}</a></h3>
+        </div>
+        <div class="ml-2">
+          <app-hash-icon [address]="linkedAddress" [diameter]="32" type="address"></app-hash-icon>
+        </div>
+      </div>
+
       <app-address-transactions-list [address]="linkedAddress" [refresh]="true"></app-address-transactions-list>
     </mat-card>
   </div>

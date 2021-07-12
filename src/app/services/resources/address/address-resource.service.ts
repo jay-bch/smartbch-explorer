@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Transaction } from 'web3-eth';
+import Web3 from 'web3';
 import { NodeApiService } from '../../api/node-api.service';
 import { ContractResourceService } from '../contract/contract-resource.service';
 import { ITransaction, TransactionResourceService } from '../transaction/transaction-resource.service';
 
 export interface IAddress {
   address: string;
-  balance: number;
+  balance: string;
   type?: string;
-  input?: string;
-  logs?: any[],
-  data: string
+  code?: string;
+  method?: string;
+  txCount: number;
 }
-
 
 export interface ContractInformation {
   logs: any[],
@@ -30,21 +29,33 @@ export class AddressResourceService {
   ) { }
 
 
-  getAddressInfo(address: string) {
+  async getAddressInfo(address: string): Promise<IAddress> {
+    const code = await this.apiService.getCode(address);
+    const balance = await this.apiService.getAccountBalance(address);
+    return {
+      address,
+      balance,
+      type: code !== '0x' ? 'contract' : 'address',
+      code,
+      txCount: Web3.utils.hexToNumber(await this.apiService.getTxCount(address, 'both'))
+    };
+}
 
+  // getMethod(method: string) {
+  //   this.contractService._decodeMethod(method)
+  // }
+
+  // getContractInfo(address: string) {
+  // }
+
+  getAddressName(address: string) {
+    let addressLabebel = address;
+    addressLabebel = this.contractService.getContractName(address) ?? addressLabebel;
+
+    return addressLabebel;
   }
 
-  getMethod(method: any) {
-    this.contractService._decodeMethod(method)
+  async getEventLogs(address: string, start: number, end: number, limit: number) {
+    return this.apiService.queryLogs(address, [], Web3.utils.toHex(start), Web3.utils.toHex(end), Web3.utils.toHex(limit));
   }
-
-
-  isContract() {
-
-  }
-
-  getContractInfo(address: string) {
-
-  }
-
 }

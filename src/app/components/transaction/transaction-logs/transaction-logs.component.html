@@ -1,0 +1,70 @@
+<div class="py-2">
+  <div fxLayout="row" class="mb-4">
+    <div fxFlex="50%">
+      <h2>Event Logs</h2>
+    </div>
+    <div fxFlex="50%" fxLayoutAlign="end start">
+      <mat-button-toggle-group [value]="logView" (change)="logView = $event.value">
+        <mat-button-toggle value="decoded" *ngIf="hasDecodedLogs" >Decoded</mat-button-toggle>
+        <mat-button-toggle value="hex">Original</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+  <div fxLayout="column" fxLayoutGap="10px">
+    <mat-card *ngFor="let event of events; let index = index">
+      <div fxLayout="column" fxLayoutGap="0px">
+        <div fxLayout="row" class="mb-2">
+          <div fxLayout="row" fxFlex="50%" fxLayoutAlign="start center">
+            <app-general-chip [value]="event.logIndex" class="mr-2"></app-general-chip>
+            <h3 class="no-margin">
+              <a routerLink="/address/{{event.contractAddress}}">
+                {{event.contractAddress}}
+              </a>
+            </h3>
+          </div>
+
+          <div fxFlex="50%" fxLayoutAlign="end center">
+            <h3 class="no-margin" *ngIf="event.contractAddress !== event.contractName">
+              <strong>
+                <a routerLink="/address/{{event.contractAddress}}">
+                  {{event.contractName}}
+                </a>
+              </strong>
+            </h3>
+          </div>
+        </div>
+
+        <div fxLayout="row" fxFlex="100%" *ngIf="logView === 'decoded'">
+          <div class="method" fxFlex="100%" fxLayout="row" fxLayoutAlign="start center">
+            <span class="name pr-1">{{event.decodedLog?.name}}</span>
+            <span class="pr-1">(</span>
+            <div class="param" *ngFor="let param of event.decodedLog?.events; let last = last">
+              <span class="param-name pr-1">{{param.name}}</span>
+              <span class="param-type">{{param.type}}</span>
+              <span *ngIf="!last" class="pr-1">,</span>
+            </div>
+            <span class="pl-1">)</span>
+          </div>
+        </div>
+
+        <div fxLayout="row" *ngIf="logView === 'decoded'">
+          <app-decoded-values
+            *ngIf="event.decodedLog"
+            type="log"
+            [log]="event.log"
+            [params]="event.decodedLog.events"></app-decoded-values>
+        </div>
+
+        <div fxLayout="row" *ngIf="logView === 'hex'">
+          <textarea
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="1"
+            disabled="true"
+          >{{rawLogs[index] }}</textarea>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

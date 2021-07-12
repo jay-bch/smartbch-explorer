@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { NodeAdapter } from '../adapter.service';
 
-import { isString, map, noop, orderBy } from 'lodash';
+import { isString, map, noop, orderBy, sumBy, union } from 'lodash';
 
 import { Web3Connector, Web3ConnectorType } from './web3.connector';
 
 import Web3 from 'web3';
-import { BlockNumber, Transaction, TransactionConfig, TransactionReceipt } from 'web3-core';
+import { BlockNumber, Log, Transaction, TransactionConfig, TransactionReceipt } from 'web3-core';
 import { Block } from 'web3-eth';
 import { PagedResponse, SBCHSource } from '../../node-api.service';
 import { Hex } from 'web3-utils';
+import { retry } from 'rxjs/operators';
 
-export const DEFAULT_QUERY_SIZE = 100000000; // max block range per request
+export const DEFAULT_QUERY_SIZE = 100000; // max block range per request
 @Injectable({
   providedIn: 'root'
 })
@@ -55,9 +56,11 @@ export class Web3Adapter implements NodeAdapter{
 
     return this.apiConnector.getBlock(blockId);
   }
-  getTxsByBlock(blockId: string): Promise<Transaction[]> {
+  getTxsByBlock(blockId: string, start?: number, end?: number): Promise<Transaction[]> {
     if(!this.apiConnector) return Promise.reject();
-
+    if(start !== undefined && end !== undefined) {
+      return this.apiConnector.getTxListByHeightWithRange(blockId, start, end);
+    }
     return this.apiConnector.getTxListByHeight(blockId);
   }
   getTxByHash(hash: string): Promise<Transaction> {
@@ -67,40 +70,48 @@ export class Web3Adapter implements NodeAdapter{
   }
 
   async getTxsByAccount(address: string, page: number, pageSize: number, type?: SBCHSource, searchFromBlock?: number, scopeSize?: number) {
+    const totalTxInAddress = Web3.utils.hexToNumber(await this.getTxCount(address, type));
+
     if(!this.apiConnector) return Promise.reject();
-    if(!searchFromBlock) searchFromBlock = await this.getBlockHeader();
+    if(!searchFromBlock) searchFromBlock = await this.getBlockHeader(); // default to current blockheader if not supplied, so we search from the tip of the chain
+
     if(!scopeSize) scopeSize = 0;
 
-    let scope = searchFromBlock - scopeSize > 0 ? searchFromBlock - scopeSize : 0; // Will stop searching when this blockId is reached
+    let scopeBlockId = searchFromBlock - scopeSize > 0 ? searchFromBlock - scopeSize : 0; // Will stop searching when this blockId is reached.
     let startIndex = (page - 1) * pageSize;
     let endIndex = (startIndex + pageSize);
-    const totalTxInAddress = Web3.utils.hexToNumber(await this.getTxCount(address, type));
+
     if(endIndex > totalTxInAddress) {
       endIndex = totalTxInAddress;
     }
 
     let txFound: Transaction[] = [];
 
+    let querySize = DEFAULT_QUERY_SIZE;
     let to = searchFromBlock;
-    let from = to - DEFAULT_QUERY_SIZE;
-
-    let extendQueryBy = 10;
+    let from = to - querySize;
+    let extendQueryBy = 1;
 
     // console.log('endIndex', endIndex);
-
-    // console.log('scope', scope);
+    // console.log('page', page);
+    // console.log('pageSize', pageSize);
+    // console.log('totalTxInAddress', totalTxInAddress);
+    // console.log('scope', scopeBlockId);
     // console.log('from', from);
     // console.log('to', to);
+    // console.log('start', startIndex);
+    // console.log('end', endIndex);
 
     if(totalTxInAddress) {
       // get the txs from node. requests will be divided in chuncks set by query size. Will stop when we reach the end of the chain, or when requested txs in page have been found.
       do {
         // don't search beyond scope
-        if(from < scope) from = scope;
-        if(to < scope) to = scope;
+        if(from < scopeBlockId) from = scopeBlockId;
+        if(to < scopeBlockId) to = scopeBlockId;
 
         // console.log(`Fetching txs from block ${from} to ${to}`);
         let txInThisPage: Transaction[] = [];
+        let limitReached = false;
         try {
           if(type === 'both') {
             txInThisPage = await this.apiConnector.queryTxByAddr(
@@ -129,20 +140,37 @@ export class Web3Adapter implements NodeAdapter{
             )
           }
         } catch(error) {
-          console.error('sbch_queryTx Error!', error);
+          // console.error('sbch_queryTx Error!', error.message, pageSize * page, from, to);
+          // console.table(error);
+
+          if(error.message.startsWith("Returned error: too many candidicate entries")) {
+            console.log('Limit reached')
+            limitReached = true;
+            extendQueryBy = 1;
+
+            if(querySize > 1) {
+              querySize = Math.floor(querySize / 2);
+            }
+            from = to - querySize;
+          }
         }
 
         if  (txInThisPage.length) {
           txFound = txFound.concat(txInThisPage);
+          extendQueryBy = 1;
+          querySize = DEFAULT_QUERY_SIZE
           // console.log(`Found ${txFound.length} transactions`)
         } else {
           if(extendQueryBy < 10000) extendQueryBy = extendQueryBy * 2;
           // console.log('extended query size', extendQueryBy)
         }
 
-        to = from - 1;
-        from = from - (DEFAULT_QUERY_SIZE * extendQueryBy);
-      } while ( txFound.length < (endIndex) && to > scope );
+        if(!limitReached) {
+          to = from - 1;
+          from = from - (querySize * extendQueryBy);
+        }
+
+      } while ( txFound.length < (endIndex) && to > scopeBlockId );
 
       txFound = map(txFound, (tx) => {
         if(isString(tx.blockNumber)) {
@@ -177,10 +205,10 @@ export class Web3Adapter implements NodeAdapter{
     let scope = searchFromBlock - scopeSize; // Will stop searching when this blockId is reached
     let startIndex = (page - 1) * pageSize;
     let endIndex = (startIndex + pageSize);
-    let txFound: Transaction[] = [];
+    let txFound: string[] = [];
 
     let to = searchFromBlock;
-    let from = to - DEFAULT_QUERY_SIZE;
+    let from = to - 1;
 
     let extendedQueryBy = 1;
 
@@ -195,15 +223,20 @@ export class Web3Adapter implements NodeAdapter{
 
       // console.log('SEARCH BLOCKS', from, to);
 
-      const promises: any[] = [];
+      const promises: Promise<Block>[] = [];
       for(let i = from; i < to; i++) {
         promises.push(
-          this.apiConnector.getTxListByHeight(Web3.utils.numberToHex(i))
+          // this.apiConnector.getTxListByHeight(Web3.utils.numberToHex(i))
+          this.apiConnector.getBlock(i)
         );
       }
 
       const promiseResults = await Promise.all(promises);
-      const txInThisPage = promiseResults.filter(e => e.length).reduce((a, b) => a.concat(b), []);
+      // const txInThisPage = promiseResults.filter(e => e.length).reduce((a, b) => a.concat(b), []);
+      let txInThisPage: string[] = [];
+      promiseResults.forEach((block) => {
+        txInThisPage = [...txInThisPage, ...block.transactions as string[]]
+      });
 
       if  (txInThisPage.length) {
         txFound = txFound.concat(txInThisPage);
@@ -215,22 +248,33 @@ export class Web3Adapter implements NodeAdapter{
       }
 
       to = from - 1;
-      from = from - (DEFAULT_QUERY_SIZE * extendedQueryBy);
+      from = from - (1 * extendedQueryBy);
     } while ( txFound.length < (endIndex) && to > scope );
 
 
     txFound = orderBy(txFound, ['blockNumber'], ['desc']);
 
-    txFound = map(txFound, tx => {
-      tx.blockNumber = Web3.utils.hexToNumber(tx.blockNumber as Hex);
-      return tx;
-    });
+    // txFound = map(txFound, tx => {
+    //   tx.blockNumber = Web3.utils.hexToNumber(tx.blockNumber as Hex);
+    //   return tx;
+    // });
 
     const txResults = txFound.slice(startIndex, endIndex);
-    // console.log(`RESULT (Last block ${to})`, txResults);
+    // console.log('txRESULTS', txResults);
+
+
+    const txPromises: Promise<Transaction>[] = [];
+    txResults.forEach( hash => {
+      txPromises.push(this.getTxByHash(hash));
+    });
+
+    const returnValues: Transaction[] = await Promise.all(txPromises);
+
+    // console.log('returnvalues', returnValues);
+    // // console.log(`RESULT (Last block ${to})`, txResults);
 
     return {
-      results: txResults,
+      results: returnValues,
       page,
       pageSize,
       isEmpty: txResults.length === 0,
@@ -243,6 +287,12 @@ export class Web3Adapter implements NodeAdapter{
     if(!this.apiConnector) return Promise.reject();
 
     return this.apiConnector.getTransactionCount(address, type);
+  }
+
+  getSep20AddressCount(address: string, sep20Contract: string, type: SBCHSource): Promise<any> {
+    if(!this.apiConnector) return Promise.reject();
+
+    return this.apiConnector.getSep20TransactionCount(address, sep20Contract, type);
   }
   getAccountBalance(address: string): Promise<string> {
     if(!this.apiConnector) return Promise.reject();
@@ -276,9 +326,13 @@ export class Web3Adapter implements NodeAdapter{
     return Promise.resolve(callReturn);
   }
 
-  queryLogs(address: string, data: any[], start: string, end: string) {
+  queryLogs(address: string, data: any[], start: string, end: string, limit: string) {
     if(!this.apiConnector) return Promise.reject();
-    return this.apiConnector.queryLogs(address, data, start, end);
+    return this.apiConnector.queryLogs(address, data, start, end, limit);
+  }
+
+  queryAddressLogs(address: string): Promise<Log[]> | undefined {
+    return this.apiConnector?.queryAddressLogs(address);
   }
 
   async hasMethodFromAbi(address: string, method: string, abi: any): Promise<boolean> {
@@ -307,7 +361,8 @@ export class Web3Adapter implements NodeAdapter{
 
       ],
       '0x0',
-      'latest'
+      'latest',
+      '0x0'
     ).then(result => {
       console.log('sbch', result)
       console.log( Web3.utils.stringToHex(result[0].topics[1] ));

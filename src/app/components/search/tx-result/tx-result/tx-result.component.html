@@ -1,0 +1,39 @@
+<div fxLayout="row" fxLayoutAlign="start center" fxFlex="100" *ngIf="tx">
+  <div fxLayout="column" fxFlex="50%">
+    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="100" *ngIf="tx">
+      <div class="title">
+        Transaction
+      </div>
+
+      <div class="pl-4">
+        {{tx.type}}
+      </div>
+    </div>
+
+    <div>
+      <h5>
+        {{tx.data.hash | shorthash}} in block {{tx.data.blockNumber}}
+      </h5>
+
+
+    </div>
+  </div>
+
+  <div fxLayout="column" fxFlex="50%" fxLayoutAlign="center end">
+    <div class="title">
+      <!-- {{block.hash | shorthash}} -->
+
+      {{tx.data.value | wei: 'ether' }} BCH
+    </div>
+    <div *ngIf="timestamp">
+      <h5>
+        {{timestamp * 1000 | date: 'MMM d, y, h:mm:ss a'}}
+      </h5>
+    </div>
+  </div>
+<!--
+  <div fxFlex="25%" >
+
+  </div> -->
+
+</div>

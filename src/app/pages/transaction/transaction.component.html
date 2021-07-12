@@ -1,11 +1,24 @@
-<div class="page-wrapper">
+<div class="page-wrapper" *ngIf="transaction">
   <div fxLayout="column" fxLayoutGap="20px" >
     <mat-card>
       <app-transaction-details [transaction]="transaction" [block]="transactionBlock" [header]="blockHeight$ | async"></app-transaction-details>
     </mat-card>
 
-    <mat-card>
-      <pre>{{transaction | json}}</pre>
+    <mat-card *ngIf="transaction.method && transaction.method.name !== 'Transaction'">
+      <app-transaction-method
+          [name]="transaction.method.name"
+          [params]="transaction.method.params"
+          [input]="transaction.data.input">
+        </app-transaction-method>
     </mat-card>
+
+    <mat-card *ngIf="transaction.events">
+      <app-transaction-logs [events]="transaction.events" >
+      </app-transaction-logs>
+    </mat-card>
+
+    <!-- <mat-card>
+      <pre class="small-text">{{transaction | json}}</pre>
+    </mat-card> -->
   </div>
 </div>

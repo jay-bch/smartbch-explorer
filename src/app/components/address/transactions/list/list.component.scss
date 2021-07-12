@@ -1,0 +1,25 @@
+.table-wrapper {
+  position: relative;
+  padding: 2px;
+}
+
+.loading-overlay {
+  position: absolute;
+  background-color: #ffffffe0;
+  width: 100%;
+  left: 0;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+
+  img{
+    width: 50px;
+  }
+}
+
+.loading-indicator-wrapper {
+  min-height: 4px;
+}

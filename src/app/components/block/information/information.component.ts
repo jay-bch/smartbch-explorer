@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, SimpleChange } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { UtilHelperService } from 'src/app/services/helpers/util/util-helper.service';
 import { BlockResourceService } from 'src/app/services/resources/block/block-resource.service';
 import { Block } from 'web3-eth';
 
@@ -20,6 +21,7 @@ export class BlockInformationComponent implements OnInit {
 
   constructor(
     private blockResource: BlockResourceService,
+    private helper: UtilHelperService,
     private router: Router,
 
   ) { }
@@ -31,7 +33,7 @@ export class BlockInformationComponent implements OnInit {
   ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
     if (changes['block'] && this.block) {
       this.timestamp = Number(this.block?.timestamp);
-      this.gasPercentageUsed = (this.block.gasUsed / this.block.gasLimit).toFixed(2);
+      this.gasPercentageUsed = this.helper.getGasPercentageUsed(this.block);
     }
   }
 

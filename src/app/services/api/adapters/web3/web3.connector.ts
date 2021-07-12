@@ -83,6 +83,15 @@ export class Web3Connector {
     if(!this.web3) return Promise.reject();
     return this.web3.sbch.getTxListByHeight(blockId);
   }
+
+  getTxListByHeightWithRange(blockId: string, start: string | number, end: string | number) {
+    if(!this.web3) return Promise.reject();
+    if(this.web3.sbch) {
+      console.log('MEOW');
+      return this.web3.sbch?.getTxListByHeightWithRange(blockId, Web3.utils.toHex(start.toString()), Web3.utils.toHex(end.toString()));
+    }
+    return Promise.reject(false);
+  }
   getTransaction(hash: string): Promise<Transaction> {
     if(!this.web3) return Promise.reject();
     return this.web3.eth.getTransaction(hash);
@@ -118,6 +127,16 @@ export class Web3Connector {
     }
     return Promise.reject(false);
   }
+
+  getSep20TransactionCount(address: string, sep20Contract: string, type: SBCHSource) {
+    if(!this.web3) return Promise.reject();
+
+    if(this.web3.sbch) {
+      return this.web3.sbch.getSep20AddressCount(type, sep20Contract, address);
+    }
+    return Promise.reject(false);
+  }
+
   getBalance(address: string): Promise<string> {
     if(!this.web3) return Promise.reject();
     return this.web3.eth.getBalance(address);
@@ -139,9 +158,19 @@ export class Web3Connector {
     return this.web3.eth.call(transactionConfig);
   }
 
-  queryLogs(address: string, data: any[], start: string, end: string, limit = 0) {
+  queryLogs(address: string, data: any[], start: string, end: string, limit: string) {
     if(!this.web3) return Promise.reject();
-    return this.web3.sbch.queryLogs(address, data, start, end, Web3.utils.toHex(limit.toString()));
+    return this.web3.sbch.queryLogs(address, data, start, end, limit);
+  }
+
+  async queryAddressLogs(address: string, start?: string, end?: string) {
+    if(!this.web3) return Promise.reject();
+    // const contract = new this.web3.eth.Contract([], address);
+
+    // const pastEvents = await contract.getPastEvents('allEvents', {fromBlock: 1});
+
+    // console.log('past', pastEvents);
+    return this.web3?.sbch.queryLogs(address, [], '0x1', 'latest', Web3.utils.toHex(32));
   }
 
   decodeParameter(datType: string, call: string) {

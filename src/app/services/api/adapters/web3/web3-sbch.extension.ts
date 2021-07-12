@@ -11,6 +11,7 @@ export interface smartBCHWeb3 extends Web3 {
     queryTxByAddr(from: string, start: Hex | 'latest', end: Hex | 'latest', limit: string): Promise<any>;
     queryLogs(address: string, data: any[], start: string | 'latest', end: string | 'latest', limit: string): Promise<any>;
     getTxListByHeight(blockHeight: string): Promise<Transaction[]>;
+    getTxListByHeightWithRange(blockHeight: string, start: string, end: string): Promise<Transaction[]>;
     getAddressCount(type: SBCHSource, address: string): Promise<Hex>;
     getSep20AddressCount(type: SBCHSource, sepAddress: string, toAddress: string): Promise<Hex>;
     getCode(address: string):Promise<any>;
@@ -53,6 +54,13 @@ export var sbch_extensions = {
       call: 'sbch_getTxListByHeight',
       params: 1,
       inputFormatter: [helpers.formatters.inputDefaultBlockNumberFormatter],
+      outputFormatter: null
+    },
+    {
+      name: 'getTxListByHeightWithRange',
+      call: 'sbch_getTxListByHeightWithRange',
+      params: 3,
+      inputFormatter: [helpers.formatters.inputDefaultBlockNumberFormatter, null, null],
       outputFormatter: null
     },
     {

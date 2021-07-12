@@ -6,7 +6,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ShorthashPipe implements PipeTransform {
 
   transform(value: string, ...args: unknown[]): unknown {
-    return `${value.substring(0, 10)}...${value.substring(value.length - 10, value.length)}`;
+    if(value && value.startsWith('0x')) {
+      return `${value.substring(0, 10)}...${value.substring(value.length - 10, value.length)}`;
+    }
+
+    return value;
   }
 
 }

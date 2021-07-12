@@ -3,9 +3,15 @@
 
   <mat-tab-group (selectedTabChange)="setActiveTab($event)">
     <mat-tab  *ngFor="let contract of sep20contracts" label="{{contract.symbol}}"  >
-      <h3 class="py-4">
-        Balance: {{activeBalance}} {{activeSep20Contract?.symbol}}
+      <h3 class="py-2">
+        {{activeSep20Contract?.name}} ({{activeSep20Contract?.symbol}})
       </h3>
+
+      <h4 class="py-2">
+        Balance: {{activeBalance}} {{activeSep20Contract?.symbol}}
+      </h4>
+
+
       <div class="pt-4" fxLayout="column" *ngFor="let transaction of activeTxs">
         <div fxLayout="row" *ngIf="transaction">
           <div fxFlex="auto">

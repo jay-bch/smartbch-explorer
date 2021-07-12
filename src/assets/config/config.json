@@ -1,6 +1,6 @@
 {
-  "apiEndpoint": "wss://moeing.app:9546",
-  "ws3Endpoint": "wss://moeing.app:9546",
+  "apiEndpoint": "wss://smartbch-wss.greyh.at",
+  "ws3Endpoint": "wss://smartbch-wss.greyh.at",
   "apiType": "web3",
   "apiVersion": "v1"
 }

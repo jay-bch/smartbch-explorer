@@ -11,12 +11,14 @@ import { BlockResourceService } from 'src/app/services/resources/block/block-res
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.scss']
 })
+
 export class TransactionComponent implements OnInit {
 
   public stop$ = new Subject();
   transaction: ITransaction | undefined;
   transactionBlock: Block | undefined;
   blockHeight$: BehaviorSubject<number | undefined> | undefined;
+
 
   constructor(
     private route: ActivatedRoute,

@@ -16,9 +16,16 @@
 
 .footer {
   text-align: center;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  background-color: #ffffff;
+  z-index: 2000;
+  padding: 10px;
 }
 
 
 .page-wrapper {
   margin: 96px auto;
+  padding-bottom: 96px;
 }

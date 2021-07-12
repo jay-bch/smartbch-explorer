@@ -3,4 +3,8 @@
   border-radius: 8px;
   background-color: rgba(116,221,84,0.15);
   // width: 100%;
+
+  &.Transaction {
+    background-color: rgba(84, 121, 221, 0.15);
+  }
 }

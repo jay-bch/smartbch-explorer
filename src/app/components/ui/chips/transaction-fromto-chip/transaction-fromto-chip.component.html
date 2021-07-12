@@ -5,6 +5,10 @@
         <span>IN</span>
       </div>
 
+      <div fxLayout="row" *ngIf="fromToLabel === 'SELF'" [ngClass]="fromToLabel">
+        <span>SELF</span>
+      </div>
+
       <div fxLayout="row" *ngIf="fromToLabel === 'OUT'" [ngClass]="fromToLabel">
         <span>OUT</span>
       </div>

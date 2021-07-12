@@ -42,6 +42,19 @@ import { LatestTransactionsComponent } from './components/latest/transactions/tr
 import config from '../assets/config/config.json';
 import { TransactionMethodChipComponent } from './components/ui/chips/transaction-method-chip/transaction-method-chip.component';
 import { TransactionFromtoChipComponent } from './components/ui/chips/transaction-fromto-chip/transaction-fromto-chip.component';
+import { SearchComponent } from './components/search/search.component';
+import { BlockResultComponent } from './components/search/block-result/block-result/block-result.component';
+import { TxResultComponent } from './components/search/tx-result/tx-result/tx-result.component';
+import { AddressResultComponent } from './components/search/address-result/address-result/address-result.component';
+import { EmptyResultComponent } from './components/search/empty-result/empty-result.component';
+import { TransactionMethodComponent } from './components/transaction/transaction-method/transaction-method.component';
+import { TransactionLogsComponent } from './components/transaction/transaction-logs/transaction-logs.component';
+import { DecodedValuesComponent } from './components/transaction/decoded-values/decoded-values.component';
+import { GeneralChipComponent } from './components/ui/chips/general-chip/general-chip.component';
+import { EventLogComponent } from './components/address/event-log/event-log.component';
+import { RichTooltipComponent } from './components/ui/rich-tooltip/rich-tooltip.component';
+import { RichTooltipDirective } from './components/ui/rich-tooltip/richt-tooltip.directive';
+
 
 export function appInit(sessionApiService: SessionService) {
   return () => sessionApiService.bootstrapSession( config );
@@ -74,7 +87,19 @@ export function appInit(sessionApiService: SessionService) {
     AddressTransactionsListComponent,
     LatestTransactionsComponent,
     TransactionMethodChipComponent,
-    TransactionFromtoChipComponent
+    TransactionFromtoChipComponent,
+    SearchComponent,
+    BlockResultComponent,
+    TxResultComponent,
+    AddressResultComponent,
+    EmptyResultComponent,
+    TransactionMethodComponent,
+    TransactionLogsComponent,
+    DecodedValuesComponent,
+    GeneralChipComponent,
+    EventLogComponent,
+    RichTooltipComponent,
+    RichTooltipDirective
   ],
   imports: [
     BrowserModule,

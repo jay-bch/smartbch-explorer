@@ -58,7 +58,7 @@
       <ng-container matColumnDef="fromToLabel">
         <th mat-header-cell *matHeaderCellDef fxFlex="85px" fxLayoutAlign="start center"></th>
         <td mat-cell *matCellDef="let element" fxFlex="85px" fxLayoutAlign="start center">
-          <app-transaction-fromto-chip [method]="element.method"></app-transaction-fromto-chip>
+          <app-transaction-fromto-chip [method]="element.type"></app-transaction-fromto-chip>
         </td>
       </ng-container>
 

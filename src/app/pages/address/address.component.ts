@@ -8,6 +8,7 @@ import { TransactionResourceService } from '../../services/resources/transaction
 import Web3 from 'web3';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
 
+
 @Component({
   selector: 'app-address',
   templateUrl: './address.component.html',
@@ -21,6 +22,8 @@ export class AddressComponent implements OnInit, OnDestroy {
   public initialized: boolean = false;
   public notFound: boolean = false;
   public stop$ = new Subject();
+  public contractName: string | undefined;
+  loading: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,8 +34,10 @@ export class AddressComponent implements OnInit, OnDestroy {
   ) {
     this.route.params.pipe(takeUntil(this.stop$)).subscribe( async params => {
       if (params && params.addressId) {
-
+        this.loading = true;
         this.address = params.addressId.toLowerCase();
+        this.contractName = undefined;
+
 
         if(this.address) {
           // this.transactions = await this.transactionResource.getTxByAddress(this.address);
@@ -51,10 +56,13 @@ export class AddressComponent implements OnInit, OnDestroy {
             this.code = Web3.utils.stripHexPrefix(code);
 
             if (this.code && this.address) {
-              this.sep20ResourceService.getSep20Contract(this.address);
+
+              this.contractName = this.addressService.getAddressName(this.address);
             }
 
           });
+
+          this.loading = false;
         }
       }
     });

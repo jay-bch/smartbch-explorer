@@ -1,0 +1,25 @@
+.method {
+  font-size: 13px;
+  flex-wrap: wrap;
+  .name {
+    font-weight: bold;
+  }
+
+  .param {
+    .param-name {
+      color: red;
+      font-weight: bold;
+    }
+    .param-type {
+      color: blue;
+    }
+  }
+}
+
+textarea {
+  width: 100%;
+  background-color: #f8fafd;
+  border: 1px solid rgba(0,0,0,.2);
+  padding: 10px;
+  font-family: monospace;
+}

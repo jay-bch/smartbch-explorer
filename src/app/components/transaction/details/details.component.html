@@ -18,7 +18,7 @@
     Status
   </div>
   <div>
-    <span *ngIf="transaction.receipt.status === true">SUCCES</span>
+    <span *ngIf="transaction.receipt.status === true">SUCCESS</span>
     <span *ngIf="transaction.receipt.status === false">FAILED: <span *ngIf="statusStr">{{statusStr}}</span></span>
   </div>
 </div>
@@ -71,7 +71,7 @@
     Transaction Fee
   </div>
   <div>
-    {{transaction.txFee.toString() | wei: 'ether'}} BCH
+    {{transaction.txFee.toString() | wei: 'ether'}} BCH ({{transaction.txFee.toString() | wei: 'gwei'}} sat)
   </div>
 </div>
 <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
@@ -80,7 +80,7 @@
     Gas Price
   </div>
   <div>
-    {{transaction.data.gasPrice | wei: 'ether'}} BCH ({{gSat}} Gsat)
+    {{transaction.data.gasPrice | wei: 'ether'}} BCH ({{gasPrice | wei: 'gwei'}} sat)
   </div>
 </div>
 <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
@@ -120,14 +120,20 @@
   </div>
 </div>
 
-<ng-container *ngIf="inputData">
+<!-- <ng-container *ngIf="inputData">
   <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-  <div fxLayout="row" fxLayoutAlign="start center">
+  <div class="input-data" fxLayout="row" fxLayoutAlign="start center" fxFlex="100%" fxLayoutAlign="start start">
     <div class="label" fxFlex="200px">
       Input data
     </div>
-    <div>
-      {{inputData}}
+    <div fxFlex="100%">
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="1"
+        disabled="true"
+      >{{inputData}}</textarea>
     </div>
   </div>
-</ng-container>
+</ng-container> -->

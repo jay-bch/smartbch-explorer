@@ -1,4 +1,4 @@
-import { BlockNumber, TransactionConfig, TransactionReceipt } from 'web3-core';
+import { BlockNumber, Log, TransactionConfig, TransactionReceipt } from 'web3-core';
 import { Block, Transaction } from 'web3-eth';
 import { Hex } from 'web3-utils';
 import { PagedResponse, SBCHSource } from '../node-api.service';
@@ -9,13 +9,16 @@ export abstract class NodeAdapter {
   abstract getChainId(): Promise<number>;
   abstract getBlockHeader(): Promise<number>
   abstract getBlock(blockId: BlockNumber): Promise<Block>;
-  abstract getTxsByBlock(blockId: BlockNumber): Promise<Transaction[]>;
+  abstract getTxsByBlock(blockId: BlockNumber, start?: number, end?: number): Promise<Transaction[]>;
   abstract getTxByHash(hash: string): Promise<Transaction>;
   abstract getTxReceiptByHash(hash: string): Promise<TransactionReceipt>;
-  abstract getTxCount(address: string, type: SBCHSource): Promise<Hex>
+  abstract getTxCount(address: string, type: SBCHSource): Promise<Hex>;
+  // abstract getTxListByHeightWithRange
+  abstract getSep20AddressCount(address: string, sep20Contract: string, type: SBCHSource): Promise<any>;
   abstract getAccountBalance(address: string): Promise<string>;
   abstract getCode(address: string): Promise<string>;
-  abstract queryLogs(address: string, data: any[], start: string, end: string): Promise<any[]>;
+  abstract queryLogs(address: string, data: any[] | null, start: string, end: string, limit: string): Promise<Log[]>;
+  abstract queryAddressLogs(address: string): Promise<Log[]> | undefined;
   abstract call(transactionConfig: TransactionConfig, returnType: string): Promise<any>;
 
   /**
@@ -33,7 +36,8 @@ export abstract class NodeAdapter {
     pageSize: number,
     type?: SBCHSource,
     searchFromBlock?: number,
-    scopeSize?: number): Promise<PagedResponse<Transaction>>;
+    scopeSize?: number
+  ): Promise<PagedResponse<Transaction>>;
 
   abstract getLatestTransactions(page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number): Promise<PagedResponse<Transaction>>;
   abstract hasMethodFromAbi(address: string, method: string, abi: any): Promise<boolean>;

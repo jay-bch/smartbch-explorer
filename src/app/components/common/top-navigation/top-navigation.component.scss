@@ -5,7 +5,7 @@
   width: 100%;
   top: 0;
   background-color: #ffffff;
-  z-index: 10;
+  z-index: 2000;
 }
 
 .header {
@@ -67,4 +67,9 @@
 
 .disconnect {
   font-size: 10px;
+}
+
+
+app-search {
+  z-index: 3000;
 }

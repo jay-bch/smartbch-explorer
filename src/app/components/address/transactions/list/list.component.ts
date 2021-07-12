@@ -8,16 +8,21 @@ import { MatSelectChange } from '@angular/material/select';
 import Web3 from 'web3';
 import { PageEvent } from '@angular/material/paginator';
 import { SBCHSource } from 'src/app/services/api/node-api.service';
+import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
+import { IDecodedMethod } from 'src/app/services/helpers/event-decoder/event-decoder';
 
 const TABLECOUNT = 10;
 export interface ITransactionTableRow {
   swatch: string;
-  method: string;
+  method: IDecodedMethod;
+  type: string;
   nonce: number;
   hash: string;
   blockId: number;
   from: string;
+  fromName: string;
   to: string;
+  toName: string
   fromToLabel: string;
   value: string;
   tokenSent?: string;
@@ -35,9 +40,15 @@ const REFRESH_INTERVAL = 15000;
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
-        style({ opacity: '0', backgroundColor: '#C7E351' }),
-        animate('1s ease-in', style({ opacity: '1', backgroundColor: '#74DD54' })),
-        animate('1s ease-out', style({ backgroundColor: '#FFFFFF' })),
+        style({ opacity: '0' }),
+        animate('1000ms ease-out', style({ opacity: '0' })),
+        animate('250ms ease-out', style({ opacity: '1' })),
+        // animate('1s ease-out', style({ backgroundColor: '#FFFFFF' })),
+      ]),
+      transition(':leave', [
+        // style({ opacity: '1' }),
+        animate('250ms ease-in', style({ opacity: '0'})),
+        // animate('250s ease-out', style({ backgroundColor: '#FFFFFF' })),
       ]),
     ]),
   ],
@@ -56,7 +67,7 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
   loading = true;
   txCount = 0;
   selectedType: SBCHSource = 'both';
-  tableDisplayedColumns: string[] = ['swatch', 'hash', 'method', 'blockId', 'from', 'fromToLabel', 'to', 'tokenSent', 'value'];
+  tableDisplayedColumns: string[] = ['swatch', 'hash', 'method', 'blockId', 'from', 'fromToLabel', 'to', 'value'];
   tableData: ITransactionTableRow[] = [];
   tableCurrentPage = 0;
   tableCurrentSize = TABLECOUNT;
@@ -64,7 +75,8 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
   stop$ = new Subject();
 
   constructor(
-    private transactionResource: TransactionResourceService
+    private transactionResource: TransactionResourceService,
+    private addressResource: AddressResourceService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -114,7 +126,7 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
     this.loading = true;
 
     let txPage: IAddressTransactions | undefined = undefined;
-    txPage = await this.transactionResource.getTxByAddress(address, selectedType, page + 1, pageSize);
+    txPage = await this.transactionResource.getTxByAddress(address, selectedType, page + 1, pageSize, undefined);
 
     // if we get a total from response, calculate how many pages we have
     if(txPage.total) {
@@ -160,15 +172,23 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
   }
 
   private mapTableRow(tx: ITransaction): ITransactionTableRow {
+    let fromToLabel = this.address?.toLowerCase() === tx.data.from.toLowerCase() ? 'OUT' : 'IN';
+    if(tx.data.to && tx.data.from.toLowerCase() === tx.data.to.toLowerCase()) {
+      fromToLabel = 'SELF';
+    }
+
     return {
       swatch: `#${tx.data.hash.substring(tx.data.hash.length - 6, tx.data.hash.length)}`,
       blockId: tx.data.blockNumber,
       nonce: tx.data.nonce,
       from: tx.data.from,
+      fromName: this.addressResource.getAddressName(tx.data.from),
       to: tx.data.to,
-      fromToLabel: this.address?.toLowerCase() === tx.data.from.toLowerCase() ? 'OUT' : 'IN',
+      toName: tx.data.to ? this.addressResource.getAddressName(tx.data.to) : tx.data.to,
+      fromToLabel,
       hash: tx.data.hash,
-      method: tx.type,
+      method: tx.method,
+      type: tx.type,
       value: Web3.utils.hexToNumberString(tx.data.value),
       tokenSent: tx.sep20info?.transaction?.convertedValue ? `${tx.sep20info?.transaction?.convertedValue} ${tx.sep20info?.contract?.symbol}` : undefined,
       status: tx.receipt && tx.receipt.status === false ? false : true,

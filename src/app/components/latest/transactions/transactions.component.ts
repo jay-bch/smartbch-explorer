@@ -3,9 +3,10 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, SimpleCha
 import { Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ITransaction, TransactionResourceService } from 'src/app/services/resources/transaction/transaction-resource.service';
-import { map, get } from 'lodash';
+import { map, get, isNumber } from 'lodash';
 import Web3 from 'web3';
 import { timingSafeEqual } from 'crypto';
+import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
 
 const TABLECOUNT = 10;
 const REFRESH_INTERVAL = 15000;
@@ -13,7 +14,8 @@ const BLOCK_SCOPE = 1000;
 
 export interface ITransactionTableRow {
   swatch: string;
-  method: string;
+  method: any;
+  type: string;
   nonce: number;
   hash: string;
   blockId: number;
@@ -47,7 +49,7 @@ export class LatestTransactionsComponent implements OnInit, OnChanges, OnDestroy
   lastPage: number | undefined;
   loading = true;
   refreshing = false;
-  tableDisplayedColumns: string[] = ['swatch', 'hash', 'method', 'blockId', 'from', 'fromToLabel', 'to', 'tokenSent', 'value'];
+  tableDisplayedColumns: string[] = ['swatch', 'hash', 'method', 'blockId', 'from', 'fromToLabel', 'to', 'value'];
   tableData: ITransactionTableRow[] = [];
   tableCurrentPage = 0;
   tableCurrentSize = TABLECOUNT;
@@ -56,7 +58,8 @@ export class LatestTransactionsComponent implements OnInit, OnChanges, OnDestroy
   blockScope: number = BLOCK_SCOPE;
 
   constructor(
-    private transactionResource: TransactionResourceService
+    private transactionResource: TransactionResourceService,
+    private addressResource: AddressResourceService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -110,9 +113,11 @@ export class LatestTransactionsComponent implements OnInit, OnChanges, OnDestroy
       nonce: tx.data.nonce,
       from: tx.data.from,
       to: tx.data.to,
+      toName: tx.data.to ? this.addressResource.getAddressName(tx.data.to) : tx.data.to,
       hash: tx.data.hash,
-      method: tx.type,
-      value: Web3.utils.hexToNumberString(tx.data.value),
+      method: tx.method,
+      type: tx.type,
+      value: isNumber(Number(tx.data.value)) ? tx.data.value : Web3.utils.hexToNumberString(tx.data.value),
       tokenSent: tx.sep20info?.transaction?.convertedValue ? `${tx.sep20info?.transaction?.convertedValue} ${tx.sep20info?.contract?.symbol}` : undefined,
       status: tx.receipt && tx.receipt.status === false ? false : true,
       statusMessage: get(tx.receipt, 'statusStr'),

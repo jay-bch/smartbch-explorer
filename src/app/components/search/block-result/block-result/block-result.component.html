@@ -1,0 +1,23 @@
+<div fxLayout="row" fxLayoutAlign="start center" fxFlex="100" *ngIf="block">
+  <div fxLayout="column" fxFlex="50%">
+    <div class="title">Block {{block.number}}</div>
+    <div>
+      <h5>
+        {{block.hash | shorthash}}
+      </h5>
+    </div>
+  </div>
+
+  <div fxLayout="column" fxFlex="50%" fxLayoutAlign="center end">
+    <div class="title">
+      <!-- {{block.hash | shorthash}} -->
+
+      {{block.transactions.length}} transactions
+    </div>
+    <div *ngIf="timestamp">
+      <h5>
+        {{timestamp * 1000 | date: 'MMM d, y, h:mm:ss a'}}
+      </h5>
+    </div>
+  </div>
+</div>

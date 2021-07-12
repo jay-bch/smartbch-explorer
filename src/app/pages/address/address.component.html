@@ -1,17 +1,58 @@
-<div class="page-wrapper">
+<div class="page-wrapper" *ngIf="!loading">
   <div fxLayout="column" fxLayoutGap="20px" >
     <mat-card *ngIf="initialized">
-        <h2 *ngIf="!code">Address</h2>
-        <h2 *ngIf="code">Contract</h2>
-        <h4>{{address}}</h4>
-        <div>
-          Account balance: {{balance | wei: 'ether'}}
+      <div fxLayout="column">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <div fxFlex="200px">
+            <h1 class="no-margin" *ngIf="!code">Address</h1>
+            <h1 class="no-margin" *ngIf="code">Contract</h1>
+          </div>
+
+
+
+          <div fxFlex="450px" fxLayoutAlign="start center">
+            <h3 class="no-margin">
+              <strong>
+                {{address}}
+              </strong>
+            </h3>
+          </div>
+          <div fxFlex="auto">
+            <h3 class="no-margin" *ngIf="contractName">
+              {{contractName}}
+            </h3>
+          </div>
+          <div class="ml-2" fxFlex="50px" fxLayoutAlign="center center">
+            <app-hash-icon [address]="address" [diameter]="32" [type]="code ? 'contract' : 'address'"></app-hash-icon>
+          </div>
         </div>
+
+        <!-- <div class="my-2" fxLayour="row">
+          <h3 *ngIf="contractName">
+            <strong>
+              {{contractName}}
+            </strong>
+          </h3>
+        </div> -->
+        <!-- <h4>{{address}}</h4> -->
+        <div class="mt-4" fxLayout="row" style="width: fit-content" fxLayoutAlign="left center">
+          <div fxFlex="200px">
+            <h3 class="no-margin mr-4">Account balance</h3>
+          </div>
+          <app-general-chip value="{{balance | wei: 'ether'}} BCH"></app-general-chip>
+                    <!-- <h3>Account balance: {{balance | wei: 'ether'}} BCH</h3> -->
+        </div>
+      </div>
     </mat-card>
 
     <mat-card *ngIf="initialized">
-      <h3>Transactions</h3>
+      <h2>Transactions</h2>
       <app-address-transactions-list [address]="address"></app-address-transactions-list>
+    </mat-card>
+
+    <mat-card *ngIf="code">
+      <h2>Event logs</h2>
+      <app-event-log [address]="address"></app-event-log>
     </mat-card>
 
     <app-address-tokens-sep20-list *ngIf="initialized" [address]="address"></app-address-tokens-sep20-list>
