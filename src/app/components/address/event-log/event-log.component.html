@@ -1,14 +1,17 @@
 <div fxFlex="auto" fxLayout="column">
+  <div fxFlex="auto" fxLayoutAlign="space-between center">
+    <span class="page-label">Showing most recent events</span>
+    <span class="page-label" *ngIf="lastPage === undefined">Page {{tableCurrentPage + 1}}</span>
+  </div>
   <div fxFlex="auto" class="table-wrapper">
-    <!-- <div class="loading-overlay" *ngIf="loading" @fadeIn> -->
+    <div class="loading-overlay" *ngIf="loading" @fadeIn>
       <!-- LOADING -->
-      <!-- <img src="/assets/images/loader.svg" /> -->
-    <!-- </div> -->
+      <img src="/assets/images/loader.svg" />
+    </div>
 
     <table mat-table [dataSource]="tableData" fxFlex="auto" class="mat-elevation-z4 mt-2 mb-2" fxLayout="column">
-
       <tr mat-header-row *matHeaderRowDef="tableDisplayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: tableDisplayedColumns;"></tr>
+      <tr [@rowsAnimation] mat-row *matRowDef="let row; columns: tableDisplayedColumns;"></tr>
 
       <!-- Transaction id -->
       <ng-container matColumnDef="transaction">
@@ -114,9 +117,24 @@
 
   </div>
 
-  <div fxFlex="auto">
-    <button (click)="nextPage()">next</button>
+  <div fxLayout="column" [style.minWidth]="'500px'">
+    <div class="loading-indicator-wrapper" fxFlex="auto" fxLayout="row" fxLayoutAlign="end center" >
+      <div class="mr-4" fxFlex="130px" *ngIf="loading">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      </div>
+    </div>
+
+    <div fxFlex="auto" fxLayoutAlign="end center">
+      <mat-paginator
+        [class.hiderange]="lastPage === undefined"
+        [pageSize]="tableCurrentSize"
+        [pageIndex]="tableCurrentPage"
+        [showFirstLastButtons]="lastPage !== undefined"
+        [length]="tableLength"
+        [pageSizeOptions]="tablePageSizeOptions"
+        (page)="changeTablePage($event)">
+      </mat-paginator>
+      <span class="page-label ml-2" *ngIf="lastPage === undefined">Page {{tableCurrentPage + 1}}</span>
+    </div>
   </div>
 </div>
-
-

@@ -85,33 +85,42 @@ export class NodeApiService {
 
   async getBlock(blockId: BlockNumber): Promise<Block> {
     if (this.apiAdapter) {
+      console.log('getblock');
       return await this.apiAdapter?.getBlock(blockId);
     }
 
     throw new Error('Adapter not initialized.');
   }
 
-  async getLatestBlocks(count: number) {
-    let latestBlocks: Block[] = [];
-
-    const latestBlock = await this.getBlock('latest');
-
-    latestBlocks.push(latestBlock);
-
-    const promises = [];
-    let blockId: number = latestBlock.number;
-
-    for(let i = 1; i < count; i++) {
-      --blockId;
-      promises.push(this.getBlock(blockId));
+  async getBlocks(blockIds: BlockNumber[]): Promise<Block[]> {
+    if(this.apiAdapter) {
+      return await this.apiAdapter.getBlocks(blockIds);
     }
 
-    await Promise.all(promises).then( (blocks) => {
-      latestBlocks = latestBlocks.concat(blocks);
-    });
-
-    return latestBlocks;
+    throw new Error('Adapter not initialized.');
   }
+
+  // async getLatestBlocks(count: number) {
+  //   let latestBlocks: Block[] = [];
+
+  //   const latestBlock = await this.getBlock('latest');
+
+  //   latestBlocks.push(latestBlock);
+
+  //   const promises = [];
+  //   let blockId: number = latestBlock.number;
+
+  //   for(let i = 1; i < count; i++) {
+  //     --blockId;
+  //     promises.push(this.getBlock(blockId));
+  //   }
+
+  //   await Promise.all(promises).then( (blocks) => {
+  //     latestBlocks = latestBlocks.concat(blocks);
+  //   });
+
+  //   return latestBlocks;
+  // }
 
   async getTxCount(address: string, type: SBCHSource = 'both') {
     return await this.apiAdapter?.getTxCount(address, type);
@@ -122,11 +131,8 @@ export class NodeApiService {
   }
 
   async getTxsByBlock(blockId: BlockNumber, start: number, end: number) {
-    console.log('api', blockId, start, end);
     return await this.apiAdapter?.getTxsByBlock(blockId, start, end);
   }
-
-
 
   async getTxByHash(hash: string) {
     return await this.apiAdapter?.getTxByHash(hash);
@@ -139,6 +145,10 @@ export class NodeApiService {
 
   public async getTxReceiptByHash(hash: string) {
     return await this.apiAdapter?.getTxReceiptByHash(hash);
+  }
+
+  public async getTxReceiptsByHashes(hashes: string[]) {
+    return await this.apiAdapter?.getTxReceiptsByHashes(hashes);
   }
 
   public async getAccountBalance(address:string) {
@@ -163,6 +173,10 @@ export class NodeApiService {
 
   public async call(transactionConfig: TransactionConfig, returnType: string) {
     return await this.apiAdapter.call(transactionConfig, returnType);
+  }
+
+  public async callMultiple(items: {transactionConfig: TransactionConfig, returnType: string}[]) {
+    return await this.apiAdapter.callMultiple(items);
   }
 
   public async getLatestTransactions(page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number) {

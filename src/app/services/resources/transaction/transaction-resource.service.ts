@@ -115,18 +115,6 @@ export class TransactionResourceService {
     return first(richTx);
   }
 
-  async getExtendedTransactionInfo(hash: string) {
-    const transaction = await this.getTxByHash(hash);
-    // return {
-    //   hash,
-    //   transaction,
-    //   receiver,
-    //   se
-
-    // } as IExtendedTransaction
-  }
-
-
   /**
    * Gets tx by address.
    * @param address
@@ -141,7 +129,7 @@ export class TransactionResourceService {
     pageSize?: number,
     searchFromBlock?: number
   ) {
-
+    console.log('async getTxByAddress()')
     if(!page) page = 1;
     if(!pageSize) pageSize = DEFAULT_PAGE_SIZE;
 
@@ -179,7 +167,7 @@ export class TransactionResourceService {
       pageSize,
       isEmpty: web3Txs.isEmpty,
       total: web3Txs.total,
-      transactions: await this.mapTransactions(txs, true, false)
+      transactions: await this.mapTransactions(txs, false, false)
     }
 
     return addressTransactions;
@@ -228,6 +216,10 @@ export class TransactionResourceService {
       if(isString(tx.gasPrice) && tx.gasPrice.startsWith('0x')) txGasPrice = Web3.utils.hexToNumber(tx.gasPrice)
       if(isString(tx.gasPrice)) txGasPrice = parseInt(tx.gasPrice, 10);
 
+      if(!tx.hash && get(tx, 'transactionHash')) {
+        tx.hash = get(tx, 'transactionHash');
+      }
+
       // const txGas = isNumber(tx.gas) ? tx.gas : Web3.utils.hexToNumber(tx.gas);
       // const txGasPrice = isNumber(tx.gasPrice) ? tx.gasPrice : Web3.utils.hexToNumber(tx.gasPrice);
 
@@ -253,62 +245,54 @@ export class TransactionResourceService {
     });
 
     //add receipts to all txs
-    if(includeReceipts) {
+    // if(includeReceipts) {
+    //   mappedTransactions.forEach( async (tx) => {
+    //     if(tx.data.to) {
+    //       const promise = this.apiService.getTxReceiptByHash(tx.data.hash);
+    //       waitForPromises.push(promise);
+
+    //       tx.receipt = await promise;
+    //     }
+
+    //     if(tx.receipt && tx.receipt.status && tx.receipt.logs.length > 0) {
+    //       try {
+    //         // console.log(tx);
+    //         tx.events = this.contractService.getLogsForContract(tx.receipt.to, tx.receipt.logs)
+    //       } catch(error) {
+    //         console.error(error);
+    //       }
+    //     }
+    //   });
+
+    //   await Promise.all(waitForPromises);
+    // }
+
+    if (includeReceipts) {
+      const hashes = map(mappedTransactions, tx => tx.data.hash);
+      const receipts = await this.apiService.getTxReceiptsByHashes(hashes);
+
       mappedTransactions.forEach( async (tx) => {
-        // console.log('TX', tx);
-        // if(tx.type !== 'transaction') {
-          if(tx.data.to) {
-            const promise = this.apiService.getTxReceiptByHash(tx.data.hash);
-            waitForPromises.push(promise)
-            tx.receipt = await promise;
-            // console.log('RECEIPT', tx.receipt);
+        tx.receipt = find(receipts, {transactionHash: tx.data.hash});
+
+        if(tx.receipt && tx.receipt.status && tx.receipt.logs.length > 0) {
+          try {
+            // console.log(tx);
+            tx.events = this.contractService.getLogsForContract(tx.receipt.to, tx.receipt.logs)
+          } catch(error) {
+            console.error(error);
           }
+        }
+      })
 
-          if(tx.receipt && tx.receipt.status && tx.receipt.logs.length > 0) {
-            try {
-              // console.log(tx);
-              tx.events = this.contractService.getLogsForContract(tx.receipt.to, tx.receipt.logs)
-            } catch(error) {
-              console.error(error);
-            }
-          }
+      console.log('HAHSES', receipts);
 
-          // if(tx.receipt && tx.receipt.logs) {
-          //   console.log('LOGS>>>', this.contractService._decodeLogs(tx.receipt.logs));
-          //   // console.log('METHOD>>>', this.contractService._decodeMethod(tx.receipt.logs[0].data));
-          // }
-      });
-
-
-      await Promise.all(waitForPromises);
     }
 
     //discover contracts
     if(discoverContracts && includeReceipts) {
-      // for(const tx of mappedTransactions) {
-
       mappedTransactions.forEach( async (tx) => {
         if(tx.type === 'contract-call' && tx.receipt && tx.receipt.status) {
-
           waitForPromises.push(this.contractService.getContract(tx.receipt.to));
-          // const contract = await this.contractService.getContract(tx.receipt.to);
-
-          // if(contract) {
-            // console.log('Detected!', contract)
-
-            // if(contract.type === 'sep20') {
-            //   tx.type = 'sep20-transfer';
-            //   tx.sep20info = contract.sep20;
-            // }
-          // }
-
-
-
-          // const sep20Contract = this.sep20ResourceService.getSep20TransactionInformation(tx.receipt);
-          // waitForPromises.push(sep20Contract);
-
-          // sep20Contract.then((contract) => {
-
         }
       });
       await Promise.all(waitForPromises);

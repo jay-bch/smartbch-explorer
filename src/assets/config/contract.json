@@ -1,110 +1,56 @@
 [
   {
-    "address": "0x73d265a9c4e74b45f6da4bdd9eb194d4efbd4e19",
-    "abiNames": ["uniswapV2Factory"],
-    "type": "custom",
-    "name": "Koingfu Uniswap Factory"
-  },
-  {
-    "address": "0x8422ad06acbec57bcff7f260f66cc225a17a31f3",
-    "abiNames": ["uniswapV2Factory"],
-    "type": "custom",
-    "name": "Koingfu Uniswap Factory2"
-  },
-  {
-    "address": "0xd7b3e3caaa56f6ecf391f75c62b0511ad6371b40",
-    "abiNames": ["uniswapV2Factory"],
-    "type": "custom",
-    "name": "Koingfu Uniswap Factory3"
-  },
-  {
-    "address": "0xa207d13e6f65799c9ab42ade81ed49f05b3b6f5d",
-    "abiNames": ["uniswapV2Router02"],
-    "type": "custom",
-    "name": "Koingfu Uniswap Router"
-  },
-  {
-    "address": "0x6969456617fd2b6f46befa0bd25c643652f7e583",
+    "address": "0xb671a4c15f492ac60fde543c12e8748f241a1412",
     "abiNames": ["sep20Faucet"],
     "type": "sep20",
     "name": "SmartScan Token Faucet"
   },
   {
-    "address": "0xD950381F33912d776F413692dE9FA6C09419649c",
-    "abiNames": ["weth"],
+    "address": "0xcd69ca9067bbde3d0f55a85e25b7824896a177bb",
+    "abiNames": ["sep20Faucet"],
     "type": "sep20",
-    "name": "Wrapped BCH"
+    "name": "SmartScan Token2 Faucet"
   },
   {
-    "address": "0xf27ef8a5f894edb3cd952342d28a864b0095e3a6",
-    "abiNames": ["sep20"],
+    "address": "0xcd69ca9067bbde3d0f55a85e25b7824896a177bb",
+    "abiNames": ["sep20Faucet"],
     "type": "sep20",
-    "name": "Tether USD"
+    "name": "SmartScan Token2 Faucet"
   },
   {
-    "address": "0xa430086f2ca2016a0cac991d1ffde414ae10af4b",
-    "abiNames": ["sep20"],
+    "address": "0xcd69ca9067bbde3d0f55a85e25b7824896a177bb",
+    "abiNames": ["sep20Faucet"],
     "type": "sep20",
-    "name": "Koingfu Token"
+    "name": "SmartScan Token2 Faucet"
   },
   {
-    "address": "0x4272d9d470e71f00adb91fbf0ea8276959e4e15d",
-    "abiNames": ["sep20"],
+    "address": "0xcd69ca9067bbde3d0f55a85e25b7824896a177bb",
+    "abiNames": ["sep20Faucet"],
     "type": "sep20",
-    "name": "DAI Stablecoin"
+    "name": "SmartScan Token2 Faucet"
   },
   {
-    "address": "0xc801a4862e5c877e46065d8547fdb3220ff441f5",
-    "abiNames": ["sep20"],
+    "address": "0xcd69ca9067bbde3d0f55a85e25b7824896a177bb",
+    "abiNames": ["sep20Faucet"],
     "type": "sep20",
-    "name": "USD Coin"
+    "name": "SmartScan Token2 Faucet"
   },
   {
-    "address": "0x967d7711e63e9e5bf4aee5df7b9d3a13717710c9",
-    "abiNames": ["sep20"],
+    "address": "0xcd69ca9067bbde3d0f55a85e25b7824896a177bb",
+    "abiNames": ["sep20Faucet"],
     "type": "sep20",
-    "name": "Ethereum"
+    "name": "SmartScan Token2 Faucet"
   },
   {
-    "address": "0xdb4c7cdd02fb9c7af2f875bf1e7d4882f06e42ce",
-    "abiNames": ["uniswapV2Pair"],
-    "type": "custom",
-    "name": "Koingfu Uniswap WBCH / Tether Pair"
+    "address": "0xcd69ca9067bbde3d0f55a85e25b7824896a177bb",
+    "abiNames": ["sep20Faucet"],
+    "type": "sep20",
+    "name": "SmartScan Token2 Faucet"
   },
   {
-    "address": "0x00ccf448a4b1373d8776c0fb8824fe6a7974fb0f",
-    "abiNames": ["uniswapV2Pair"],
-    "type": "custom",
-    "name": "Koingfu Uniswap WBCH / USDC Pair"
-  },
-  {
-    "address": "0x679e9790757857fbafdc9dae8d258bfb0ea5eaee",
-    "abiNames": ["uniswapV2Pair"],
-    "type": "custom",
-    "name": "Koingfu Uniswap WBCH / Ki Pair"
-  },
-  {
-    "address": "0x5456c825ac9df2f5eaaee076ee4b37de3a204856",
-    "abiNames": ["uniswapV2Pair"],
-    "type": "custom",
-    "name": "Koingfu Uniswap WBCH / ETH Pair"
-  },
-  {
-    "address": "0x867d0c74bd9c25524c7cde792628dc45377ac214",
-    "abiNames": ["uniswapV2Pair"],
-    "type": "custom",
-    "name": "Koingfu Uniswap Ki / USDC Pair"
-  },
-  {
-    "address": "0x506d8d37e36788fd07521760f01795580425701a",
-    "abiNames": ["uniswapV2Pair"],
-    "type": "custom",
-    "name": "Koingfu Uniswap WBCH / DAI Pair"
-  },
-  {
-    "address": "0xa112caaefecb231b91779a9e68c12080672fcc81",
-    "abiNames": ["uniswapV2Pair"],
-    "type": "custom",
-    "name": "Koingfu Uniswap DAI / USDC Pair"
+    "address": "0xcd69ca9067bbde3d0f55a85e25b7824896a177bb",
+    "abiNames": ["sep20Faucet"],
+    "type": "sep20",
+    "name": "SmartScan Token2 Faucet"
   }
 ]

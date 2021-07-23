@@ -145,7 +145,7 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
     this.setTablePlaceholders();
 
     // init table
-    this.refreshAll();
+    await this.refreshAll();
     // if(this.showTable) {
     //   this.setTablePlaceholders();
     //   await this.refreshTable();
@@ -187,17 +187,17 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
     this.autoRefresh = !this.autoRefresh;
     localStorage.setItem(LS_BLOCK_AUTOREFRESH, JSON.stringify(this.autoRefresh));
   }
-  public refreshAll() {
+  public async refreshAll() {
     this.blockHeight = this.blockHeight$?.getValue() ?? 0;
     this.invisibleBlocks = 0;
     this.latestVisibleBlock = this.blockHeight;
 
     if(this.showCarousel) {
-      this.refreshLatestCarouselBlocks();
+      await this.refreshLatestCarouselBlocks();
     }
 
     if(this.showTable) {
-      this.refreshTable();
+      await this.refreshTable();
     }
   }
 
@@ -244,12 +244,14 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
     this.setTablePage($event.length - ($event.pageSize * $event.pageIndex), $event.pageSize);
   }
   async setTablePage(startBlock: number, pageSize: number) {
+    console.log('SET TABLE')
     const blockPromises: Promise<Block>[] = [];
-    for(let i = startBlock; i > (startBlock - pageSize) && i > 0; i--) {
-      blockPromises.push(this.blockResource.getBlock(i));
-    }
 
-    this.tableData = map(await Promise.all(blockPromises), block => {
+    const ids: number[] = []
+    for(let i = startBlock; i > (startBlock - pageSize) && i > 0; i--) {
+      ids.push(i);
+    }
+    this.tableData = map(await this.blockResource.getBlocks(ids), block => {
       return this.mapTableRow(block);
     });
 

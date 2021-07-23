@@ -54,6 +54,7 @@ import { GeneralChipComponent } from './components/ui/chips/general-chip/general
 import { EventLogComponent } from './components/address/event-log/event-log.component';
 import { RichTooltipComponent } from './components/ui/rich-tooltip/rich-tooltip.component';
 import { RichTooltipDirective } from './components/ui/rich-tooltip/richt-tooltip.directive';
+import { TextAreaComponent } from './components/ui/text-area/text-area.component';
 
 
 export function appInit(sessionApiService: SessionService) {
@@ -99,7 +100,8 @@ export function appInit(sessionApiService: SessionService) {
     GeneralChipComponent,
     EventLogComponent,
     RichTooltipComponent,
-    RichTooltipDirective
+    RichTooltipDirective,
+    TextAreaComponent
   ],
   imports: [
     BrowserModule,

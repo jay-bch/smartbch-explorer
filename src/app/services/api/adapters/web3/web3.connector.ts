@@ -79,9 +79,65 @@ export class Web3Connector {
     if(!this.web3) return Promise.reject();
     return this.web3.eth.getBlock(blockId);
   }
+
+  getBlocks(blockIds: BlockNumber[]): Promise<Block[]> {
+    if(!this.web3) return Promise.reject();
+
+    const batch = new this.web3.BatchRequest();
+    const promises: any = blockIds.map( id => {
+      return new Promise((res, rej) => {
+        if(this.web3) {
+          const getBlock: any = this.web3.eth.getBlock as any;
+          // const request = this.web3.eth.getBlock['request'] as any;
+          const req = getBlock.request(id, (err: any, data: any) => {
+            if(err) rej(err);
+            else res(data)
+          });
+          batch.add(req);
+        } else {
+          rej(null);
+        }
+      });
+    });
+
+    batch.execute();
+    return Promise.all(promises);
+  }
+
   getTxListByHeight(blockId: string): Promise<Transaction[]> {
     if(!this.web3) return Promise.reject();
     return this.web3.sbch.getTxListByHeight(blockId);
+  }
+
+  async getTxListByHeights(blockIds: string[]): Promise<Transaction[]> {
+    if(!this.web3) return Promise.reject();
+
+    const batch = new this.web3.BatchRequest();
+    const promises: any = blockIds.map( id => {
+      return new Promise((res, rej) => {
+        if(this.web3) {
+          const getTxListByHeight: any = this.web3.sbch.getTxListByHeight as any;
+          // const request = this.web3.eth.getBlock['request'] as any;
+          const req = getTxListByHeight.request(id, (err: any, data: any) => {
+            if(err) rej(err);
+            else res(data)
+          });
+          batch.add(req);
+        } else {
+          rej(null);
+        }
+      });
+    });
+
+
+
+    batch.execute();
+
+    const txs = await Promise.all(promises)
+
+
+    return txs.reduce((a: any, b: any) => a.concat(b), []) as Transaction[];
+    return Promise.all(promises);
   }
 
   getTxListByHeightWithRange(blockId: string, start: string | number, end: string | number) {
@@ -96,6 +152,31 @@ export class Web3Connector {
     if(!this.web3) return Promise.reject();
     return this.web3.eth.getTransaction(hash);
   }
+  getTransactions(hashes: string[]): Promise<Transaction[]> {
+    if(!this.web3) return Promise.reject();
+
+    const batch = new this.web3.BatchRequest();
+    const promises: any = hashes.map( id => {
+      return new Promise((res, rej) => {
+        if(this.web3) {
+          const getTransaction: any = this.web3.eth.getTransaction as any;
+          // const request = this.web3.eth.getBlock['request'] as any;
+          const req = getTransaction.request(id, (err: any, data: any) => {
+            if(err) rej(err);
+            else res(data)
+          });
+          batch.add(req);
+        } else {
+          rej(null);
+        }
+      });
+    });
+
+    batch.execute();
+    return Promise.all(promises);
+
+  }
+
   queryTxByAddr(address: string, from: string | number | 'latest', to: string | number | 'latest', limit = 0): Promise<Transaction[]> {
     if(!this.web3) return Promise.reject();
     if(this.web3.sbch) {
@@ -153,9 +234,55 @@ export class Web3Connector {
     return this.web3.eth.getTransactionReceipt(hash)
   }
 
+  getTransactionReceipts(hashes: string[]): Promise<TransactionReceipt[]> {
+    if(!this.web3) return Promise.reject();
+
+    const batch = new this.web3.BatchRequest();
+    const promises: any = hashes.map( hash => {
+      return new Promise((res, rej) => {
+        if(this.web3) {
+          const getReceipt: any = this.web3.eth.getTransactionReceipt as any;
+          const req = getReceipt.request(hash, (err: any, data: any) => {
+            if(err) rej(err);
+            else res(data)
+          });
+          batch.add(req);
+        } else {
+          rej(null);
+        }
+      });
+    });
+
+    batch.execute();
+    return Promise.all(promises);
+  }
+
   call(transactionConfig: TransactionConfig): Promise<string> {
     if(!this.web3) return Promise.reject();
     return this.web3.eth.call(transactionConfig);
+  }
+
+  callMultiple(transactionConfigs: TransactionConfig[]): Promise<string[]> {
+    if(!this.web3) return Promise.reject();
+
+    const batch = new this.web3.BatchRequest();
+    const promises: any = transactionConfigs.map( transactionConfig => {
+      return new Promise((res, rej) => {
+        if(this.web3) {
+          const call: any = this.web3.eth.call as any;
+          const req = call.request(transactionConfig, (err: any, data: any) => {
+            if(err) rej(err);
+            else res(data)
+          });
+          batch.add(req);
+        } else {
+          rej(null);
+        }
+      });
+    });
+
+    batch.execute();
+    return Promise.all(promises);
   }
 
   queryLogs(address: string, data: any[], start: string, end: string, limit: string) {

@@ -98,33 +98,33 @@ export class Sep20ResourceService {
     return Promise.resolve(contract);
   }
 
-  public async getSep20TransactionInformation(receipt: TransactionReceipt): Promise<ISep20TransactionInformation | undefined> {
-    const sep20Contract = receipt.to ? await this.getSep20Contract(receipt.to) : await Promise.resolve(undefined);
-    // console.log('ERC20Contract', sep20Contract);
-    let sep20TransactionInformation: ISep20TransactionInformation | undefined;
-    if(
-      receipt.to &&
-      receipt.status &&
-      receipt.logs.length > 0 &&
-      receipt.logs[0].topics &&
-      receipt.logs[0].topics.length > 2 &&
-      sep20Contract) {
-      sep20TransactionInformation = {
-        transaction: {
-          address: receipt.to,
-          from: this.utilHelper.convertTopicAddress(receipt.logs[0].topics[1]),
-          to: this.utilHelper.convertTopicAddress(receipt.logs[0].topics[2]),
-          convertedValue: this.utilHelper.convertValue(receipt.logs[0].data, sep20Contract.decimals)
-        },
-        contract: sep20Contract
-      }
-    } else {
-      if(sep20Contract) {
-        console.warn('BAD TX', receipt.status, receipt)
-      }
-    }
-    return Promise.resolve(sep20TransactionInformation);
-  }
+  // public async getSep20TransactionInformation(receipt: TransactionReceipt): Promise<ISep20TransactionInformation | undefined> {
+  //   const sep20Contract = receipt.to ? await this.getSep20Contract(receipt.to) : await Promise.resolve(undefined);
+  //   // console.log('ERC20Contract', sep20Contract);
+  //   let sep20TransactionInformation: ISep20TransactionInformation | undefined;
+  //   if(
+  //     receipt.to &&
+  //     receipt.status &&
+  //     receipt.logs.length > 0 &&
+  //     receipt.logs[0].topics &&
+  //     receipt.logs[0].topics.length > 2 &&
+  //     sep20Contract) {
+  //     sep20TransactionInformation = {
+  //       transaction: {
+  //         address: receipt.to,
+  //         from: this.utilHelper.convertTopicAddress(receipt.logs[0].topics[1]),
+  //         to: this.utilHelper.convertTopicAddress(receipt.logs[0].topics[2]),
+  //         convertedValue: this.utilHelper.convertValue(receipt.logs[0].data, sep20Contract.decimals)
+  //       },
+  //       contract: sep20Contract
+  //     }
+  //   } else {
+  //     if(sep20Contract) {
+  //       console.warn('BAD TX', receipt.status, receipt)
+  //     }
+  //   }
+  //   return Promise.resolve(sep20TransactionInformation);
+  // }
 
   public async getSep20BalanceForAddress(contractAddress: string, address: string) {
     const count = await this.nodeApiService.getSep20AddressCount(address, contractAddress, 'both');
@@ -138,50 +138,50 @@ export class Sep20ResourceService {
     'uint256') as string;
   }
 
-  public async getSep20TransactionsForAddress(contractAddress: string, address?: string) {
-    // console.log('get tx for address', this.contracts$.getValue());
-    const contracts = await this.contracts$.getValue();
-    const contract = find(contracts, contract => {
-      if(contract.address.toLocaleLowerCase() === contractAddress.toLocaleLowerCase()) return true;
-      return false;
-    });
+  // public async getSep20TransactionsForAddress(contractAddress: string, address?: string) {
+  //   // console.log('get tx for address', this.contracts$.getValue());
+  //   const contracts = await this.contracts$.getValue();
+  //   const contract = find(contracts, contract => {
+  //     if(contract.address.toLocaleLowerCase() === contractAddress.toLocaleLowerCase()) return true;
+  //     return false;
+  //   });
 
-    if(!contract) return Promise.reject();
+  //   if(!contract) return Promise.reject();
 
-    // console.log('SEP20 contract',  contract);
+  //   // console.log('SEP20 contract',  contract);
 
-    const data: string[] = [
-      Web3.utils.keccak256('Transfer(address,address,uint256)')
-    ];
+  //   const data: string[] = [
+  //     Web3.utils.keccak256('Transfer(address,address,uint256)')
+  //   ];
 
-    if(address) {
-      data.push('0x000000000000000000000000' + Web3.utils.stripHexPrefix(address))
-    }
+  //   if(address) {
+  //     data.push('0x000000000000000000000000' + Web3.utils.stripHexPrefix(address))
+  //   }
 
-    const transactions = await this.nodeApiService.queryLogs(
-      contractAddress,
-      data,
-      '0x0',
-      'latest',
-      Web3.utils.toHex(10000),
-    );
+  //   const transactions = await this.nodeApiService.queryLogs(
+  //     contractAddress,
+  //     data,
+  //     '0x0',
+  //     'latest',
+  //     Web3.utils.toHex(10000),
+  //   );
 
-    // console.log('sep20txs', transactions);
+  //   // console.log('sep20txs', transactions);
 
-    return map(transactions, (sep20tx) => {
-      // console.log('FROM', this.utilHelper.convertTopicAddress(sep20tx.topics[1]));
-      // console.log('TO', this.utilHelper.convertTopicAddress(sep20tx.topics[2]));
-      return {
-        address: sep20tx.address,
-        parentHash: sep20tx.transactionHash,
-        from: this.utilHelper.convertTopicAddress(sep20tx.topics[1]),
-        to: this.utilHelper.convertTopicAddress(sep20tx.topics[2]),
-        convertedValue: this.utilHelper.convertValue(sep20tx.data, contract.decimals)
-      } as ISep20Transaction;
-    });
+  //   return map(transactions, (sep20tx) => {
+  //     // console.log('FROM', this.utilHelper.convertTopicAddress(sep20tx.topics[1]));
+  //     // console.log('TO', this.utilHelper.convertTopicAddress(sep20tx.topics[2]));
+  //     return {
+  //       address: sep20tx.address,
+  //       parentHash: sep20tx.transactionHash,
+  //       from: this.utilHelper.convertTopicAddress(sep20tx.topics[1]),
+  //       to: this.utilHelper.convertTopicAddress(sep20tx.topics[2]),
+  //       convertedValue: this.utilHelper.convertValue(sep20tx.data, contract.decimals)
+  //     } as ISep20Transaction;
+  //   });
 
-    // return transactions;
-  }
+  //   // return transactions;
+  // }
 
   // public async getTransactionForHash(contractAddress: string, hash: string, block: number) {
   //   const contract = find(this.contracts, {address: contractAddress.toLowerCase()});

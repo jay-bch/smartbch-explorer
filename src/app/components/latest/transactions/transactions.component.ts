@@ -9,8 +9,8 @@ import { timingSafeEqual } from 'crypto';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
 
 const TABLECOUNT = 10;
-const REFRESH_INTERVAL = 15000;
-const BLOCK_SCOPE = 1000;
+const REFRESH_INTERVAL = 60000;
+const BLOCK_SCOPE = 240;
 
 export interface ITransactionTableRow {
   swatch: string;
@@ -49,7 +49,7 @@ export class LatestTransactionsComponent implements OnInit, OnChanges, OnDestroy
   lastPage: number | undefined;
   loading = true;
   refreshing = false;
-  tableDisplayedColumns: string[] = ['swatch', 'hash', 'method', 'blockId', 'from', 'fromToLabel', 'to', 'value'];
+  tableDisplayedColumns: string[] = ['swatch', 'hash', 'blockId', 'from', 'fromToLabel', 'to', 'value'];
   tableData: ITransactionTableRow[] = [];
   tableCurrentPage = 0;
   tableCurrentSize = TABLECOUNT;
@@ -103,21 +103,27 @@ export class LatestTransactionsComponent implements OnInit, OnChanges, OnDestroy
     this.loading = false;
     this.tableData = map(txPage.transactions, tx => this.mapTableRow(tx));
 
+    console.log(this.tableData);
+
     return Promise.resolve();
   }
 
   private mapTableRow(tx: ITransaction): ITransactionTableRow {
+    const value = tx.data.value ? tx.data.value : '0';
+    console.log('maprowe', value, isNumber(Number(value)) ? tx.data.value : Web3.utils.hexToNumberString(value));
+
     return {
       swatch: `#${tx.data.hash.substring(tx.data.hash.length - 6, tx.data.hash.length)}`,
       blockId: tx.data.blockNumber,
       nonce: tx.data.nonce,
       from: tx.data.from,
+      fromName: this.addressResource.getAddressName(tx.data.from),
       to: tx.data.to,
       toName: tx.data.to ? this.addressResource.getAddressName(tx.data.to) : tx.data.to,
       hash: tx.data.hash,
       method: tx.method,
       type: tx.type,
-      value: isNumber(Number(tx.data.value)) ? tx.data.value : Web3.utils.hexToNumberString(tx.data.value),
+      value: isNumber(Number(value)) ? value : Web3.utils.hexToNumberString(value),
       tokenSent: tx.sep20info?.transaction?.convertedValue ? `${tx.sep20info?.transaction?.convertedValue} ${tx.sep20info?.contract?.symbol}` : undefined,
       status: tx.receipt && tx.receipt.status === false ? false : true,
       statusMessage: get(tx.receipt, 'statusStr'),

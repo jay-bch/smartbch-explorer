@@ -56,6 +56,12 @@ export class Web3Adapter implements NodeAdapter{
 
     return this.apiConnector.getBlock(blockId);
   }
+  getBlocks(blockIds: BlockNumber[]): Promise<Block[]> {
+    if(!this.apiConnector) return Promise.reject();
+
+    return this.apiConnector.getBlocks(blockIds);
+  }
+
   getTxsByBlock(blockId: string, start?: number, end?: number): Promise<Transaction[]> {
     if(!this.apiConnector) return Promise.reject();
     if(start !== undefined && end !== undefined) {
@@ -63,10 +69,23 @@ export class Web3Adapter implements NodeAdapter{
     }
     return this.apiConnector.getTxListByHeight(blockId);
   }
+
+  getTxsByBlocks(blockIds: string[]) {
+    if(!this.apiConnector) return Promise.reject();
+
+    return this.apiConnector.getTxListByHeights(blockIds)
+  }
+
   getTxByHash(hash: string): Promise<Transaction> {
     if(!this.apiConnector) return Promise.reject();
 
     return this.apiConnector.getTransaction(hash);
+  }
+
+  getTxsByHashes(hashes: string[]) {
+    if(!this.apiConnector) return Promise.reject();
+
+    return this.apiConnector.getTransactions(hashes);
   }
 
   async getTxsByAccount(address: string, page: number, pageSize: number, type?: SBCHSource, searchFromBlock?: number, scopeSize?: number) {
@@ -161,7 +180,7 @@ export class Web3Adapter implements NodeAdapter{
           querySize = DEFAULT_QUERY_SIZE
           // console.log(`Found ${txFound.length} transactions`)
         } else {
-          if(extendQueryBy < 10000) extendQueryBy = extendQueryBy * 2;
+          if(extendQueryBy < 10000) extendQueryBy = extendQueryBy * 50;
           // console.log('extended query size', extendQueryBy)
         }
 
@@ -206,6 +225,7 @@ export class Web3Adapter implements NodeAdapter{
     let startIndex = (page - 1) * pageSize;
     let endIndex = (startIndex + pageSize);
     let txFound: string[] = [];
+    let txsFound: Transaction[] = [];
 
     let to = searchFromBlock;
     let from = to - 1;
@@ -221,60 +241,40 @@ export class Web3Adapter implements NodeAdapter{
       if(from < scope) from = scope;
       if(to < scope) to = scope;
 
-      // console.log('SEARCH BLOCKS', from, to);
-
-      const promises: Promise<Block>[] = [];
+      const ids: number[] = []
+      const promises: Promise<Transaction[]>[] = [];
       for(let i = from; i < to; i++) {
-        promises.push(
-          // this.apiConnector.getTxListByHeight(Web3.utils.numberToHex(i))
-          this.apiConnector.getBlock(i)
-        );
+        ids.push(i)
       }
 
-      const promiseResults = await Promise.all(promises);
-      // const txInThisPage = promiseResults.filter(e => e.length).reduce((a, b) => a.concat(b), []);
-      let txInThisPage: string[] = [];
-      promiseResults.forEach((block) => {
-        txInThisPage = [...txInThisPage, ...block.transactions as string[]]
-      });
+      const txs = await this.apiConnector.getTxListByHeights(map(ids, id => Web3.utils.numberToHex(id)));
 
-      if  (txInThisPage.length) {
-        txFound = txFound.concat(txInThisPage);
-        // console.log(`Found ${txFound.length} transactions`);
+      if (txs.length) {
+        txsFound = txsFound.concat(txs);
+        // console.log(`Found ${txs.length} transactions. Total found: ${txsFound.length}`);
         extendedQueryBy = 1;
       } else {
         // if we didnt find anything, double query size
-        if(extendedQueryBy < 10000) extendedQueryBy = extendedQueryBy * 2;
+        if(extendedQueryBy < 10000) extendedQueryBy = extendedQueryBy * 50;
       }
 
       to = from - 1;
       from = from - (1 * extendedQueryBy);
-    } while ( txFound.length < (endIndex) && to > scope );
+    } while ( txsFound.length < (endIndex) && to > scope );
 
 
-    txFound = orderBy(txFound, ['blockNumber'], ['desc']);
+    txsFound = orderBy(txsFound, ['blockNumber'], ['desc']);
 
-    // txFound = map(txFound, tx => {
-    //   tx.blockNumber = Web3.utils.hexToNumber(tx.blockNumber as Hex);
-    //   return tx;
-    // });
-
-    const txResults = txFound.slice(startIndex, endIndex);
-    // console.log('txRESULTS', txResults);
-
-
-    const txPromises: Promise<Transaction>[] = [];
-    txResults.forEach( hash => {
-      txPromises.push(this.getTxByHash(hash));
+    txsFound = map(txsFound, tx => {
+      tx.blockNumber = Web3.utils.hexToNumber(tx.blockNumber as Hex);
+      return tx;
     });
 
-    const returnValues: Transaction[] = await Promise.all(txPromises);
-
-    // console.log('returnvalues', returnValues);
-    // // console.log(`RESULT (Last block ${to})`, txResults);
+    const txResults = txsFound.slice(startIndex, endIndex);
+    console.log('txRESULTS', txResults);
 
     return {
-      results: returnValues,
+      results: txResults,
       page,
       pageSize,
       isEmpty: txResults.length === 0,
@@ -310,6 +310,11 @@ export class Web3Adapter implements NodeAdapter{
 
     return this.apiConnector.getTransactionReceipt(hash)
   }
+  getTxReceiptsByHashes(hashes: string[]): Promise<TransactionReceipt[]> {
+    if(!this.apiConnector) return Promise.reject();
+
+    return this.apiConnector.getTransactionReceipts(hashes);
+  }
   async call(transactionConfig: TransactionConfig, returnType: string) {
     if(!this.apiConnector) return Promise.reject();
 
@@ -321,6 +326,25 @@ export class Web3Adapter implements NodeAdapter{
 
     if(!callReturn) {
       return Promise.reject();
+    }
+
+    return Promise.resolve(callReturn);
+  }
+
+  async callMultiple(items: {transactionConfig: TransactionConfig, returnType: string}[]) {
+    if(!this.apiConnector) return Promise.reject();
+
+    let callReturn: {[key: string]: any}[] = [];
+
+    const callResult = await this.apiConnector.callMultiple(map(items, item => item.transactionConfig));
+
+    for(let i = 0; i < items.length; i++) {
+      const returnValue = this.apiConnector?.getWeb3()?.eth.abi.decodeParameter(items[i].returnType, callResult[i])
+      if(returnValue) {
+        callReturn.push(
+          returnValue
+        );
+      }
     }
 
     return Promise.resolve(callReturn);

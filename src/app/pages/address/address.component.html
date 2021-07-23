@@ -2,7 +2,7 @@
   <div fxLayout="column" fxLayoutGap="20px" >
     <mat-card *ngIf="initialized">
       <div fxLayout="column">
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div fxLayout="row" fxLayoutAlign="start start">
           <div fxFlex="200px">
             <h1 class="no-margin" *ngIf="!code">Address</h1>
             <h1 class="no-margin" *ngIf="code">Contract</h1>
@@ -22,8 +22,8 @@
               {{contractName}}
             </h3>
           </div>
-          <div class="ml-2" fxFlex="50px" fxLayoutAlign="center center">
-            <app-hash-icon [address]="address" [diameter]="32" [type]="code ? 'contract' : 'address'"></app-hash-icon>
+          <div class="ml-2 mr-2" fxFlex="50px" fxLayoutAlign="center center">
+            <app-hash-icon [address]="address" [diameter]="64" [type]="code ? 'contract' : 'address'"></app-hash-icon>
           </div>
         </div>
 
@@ -35,21 +35,45 @@
           </h3>
         </div> -->
         <!-- <h4>{{address}}</h4> -->
-        <div class="mt-4" fxLayout="row" style="width: fit-content" fxLayoutAlign="left center">
+        <div class="mt-4" fxLayout="row" fxFlex="100"  fxLayoutAlign="left start">
           <div fxFlex="200px">
             <h3 class="no-margin mr-4">Account balance</h3>
           </div>
-          <app-general-chip value="{{balance | wei: 'ether'}} BCH"></app-general-chip>
+          <div fxFlex="300px">
+            <div style="width: fit-content">
+              <app-general-chip value="{{balance | wei: 'ether'}} BCH"></app-general-chip>
+            </div>
+          </div>
+          <div fxFlex="auto" fxLayoutAlign="end start">
+            <app-address-tokens-sep20-list *ngIf="initialized" [address]="address"></app-address-tokens-sep20-list>
+          </div>
                     <!-- <h3>Account balance: {{balance | wei: 'ether'}} BCH</h3> -->
         </div>
       </div>
     </mat-card>
 
     <mat-card *ngIf="initialized">
-      <h2>Transactions</h2>
-      <app-address-transactions-list [address]="address"></app-address-transactions-list>
+      <mat-tab-group mat-align-tabs="start">
+        <mat-tab label="Transactions">
+          <!-- <h2>Transactions</h2> -->
+          <app-address-transactions-list [address]="address"></app-address-transactions-list>
+        </mat-tab>
+        <mat-tab label="Event Logs" *ngIf="code">
+          <app-event-log [address]="address"></app-event-log>
+        </mat-tab>
+        <!-- <mat-tab label="SEP20 Tokens">
+          <app-address-tokens-sep20-list [address]="address"></app-address-tokens-sep20-list>
+        </mat-tab> -->
+        <mat-tab label="Contract Code" *ngIf="code">
+          <div class="p-2">
+            <app-text-area [content]="code"></app-text-area>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
     </mat-card>
 
+
+<!--
     <mat-card *ngIf="code">
       <h2>Event logs</h2>
       <app-event-log [address]="address"></app-event-log>
@@ -63,6 +87,6 @@
 
     <mat-card *ngIf="notFound">
       <h2>Address {{address}} not found!</h2>
-    </mat-card>
+    </mat-card> -->
   </div>
 </div>

@@ -81,7 +81,7 @@
     <div class="py-2" fxLayout="column" *ngIf="showTable" [@growVertical]="showTable">
       <table mat-table [dataSource]="tableData" style="overflow-x: auto" class="mat-elevation-z4 mt-2 mb-2" fxLayout="column" [trackBy]="trackByTable">
         <tr mat-header-row *matHeaderRowDef="tableDisplayedColumns"></tr>
-        <tr [@rowsAnimation]="" mat-row *matRowDef="let row; columns: tableDisplayedColumns;" routerLink="/block/{{row.block}}"></tr>
+        <tr [@rowsAnimation] mat-row *matRowDef="let row; columns: tableDisplayedColumns;" routerLink="/block/{{row.block}}"></tr>
 
         <!-- Block Color Swatch-->
         <ng-container matColumnDef="swatch">

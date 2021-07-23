@@ -1,4 +1,4 @@
-import { animate, style, transition, trigger } from '@angular/animations';
+import { animate, query, sequence, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -31,26 +31,34 @@ export interface ITransactionTableRow {
   contractAddress?: string;
 }
 
-const REFRESH_INTERVAL = 15000;
+const REFRESH_INTERVAL = 60000;
 
 @Component({
   selector: 'app-address-transactions-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
   animations: [
+    trigger('fadeInOut', [
+      transition(':increment', [
+        style({ opacity: '0' }),
+        animate('500ms ease-in', style({ opacity: '1' })),
+      ])
+    ]),
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: '0' }),
-        animate('1000ms ease-out', style({ opacity: '0' })),
-        animate('250ms ease-out', style({ opacity: '1' })),
-        // animate('1s ease-out', style({ backgroundColor: '#FFFFFF' })),
-      ]),
-      transition(':leave', [
-        // style({ opacity: '1' }),
-        animate('250ms ease-in', style({ opacity: '0'})),
-        // animate('250s ease-out', style({ backgroundColor: '#FFFFFF' })),
-      ]),
+        animate('1000ms ease-in', style({ opacity: '1' })),
+      ])
     ]),
+    trigger('rowsAnimation', [
+      transition(':enter', [
+        style({ height: '*', opacity: '0', transform: 'translateX(-100%)', 'box-shadow': 'none' }),
+        sequence([
+          animate("500ms ease-in", style({ height: '*', opacity: '.2', transform: 'translateX(0)', 'box-shadow': 'none'  })),
+          animate("500ms ease-in", style({ height: '*', opacity: 1, transform: 'translateX(0)' }))
+        ])
+      ])
+    ])
   ],
 })
 export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDestroy {

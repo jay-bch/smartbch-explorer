@@ -1,12 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { NodeApiService } from 'src/app/services/api/node-api.service';
 import { Sep20ResourceService } from '../../services/resources/sep20/sep20-resource.service';
 import { TransactionResourceService } from '../../services/resources/transaction/transaction-resource.service';
 import Web3 from 'web3';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 
 
 @Component({
@@ -30,8 +31,12 @@ export class AddressComponent implements OnInit, OnDestroy {
     private apiService: NodeApiService,
     private transactionResource: TransactionResourceService,
     private sep20ResourceService: Sep20ResourceService,
-    private addressService: AddressResourceService
+    private addressService: AddressResourceService,
   ) {
+
+  }
+
+  async ngOnInit(): Promise<void> {
     this.route.params.pipe(takeUntil(this.stop$)).subscribe( async params => {
       if (params && params.addressId) {
         this.loading = true;
@@ -66,9 +71,7 @@ export class AddressComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
 
-  async ngOnInit(): Promise<void> {
   }
 
   ngOnDestroy() {

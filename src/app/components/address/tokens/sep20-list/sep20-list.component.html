@@ -62,3 +62,32 @@
     </mat-tab>
   </mat-tab-group>
 </mat-card>
+
+<mat-card *ngIf="sep20BalanceList.length > 0">
+  <div fxLayout="column" fxFlex="400px" class="token-wrapper">
+    <div fxLayout="row">
+      <div fxFlex="50%">
+        <h3 class="no-margin mb-4">Token balances</h3>
+      </div>
+      <div fxFlex="50%" fxLayoutAlign="end start" *ngIf="loading">
+        <img class="loader" src="/assets/images/loader.svg" />
+      </div>
+    </div>
+    <div fxLayout="column">
+      <div fxLayout="row" *ngFor="let balance of sep20BalanceList"  fxLayoutAlign="start center">
+        <div fxFlex="50px">
+          <app-hash-icon [address]="balance.contract.address" [diameter]="32"></app-hash-icon>
+        </div>
+        <div fxFlex="100px">
+          <a routerLink="/address/{{balance.contract.address}}">
+            {{balance.contract.symbol}}
+          </a>
+        </div>
+        <div fxFlex="auto">
+          {{balance.balance}}
+        </div>
+        <!-- {{balance | json}} -->
+      </div>
+    </div>
+  </div>
+</mat-card>

@@ -7,6 +7,11 @@ import { takeUntil } from 'rxjs/operators';
 import { UtilHelperService } from 'src/app/services/helpers/util/util-helper.service';
 import { Sep20ResourceService, ISep20Contract } from 'src/app/services/resources/sep20/sep20-resource.service';
 
+export interface ISep20ContractListItem {
+  contract: ISep20Contract,
+  balance: string,
+}
+
 @Component({
   selector: 'app-address-tokens-sep20-list',
   templateUrl: './sep20-list.component.html',
@@ -17,12 +22,14 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
   address :string | undefined;
 
   sep20contracts: ISep20Contract[] = [];
+  sep20BalanceList: ISep20ContractListItem[] = [];
 
   activeSep20Contract: ISep20Contract | undefined;
   activeBalance: string | undefined;
   activeTxs: any[] = [];
 
   stop$ = new Subject();
+  loading: boolean = false;
 
 
 
@@ -41,31 +48,45 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
     this.activeBalance = undefined;
     this.activeTxs = [];
     this.activeSep20Contract = undefined;
+
+    this.sep20BalanceList = [];
     // this.sep20recource.getAllSep20Contracts().then(async result => {
-    this.sep20recource.contracts$.pipe(takeUntil(this.stop$)).subscribe( async results => {
-      const sep20contracts: ISep20Contract[] = [];
-      // console.log('results', results);
+    if(this.address) {
+      const _address = this.address;
+      this.loading = true;
+      this.sep20recource.contracts$.pipe(takeUntil(this.stop$)).subscribe( async results => {
+        const sep20contracts: ISep20Contract[] = [];
+        // console.log('results', results);
 
-      // for(let i = 0; i < result.length; i++) {
-      for(let result of results) {
-        const sep20contract = result;
+        // for(let i = 0; i < result.length; i++) {
+        for(let contract of results) {
+          // const sep20contract = contract;
+          const unformattedBalance = await this.sep20recource.getSep20BalanceForAddress(contract.address, _address);
 
-        if(this.address && sep20contract) {
-          const balance = await this.sep20recource.getSep20BalanceForAddress(sep20contract.address, this.address);
-
-          // console.log('balance', balance);
-
-          if(balance !== '0') {
-            if(!this.activeSep20Contract) {
-              this.setActiveContract(sep20contract)
-            }
-            sep20contracts.push(sep20contract);
+          if (unformattedBalance && unformattedBalance !== '0') {
+            this.sep20BalanceList.push({
+              contract,
+              balance: this.utilHelper.convertValue(unformattedBalance, contract.decimals)
+            });
           }
-        }
-      }
 
-      this.sep20contracts = sep20contracts;
-    });
+          // if(this.address && sep20contract) {
+
+          //   // console.log('balance', balance);
+
+          //   if(balance !== '0') {
+          //     if(!this.activeSep20Contract) {
+          //       this.setActiveContract(sep20contract)
+          //     }
+          //     sep20contracts.push(sep20contract);
+          //   }
+          // }
+        }
+
+        this.sep20contracts = sep20contracts;
+        this.loading = false;
+      });
+    }
   }
 
   async setActiveContract(contract: ISep20Contract | undefined) {

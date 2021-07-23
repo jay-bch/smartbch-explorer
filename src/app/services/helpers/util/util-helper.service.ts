@@ -18,6 +18,6 @@ export class UtilHelperService {
   }
 
   public getGasPercentageUsed(block: Block) {
-    return ( (block.gasUsed / block.gasLimit) * 100).toFixed(2)
+    return ( (block.gasUsed / block.gasLimit) * 100).toFixed(5)
   }
 }
