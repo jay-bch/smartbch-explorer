@@ -32,18 +32,6 @@ export class ConnectToNodeComponent implements OnInit, OnDestroy {
     this.error = get(this.data, 'error');
 
     console.log(this.error);
-    // populate form with data from current session
-    this.sessionService.session$
-      .pipe(
-        take(1)
-      ).subscribe( session => {
-        if(session.apiConfig.ws3Endpoint) {
-          this.endpointForm.patchValue({
-            endpoint: session.apiConfig.ws3Endpoint
-          })
-        }
-      });
-
       // as soon as the session is initialized, close dialog
       this.sessionService.session$
         .pipe(
@@ -61,7 +49,6 @@ export class ConnectToNodeComponent implements OnInit, OnDestroy {
         apiEndpoint: this.endpointForm.get('endpoint')?.value,
         apiType: 'web3',
         apiVersion: 'v1',
-        ws3Endpoint: this.endpointForm.get('endpoint')?.value
       });
     }
   }
