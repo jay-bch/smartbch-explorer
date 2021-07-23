@@ -5,7 +5,6 @@ import { ConnectToNodeComponent } from '../components/connect-to-node/connect-to
 
 export interface ApiConfig {
   apiEndpoint?: string | null;
-  ws3Endpoint?: string | null;
   apiType?: string | null;
   apiVersion?: string | null;
 };
@@ -51,7 +50,6 @@ export class SessionService {
       apiEndpoint: loadedConfig?.apiEndpoint,
       apiType: loadedConfig?.apiType,
       apiVersion: loadedConfig?.apiVersion,
-      ws3Endpoint: loadedConfig?.ws3Endpoint
     }}});
 
     return Promise.resolve(true)

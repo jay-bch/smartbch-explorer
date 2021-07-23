@@ -54,20 +54,8 @@ export class ContractResourceService {
     const contracts: IContract[] = [];
 
     configuredContracts.forEach( contract => {
-      // console.log('configured contract', contract);
-
       let type: ContractType = 'custom';
       contract.type === 'sep20' ? type = 'sep20' : noop();
-
-      // let name = contract.address.toLowerCase();
-
-      // if(contract.name) {
-      //   name = contract.name;
-      // }
-
-      // if(contract.type === 'sep20' && !name) {
-      //   name =
-      // }
 
       let abi: any[] = []
 
