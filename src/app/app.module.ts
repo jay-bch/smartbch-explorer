@@ -123,7 +123,8 @@ export function appInit(sessionApiService: SessionService) {
       deps: [SessionService]
     },
     SessionRouteGuard,
-    TimeElapsedPipe
+    TimeElapsedPipe,
+    ShorthashPipe
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

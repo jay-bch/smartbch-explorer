@@ -7,6 +7,7 @@ import { IMetaMask, MetaMaskState } from './metamask.types';
 
 import detectEthereumProvider from '@metamask/detect-provider';
 import { NotificationService } from '../user/notification/notification.service';
+import { ShorthashPipe } from 'src/app/pipes/shorthash/shorthash.pipe';
 
 declare const ethereum : IMetaMask;
 
@@ -24,6 +25,7 @@ export class MetamaskService {
   constructor(
     private sessionService: SessionService,
     private notificationService: NotificationService,
+    private hashPipe: ShorthashPipe
 
 
   ) {
@@ -69,7 +71,7 @@ export class MetamaskService {
     ethereum.request({ method: 'eth_accounts' }).then( (accounts: any) => {
       if(accounts && accounts.length > 0) {
         this.linkedAddress = accounts[0];
-        this.notificationService.showToast(`Connected to account ${this.linkedAddress}!`, 'MetaMask', 'success');
+        this.notificationService.showToast(`Connected to account ${this.hashPipe.transform(this.linkedAddress ?? '')}!`, 'MetaMask', 'success');
         this.state$.next('linked');
       } else {
         this.notificationService.showToast(`Metamask detected, click the fox to link an account.`, 'MetaMask', 'info');
