@@ -25,6 +25,7 @@ export class AddressComponent implements OnInit, OnDestroy {
   public stop$ = new Subject();
   public contractName: string | undefined;
   loading: boolean = false;
+  selectedTabIndex: number = 0;
 
   constructor(
     private route: ActivatedRoute,
