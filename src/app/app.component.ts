@@ -34,7 +34,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (session.apiOffline && this.modal?.getState() !== 0) {
 
         this.blockResource.stopTimer();
-        this.modal = this.dialogService.open(ConnectToNodeComponent, {disableClose: true, data: {error: session.error}});
+        this.modal = this.dialogService.open(ConnectToNodeComponent, {disableClose: true, data: {error: session.error, url: session.apiConfig.apiEndpoint}});
 
         this.modal.afterClosed().subscribe( () => {
           this.router.navigate(['/']);

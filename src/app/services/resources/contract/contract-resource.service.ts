@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import Web3 from 'web3';
 
 import contractAbis from '../../../../assets/config/contract-abi.json';
 import configuredContracts from '../../../../assets/config/contract.json'
@@ -53,25 +52,29 @@ export class ContractResourceService {
   async loadContracts() {
     const contracts: IContract[] = [];
 
-    configuredContracts.forEach( contract => {
-      let type: ContractType = 'custom';
-      contract.type === 'sep20' ? type = 'sep20' : noop();
+    if(configuredContracts && configuredContracts.length > 0) {
 
-      let abi: any[] = []
+      configuredContracts.forEach( (contract: any) => {
+        let type: ContractType = 'custom';
+        contract.type === 'sep20' ? type = 'sep20' : noop();
 
-      contract.abiNames.forEach(name => {
-        abi = abi.concat(find(contractAbis, {type: name})?.abi)
+        let abi: any[] = []
+
+        contract.abiNames.forEach( (name: any) => {
+          abi = abi.concat(find(contractAbis, {type: name})?.abi)
+        });
+
+        const newContract: IContract = {
+          address: contract.address.toLowerCase(),
+          type,
+          name: contract.name ?? contract.address.toLowerCase(),
+          abi
+        }
+
+        contracts.push(newContract);
       });
+    }
 
-      const newContract: IContract = {
-        address: contract.address.toLowerCase(),
-        type,
-        name: contract.name ?? contract.address.toLowerCase(),
-        abi
-      }
-
-      contracts.push(newContract);
-    })
 
 
 

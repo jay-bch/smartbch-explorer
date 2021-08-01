@@ -15,20 +15,43 @@
 </mat-card> -->
 
 
-<div class="modal-wrapper" fxLayout="column" fxLayoutAlign="start start">
-  <h1 mat-dialog-title><img class="image logo" src="assets/images/text_logo.png" /></h1>
+<div class="modal-wrapper" fxLayout="column" >
+  <div class="pb-4" fxLayout="row" fxFlex="100%">
+    <div fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
+      <img class="image smartscan-logo pr-2" src="assets/images/logo_smartscan.png" />
+      <h1>SmartScan</h1>
+    </div>
+    <div fxFlex="50%" fxLayoutAlign="end center">
+      <img class="image logo" src="assets/images/text_logo.png" />
+    </div>
+  </div>
 
   <h5 class="pb-4 warning-color" matTooltip="{{error}}" *ngIf="error">
-    An error occurred connecting to the node. Check the address and try again.
+    <div>
+      An error occurred connecting to <strong>{{errorNodeUrl}}</strong>.
+    </div>
+    <div>
+      Check the address and try again.
+    </div>
   </h5>
   <div mat-dialog-content>
     <form [formGroup]="endpointForm">
-      <mat-form-field class="endpoint-input">
+      <!-- <mat-form-field class="endpoint-input">
         <mat-label>Endpoint</mat-label>
         <input matInput placeholder="" formControlName="endpoint" >
+      </mat-form-field> -->
+
+      <mat-form-field class="endpoint-input" appearance="fill">
+        <mat-label>Endpoint</mat-label>
+        <input type="text" matInput formControlName="endpoint" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option.apiEndpoint">
+            {{option.apiEndpoint}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
 
-      <div class="example pb-4">Example: wss://smartbch-wss.greyh.at</div>
+      <div class="example pb-4">Example: {{nodes[0].apiEndpoint}}</div>
     </form>
   </div>
   <div mat-dialog-actions>

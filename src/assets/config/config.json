@@ -1,5 +1,5 @@
 {
-  "apiEndpoint": "http://35.220.203.194:8545",
+  "apiEndpoint": "https://smartbch.fountainhead.cash/mainnet",
   "apiType": "web3",
   "apiVersion": "v1"
 }

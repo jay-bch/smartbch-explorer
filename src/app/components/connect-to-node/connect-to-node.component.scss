@@ -1,10 +1,13 @@
-.modal-wrapper {
-  // width: 500px;
-}
 
-.image.logo {
+.logo {
   width: 100px;
 }
+
+.smartscan-logo {
+  width: 27px;
+  height: 27px;
+}
+
 
 .example {
   margin-top: 10px;
@@ -12,10 +15,15 @@
 }
 
 .form {
-  min-width: 300px;
+  min-width: 500px;
 }
 
 
 .endpoint-input {
-  min-width: 300px;
+  min-width: 500px;
+}
+
+h1 {
+  margin: 0;
+  font-weight: 600;
 }

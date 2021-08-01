@@ -38,8 +38,6 @@ import { HashIconComponent } from './components/ui/hash-icon/hash-icon.component
 import { AddressTransactionsListComponent } from './components/address/transactions/list/list.component';
 import { LatestTransactionsComponent } from './components/latest/transactions/transactions.component';
 
-
-import config from '../assets/config/config.json';
 import { TransactionMethodChipComponent } from './components/ui/chips/transaction-method-chip/transaction-method-chip.component';
 import { TransactionFromtoChipComponent } from './components/ui/chips/transaction-fromto-chip/transaction-fromto-chip.component';
 import { SearchComponent } from './components/search/search.component';
@@ -59,7 +57,7 @@ import { FooterComponent } from './componenents/common/footer/footer.component';
 
 
 export function appInit(sessionApiService: SessionService) {
-  return () => sessionApiService.bootstrapSession( config );
+  return () => sessionApiService.bootstrapSession();
 }
 
 @NgModule({
