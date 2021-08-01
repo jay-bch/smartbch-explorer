@@ -10,7 +10,6 @@ import { BlockNumber, Log, Transaction, TransactionConfig, TransactionReceipt } 
 import { Block } from 'web3-eth';
 import { PagedResponse, SBCHSource } from '../../node-api.service';
 import { Hex } from 'web3-utils';
-import { retry } from 'rxjs/operators';
 
 export const DEFAULT_QUERY_SIZE = 100000; // max block range per request
 @Injectable({
@@ -230,7 +229,7 @@ export class Web3Adapter implements NodeAdapter{
     let to = searchFromBlock;
     let from = to - 1;
 
-    let extendedQueryBy = 1;
+  let extendedQueryBy = 1;
 
     // console.log('scope', scope);
     // console.log('from', from);
@@ -255,7 +254,8 @@ export class Web3Adapter implements NodeAdapter{
         extendedQueryBy = 1;
       } else {
         // if we didnt find anything, double query size
-        if(extendedQueryBy < 10000) extendedQueryBy = extendedQueryBy * 50;
+        if(extendedQueryBy < 10000) extendedQueryBy = extendedQueryBy * 2;
+        if(extendedQueryBy > 10000) extendedQueryBy = 10000;
       }
 
       to = from - 1;
