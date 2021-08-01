@@ -72,7 +72,7 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
   // transactions: ITransaction[] = [];
   placeholders: number[] = [];
   lastPage: number | undefined;
-  loading = true;
+  loading = false;
   txCount = 0;
   selectedType: SBCHSource = 'both';
   tableDisplayedColumns: string[] = ['swatch', 'hash', 'method', 'blockId', 'from', 'fromToLabel', 'to', 'value'];
@@ -80,6 +80,8 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
   tableCurrentPage = 0;
   tableCurrentSize = TABLECOUNT;
   tablePageSizeOptions = [5, 10, 25, 100];
+  emptyAddress = false;
+  initialized = false;
   stop$ = new Subject();
 
   constructor(
@@ -102,8 +104,10 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
     this.lastPage = undefined;
     this.tableCurrentPage = 0;
     if(this.address) {
+      this.initialized = false;
       this.address = this.address.toLowerCase();
       await this.getTransactionsByAddress(this.address, 0, this.tableCurrentSize, this.selectedType);
+      this.initialized = true;
     }
   }
 
@@ -146,6 +150,7 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
       if(page > 0 && txPage.transactions.length === 0) {
         this.lastPage = page - 1;
         this.loadPreviousPage();
+        this.loading = false;
         return;
       }
 
@@ -155,15 +160,20 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
       }
     }
 
-    this.loading = false;
     this.txCount = txPage.total ?? 0;
+
+    if(this.lastPage === 0 && this.txCount === 0) {
+      this.emptyAddress = true;
+    }
+
     this.tableData = map(txPage.transactions, tx => this.mapTableRow(tx));
 
+    this.loading = false;
     return Promise.resolve();
   }
 
   changeType(event$: MatSelectChange) {
-    console.log(event$);
+    this.loading = false;
     this.selectedType = event$.value;
     if(this.address) {
       this.tableCurrentPage = 0;
@@ -172,6 +182,7 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
   }
 
   public changeTablePage($event: PageEvent) {
+    this.loading = false;
     this.tableCurrentPage = $event.pageIndex;
     this.tableCurrentSize = $event.pageSize;
     if(this.address) {

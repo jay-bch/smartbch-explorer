@@ -1,4 +1,5 @@
-<div fxLayout="column">
+
+<div fxLayout="column" *ngIf="initialized && !emptyAddress">
   <div fxFlex="auto" fxLayout="row" fxLayoutAlign="end center">
     <mat-form-field>
       <mat-label>Source</mat-label>
@@ -151,5 +152,8 @@
       <span>Page {{tableCurrentPage}}</span>
     </div> -->
   </div>
+</div>
 
+<div *ngIf="emptyAddress" class="pt-2">
+  <h2>No transactions found on this address</h2>
 </div>
