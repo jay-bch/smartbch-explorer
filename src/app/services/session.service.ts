@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
-import { ConnectToNodeComponent } from '../components/connect-to-node/connect-to-node.component';
+import config from '../../assets/config/nodes.json';
 
 export interface ApiConfig {
   apiEndpoint?: string | null;
@@ -38,8 +37,8 @@ export class SessionService {
     this.session$.next(DEFAULT_SESSION);
   }
 
-  async bootstrapSession(apiConfig?: ApiConfig): Promise<boolean> {
-    let loadedConfig = apiConfig;
+  async bootstrapSession(): Promise<boolean> {
+    let loadedConfig: ApiConfig = config[0];
     const storedConfig = localStorage.getItem('connection-config');
 
     if(storedConfig && JSON.parse(storedConfig)) {
