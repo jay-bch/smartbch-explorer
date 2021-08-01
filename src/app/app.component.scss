@@ -14,18 +14,21 @@
 //   width: 100%
 // }
 
+
 .footer {
+  height:100%;
   text-align: center;
-  position: fixed;
+  // position: fixed;
   width: 100%;
-  bottom: 0;
+  // bottom: 0;
   background-color: #ffffff;
   z-index: 2000;
-  padding: 10px;
-}
+  // padding: 10px;
 
+}
 
 .page-wrapper {
   margin: 96px auto;
-  padding-bottom: 96px;
+  // padding-bottom: 96px;
+  min-height: calc(100vh - 316px);
 }

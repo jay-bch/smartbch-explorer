@@ -55,6 +55,7 @@ import { EventLogComponent } from './components/address/event-log/event-log.comp
 import { RichTooltipComponent } from './components/ui/rich-tooltip/rich-tooltip.component';
 import { RichTooltipDirective } from './components/ui/rich-tooltip/richt-tooltip.directive';
 import { TextAreaComponent } from './components/ui/text-area/text-area.component';
+import { FooterComponent } from './componenents/common/footer/footer.component';
 
 
 export function appInit(sessionApiService: SessionService) {
@@ -101,7 +102,8 @@ export function appInit(sessionApiService: SessionService) {
     EventLogComponent,
     RichTooltipComponent,
     RichTooltipDirective,
-    TextAreaComponent
+    TextAreaComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
