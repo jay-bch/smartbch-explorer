@@ -162,7 +162,7 @@ export class Web3Adapter implements NodeAdapter{
           // console.table(error);
 
           if(error.message.startsWith("Returned error: too many candidicate entries")) {
-            console.log('Limit reached')
+            console.log('Limit reached');
             limitReached = true;
             extendQueryBy = 1;
 
@@ -271,7 +271,6 @@ export class Web3Adapter implements NodeAdapter{
     });
 
     const txResults = txsFound.slice(startIndex, endIndex);
-    console.log('txRESULTS', txResults);
 
     return {
       results: txResults,

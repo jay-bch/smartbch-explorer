@@ -50,7 +50,7 @@ export class BlockResourceService {
     const cachedBlock: Block = find(this.blocks, { number: blockId }) as Block;
 
     if(cachedBlock) {
-      console.log('CACHED BLOCK RETURNED!');
+      // console.log('CACHED BLOCK RETURNED!');
       return cachedBlock;
     }
 
@@ -60,17 +60,17 @@ export class BlockResourceService {
     this.blocks = orderBy(this.blocks, ['number'], ['desc']);
     this.blocks = uniqBy(this.blocks, 'number');
 
-    console.log('BLOCK', block);
+    // console.log('BLOCK', block);
 
     return block;
   }
 
   async getBlocks(blockIds: BlockNumber[]): Promise<Block[]> {
-    console.log('getBlocks', blockIds);
+    // console.log('getBlocks', blockIds);
     const cachedBlocks: Block[] = loFilter(this.blocks, block => blockIds.includes(block.number));
     const blocksToFetch: BlockNumber[] = loFilter(blockIds, id => !find(cachedBlocks, {number: id}));
     // console.log( 'cached blocks', cachedBlocks);
-    console.log( 'blocks to fetch', blocksToFetch);
+    // console.log( 'blocks to fetch', blocksToFetch);
 
     let fetchedBlocks: Block[] = [];
 

@@ -103,14 +103,11 @@ export class LatestTransactionsComponent implements OnInit, OnChanges, OnDestroy
     this.loading = false;
     this.tableData = map(txPage.transactions, tx => this.mapTableRow(tx));
 
-    console.log(this.tableData);
-
     return Promise.resolve();
   }
 
   private mapTableRow(tx: ITransaction): ITransactionTableRow {
     const value = tx.data.value ? tx.data.value : '0';
-    console.log('maprowe', value, isNumber(Number(value)) ? tx.data.value : Web3.utils.hexToNumberString(value));
 
     return {
       swatch: `#${tx.data.hash.substring(tx.data.hash.length - 6, tx.data.hash.length)}`,

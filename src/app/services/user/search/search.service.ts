@@ -28,7 +28,7 @@ export class SearchService {
     if(current && current.type !== 'empty-result' && current.type !== 'undefined') {
       history.unshift(current);
     }
-    console.log('>>', result ?? {type: 'undefined'});
+    // console.log('>>', result ?? {type: 'undefined'});
     this.searchHistory$.next(history);
     this.currentResult$.next(result ?? {type: 'undefined'});
   }
@@ -89,7 +89,7 @@ export class SearchService {
 
     const lastResult = this.currentResult$.getValue();
     if (lastResult) {
-      console.log('RESULTS', lastResult);
+      // console.log('RESULTS', lastResult);
       return [lastResult]
     }
 

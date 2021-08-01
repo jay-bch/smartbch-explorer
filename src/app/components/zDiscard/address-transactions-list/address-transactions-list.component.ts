@@ -165,7 +165,6 @@ export class AddressTransactionsListComponentOld implements OnInit, OnChanges, O
     // if(page && page > 0) {
     //   this.page = page;
     // }
-    console.log('PAGE', page);
     const txPage = await this.transactionResource.getLatestTransactions(page + 1, this.tableCurrentSize, undefined, scope);
 
     // // // next page is empty, meaning all txs have been fetched. Go back 1 page
@@ -187,8 +186,7 @@ export class AddressTransactionsListComponentOld implements OnInit, OnChanges, O
   }
 
   changeType(event$: MatSelectChange) {
-    console.log(event$);
-    this.selectedType = event$.value;
+      this.selectedType = event$.value;
     if(this.address) {
       this.tableCurrentPage = 0;
       this.getTransactionsByAddress(this.address, this.tableCurrentPage, this.tableCurrentSize, this.selectedType);

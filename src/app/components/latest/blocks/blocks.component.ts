@@ -244,7 +244,6 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
     this.setTablePage($event.length - ($event.pageSize * $event.pageIndex), $event.pageSize);
   }
   async setTablePage(startBlock: number, pageSize: number) {
-    console.log('SET TABLE')
     const blockPromises: Promise<Block>[] = [];
 
     const ids: number[] = []

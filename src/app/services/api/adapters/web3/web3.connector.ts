@@ -143,7 +143,6 @@ export class Web3Connector {
   getTxListByHeightWithRange(blockId: string, start: string | number, end: string | number) {
     if(!this.web3) return Promise.reject();
     if(this.web3.sbch) {
-      console.log('MEOW');
       return this.web3.sbch?.getTxListByHeightWithRange(blockId, Web3.utils.toHex(start.toString()), Web3.utils.toHex(end.toString()));
     }
     return Promise.reject(false);

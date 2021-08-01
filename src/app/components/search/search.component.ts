@@ -66,8 +66,6 @@ export class SearchComponent implements OnInit {
   }
 
   optionSelected(event$: MatAutocompleteSelectedEvent) {
-    console.log('>', event$.option.value);
-
     this.searchService.addResult();
 
     this.form.patchValue({'query': null});

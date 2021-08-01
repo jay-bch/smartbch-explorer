@@ -66,12 +66,12 @@ export class TransactionResourceService {
 
   async getTxsByBlock(blockId: BlockNumber, page: number, pageSize: number): Promise<IBlockTransactions> {
     const txnew = await this.apiService.getTxsByBlock(blockId, (page - 1) * pageSize, page * pageSize);
-    console.log( 'TX NEW', txnew);
+    // console.log( 'TX NEW', txnew);
 
     const block = await this.blockResourceService.getBlock(blockId);
     const txToFetch: string[] = block.transactions.slice( (page - 1) * pageSize, page * pageSize) as string[];
 
-    console.log('txToFetch', txToFetch);
+    // console.log('txToFetch', txToFetch);
 
     const promises: Promise<ITransaction>[] = [];
     txToFetch.forEach( (hash) => {
@@ -80,7 +80,7 @@ export class TransactionResourceService {
 
     const txs = await Promise.all(promises);
 
-    console.log('txs', txs);
+    // console.log('txs', txs);
 
 
 
@@ -129,7 +129,6 @@ export class TransactionResourceService {
     pageSize?: number,
     searchFromBlock?: number
   ) {
-    console.log('async getTxByAddress()')
     if(!page) page = 1;
     if(!pageSize) pageSize = DEFAULT_PAGE_SIZE;
 
@@ -283,9 +282,6 @@ export class TransactionResourceService {
           }
         }
       })
-
-      console.log('HAHSES', receipts);
-
     }
 
     //discover contracts

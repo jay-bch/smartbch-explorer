@@ -96,7 +96,7 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
 
     if(contract && this.address) {
       const unformattedBalance = await this.sep20recource.getSep20BalanceForAddress(contract.address, this.address);
-      console.log('ACTIVE BALANCE', unformattedBalance, contract.decimals,  this.utilHelper.convertValue(unformattedBalance, contract.decimals));
+      // console.log('ACTIVE BALANCE', unformattedBalance, contract.decimals,  this.utilHelper.convertValue(unformattedBalance, contract.decimals));
       this.activeBalance = this.utilHelper.convertValue(unformattedBalance, contract.decimals);
       // this.activeTxs = await this.sep20recource.getSep20TransactionsForAddress(contract.address, this.address);
     }
@@ -105,7 +105,7 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
 
   setActiveTab($event: MatTabChangeEvent) {
     const contract = find(this.sep20contracts, {symbol: $event.tab.textLabel});
-    console.log('set active contract', contract);
+    // console.log('set active contract', contract);
     this.setActiveContract(contract);
 
   }

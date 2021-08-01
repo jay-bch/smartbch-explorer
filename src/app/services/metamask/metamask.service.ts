@@ -92,7 +92,6 @@ export class MetamaskService {
 
   connect() {
     ethereum.request({ method: 'eth_requestAccounts' }).then( (result: any) => {
-      console.log('eth_requestAccounts', result)
       this.linkedAddress = result[0];
 
       this.state$.next('linked');
@@ -108,13 +107,13 @@ export class MetamaskService {
     });
 
     ethereum.on('connect', (result) => {
-      console.log('connect', result);
+      // console.log('connect', result);
       this.metaMaskChainId = Web3.utils.hexToNumber(result.chainId);
       this.init();
     });
 
     ethereum.on('disconnect', (result) => {
-      console.log('disconnect', result);
+      // console.log('disconnect', result);
       this.metaMaskChainId = undefined;
       this.init();
     });

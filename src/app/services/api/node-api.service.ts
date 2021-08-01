@@ -85,7 +85,6 @@ export class NodeApiService {
 
   async getBlock(blockId: BlockNumber): Promise<Block> {
     if (this.apiAdapter) {
-      console.log('getblock');
       return await this.apiAdapter?.getBlock(blockId);
     }
 

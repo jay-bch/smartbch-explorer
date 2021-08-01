@@ -72,7 +72,6 @@ export class SessionService {
 
   updateEndpoint(newApiConfig: ApiConfig) {
     localStorage.setItem('connection-config', JSON.stringify(newApiConfig));
-    console.log('update');
     window.location.reload();
   }
 

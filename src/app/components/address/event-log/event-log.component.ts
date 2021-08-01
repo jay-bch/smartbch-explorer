@@ -163,8 +163,6 @@ export class EventLogComponent implements OnInit, OnChanges {
   }
 
   changeTablePage($event: PageEvent) {
-    console.log('EVENT', $event);
-
     this.tableCurrentPage = $event.pageIndex;
     this.tableCurrentSize = $event.pageSize;
     this.loadLogs();

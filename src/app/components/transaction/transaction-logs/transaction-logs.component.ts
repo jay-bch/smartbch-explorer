@@ -32,7 +32,6 @@ export class TransactionLogsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('TRIGGER');
     if(this.events) {
 
       const decodedLogs = filter(this.events, event => event.decodedLog !== undefined);

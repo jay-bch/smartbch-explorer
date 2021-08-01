@@ -47,8 +47,6 @@ export class Sep20HelperService {
         }
       }));
 
-      console.log('CALL PARAMS', callParams);
-
       if(callParams.length !== sep20Properties.length) {
         return undefined;
       }
