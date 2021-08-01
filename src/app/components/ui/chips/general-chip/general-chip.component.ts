@@ -9,6 +9,9 @@ export class GeneralChipComponent implements OnInit {
   @Input()
   value: string | number = '';
 
+  @Input()
+  type: string = 'success'
+
   constructor() { }
 
   ngOnInit(): void {

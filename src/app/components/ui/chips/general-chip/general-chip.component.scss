@@ -1,4 +1,9 @@
 .chip {
   border-radius: 8px;
   background-color: rgba(116,221,84,0.15);
+
+  &.error {
+    background-color: rgba(221, 84, 84, 0.15);
+  }
 }
+

@@ -18,8 +18,17 @@
     Status
   </div>
   <div>
-    <span *ngIf="transaction.receipt.status === true">SUCCESS</span>
-    <span *ngIf="transaction.receipt.status === false">FAILED: <span *ngIf="statusStr">{{statusStr}}</span></span>
+    <span *ngIf="transaction.receipt.status === true">
+      <app-general-chip value="SUCCESS"></app-general-chip>
+    </span>
+    <span *ngIf="transaction.receipt.status === false">
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <app-general-chip value="FAILED" type="error"></app-general-chip>
+        <strong>
+          <span *ngIf="statusStr">{{statusStr}}</span>
+        </strong>
+      </div>
+    </span>
   </div>
 </div>
 <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
