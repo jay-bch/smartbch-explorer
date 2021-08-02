@@ -1,5 +1,5 @@
 {
-  "apiEndpoint": "https://smartbch.fountainhead.cash/mainnet",
+  "apiEndpoint": "wss://smartbch-wss.greyh.at",
   "apiType": "web3",
   "apiVersion": "v1"
 }

@@ -1,10 +1,10 @@
 [{
-    "apiEndpoint": "https://smartbch.fountainhead.cash/mainnet",
-    "apiType": "web3",
-    "apiVersion": "v1"
+  "apiEndpoint": "wss://smartbch-wss.greyh.at",
+  "apiType": "web3",
+  "apiVersion": "v1"
 
 },{
-    "apiEndpoint": "wss://smartbch-wss.greyh.at",
+    "apiEndpoint": "https://smartbch.fountainhead.cash/mainnet",
     "apiType": "web3",
     "apiVersion": "v1"
 
