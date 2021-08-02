@@ -42,6 +42,7 @@ export class TransactionDetailsComponent implements OnInit, OnChanges {
       if(this.transaction.receipt) {
         this.statusStr = get(this.transaction.receipt, 'statusStr');
         this.txFee = (this.transaction.receipt.gasUsed * parseInt(this.transaction.data.gasPrice, 10)).toString();
+        console.log('>>>', this.transaction.receipt, this.txFee);
         this.gasPrice = this.transaction.data.gasPrice ?? '0';
         if(this.transaction.receipt?.gasUsed > 0) {
           this.gasPercentageUsed = (this.transaction.receipt?.gasUsed / this.transaction.data.gas) * 100 ;
