@@ -10,7 +10,7 @@ import { AddressResourceService } from 'src/app/services/resources/address/addre
 
 const TABLECOUNT = 10;
 const REFRESH_INTERVAL = 60000;
-const BLOCK_SCOPE = 240;
+const BLOCK_SCOPE = 1000;
 
 export interface ITransactionTableRow {
   swatch: string;
