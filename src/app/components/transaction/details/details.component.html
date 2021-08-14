@@ -1,148 +1,249 @@
 
-<div fxLayout="row" fxLayoutAlign="start center" *ngIf="transaction">
-  <h1 class="no-margin">Transaction {{transaction?.data?.hash}}</h1>
-</div>
-<div fxLayout="column"  fxLayoutAlign="start start" class="mt-5" *ngIf="transaction && block">
-
-<div fxLayout="row" fxLayoutAlign="start center">
-  <div class="label" fxFlex="200px">
-    Block
-  </div>
-  <div>
-    <a routerLink="/block/{{block.number}}">{{block.number}}</a> <span class="pl-4" *ngIf="header && block.number">({{header - block.number}} confirmations)</span>
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center" *ngIf="transaction.receipt">
-  <div class="label" fxFlex="200px">
-    Status
-  </div>
-  <div>
-    <span *ngIf="transaction.receipt.status === true">
-      <app-general-chip value="SUCCESS"></app-general-chip>
-    </span>
-    <span *ngIf="transaction.receipt.status === false">
-      <div fxLayout="row" fxLayoutAlign="start center">
-        <app-general-chip value="FAILED" type="error"></app-general-chip>
-        <strong>
-          <span *ngIf="statusStr">{{statusStr}}</span>
-        </strong>
-      </div>
-    </span>
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center">
-  <div class="label" fxFlex="200px">
-    Timestamp
-  </div>
-  <div>
-    {{block.timestamp | timeElapsed: 'full' }} ago
-    <span *ngIf="block.timestamp">
-      &nbsp;({{ timestamp | date: 'full' }})
-    </span>
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center">
-  <div class="label" fxFlex="200px">
-    From
-  </div>
-  <div>
-    <a routerLink="/address/{{transaction.data.from}}">
-      {{transaction.data.from}}
-    </a>
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center">
-  <div class="label" fxFlex="200px">
-    To
-  </div>
-  <div>
-    <a routerLink="/address/{{transaction.data.to}}">
-      {{transaction.data.to}}
-    </a>
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center">
-  <div class="label" fxFlex="200px">
-    Value
-  </div>
-  <div>
-    {{transaction.data.value | wei: 'ether'}} BCH
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center" *ngIf="txFee">
-  <div class="label" fxFlex="200px">
-    Transaction Fee
-  </div>
-  <div>
-    {{txFee.toString() | wei: 'ether'}} BCH ({{txFee.toString() | wei: 'gwei'}} sat)
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center" *ngIf="txFee">
-  <div class="label" fxFlex="200px">
-    Gas Price
-  </div>
-  <div>
-    {{transaction.data.gasPrice | wei: 'ether'}} BCH ({{gasPrice | wei: 'gwei'}} sat)
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center" *ngIf="txFee">
-  <div class="label" fxFlex="200px">
-    Gas Limit
-  </div>
-  <div>
-    {{transaction.data.gas | number: '0.'}}
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center">
-  <div class="label" fxFlex="200px">
-    Gas Used by Transaction
-  </div>
-  <div>
-    {{transaction.receipt?.gasUsed | number: '0.'}} ({{gasPercentageUsed | number: '0.2-2'}}%)
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center">
-  <div class="label" fxFlex="200px">
-    Nonce
-  </div>
-  <div>
-    {{transaction.data.nonce}}
-  </div>
-</div>
-<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-<div fxLayout="row" fxLayoutAlign="start center">
-  <div class="label" fxFlex="200px">
-    Position in block
-  </div>
-  <div>
-    {{transaction.data.transactionIndex}}
-  </div>
+<div class="title" fxLayout="column" fxLayoutAlign="start start" *ngIf="transaction">
+  <h1 class="no-margin">Transaction</h1>
+  <h2>{{transaction?.data?.hash}}</h2>
 </div>
 
-<!-- <ng-container *ngIf="inputData">
+<div
+  fxLayout="column"
+  fxLayoutAlign="start start"
+  class="mt-5"
+  *ngIf="transaction && block"
+>
+  <!-- Block -->
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+  >
+    <div
+      class="label"
+      fxFlex.gt-sm="200px">
+      Block
+    </div>
+    <div>
+      <a routerLink="/block/{{block.number}}">{{block.number}}</a> <span class="pl-4" *ngIf="header && block.number">({{header - block.number}} confirmations)</span>
+    </div>
+  </div>
+
   <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
-  <div class="input-data" fxLayout="row" fxLayoutAlign="start center" fxFlex="100%" fxLayoutAlign="start start">
-    <div class="label" fxFlex="200px">
-      Input data
+
+  <!-- Status -->
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+    *ngIf="transaction.receipt">
+    <div class="label" fxFlex.gt-sm="200px">
+      Status
     </div>
-    <div fxFlex="100%">
-      <textarea
-        matInput
-        cdkTextareaAutosize
-        #autosize="cdkTextareaAutosize"
-        cdkAutosizeMinRows="1"
-        disabled="true"
-      >{{inputData}}</textarea>
+    <div>
+      <span *ngIf="transaction.receipt.status === true">
+        <app-general-chip value="SUCCESS"></app-general-chip>
+      </span>
+      <span *ngIf="transaction.receipt.status === false">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <app-general-chip value="FAILED" type="error"></app-general-chip>
+          <strong>
+            <span *ngIf="statusStr">{{statusStr}}</span>
+          </strong>
+        </div>
+      </span>
     </div>
   </div>
-</ng-container> -->
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <!-- Timestamp -->
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+  >
+    <div
+      class="label"
+      fxFlex.gt-sm="200px">
+      Timestamp
+    </div>
+    <div>
+      {{block.timestamp | timeElapsed: 'full' }} ago
+      <span *ngIf="block.timestamp">
+        &nbsp;({{ timestamp | date: 'full' }})
+      </span>
+    </div>
+  </div>
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <!-- From -->
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+  >
+    <div class="label" fxFlex.gt-sm="200px">
+      From
+    </div>
+    <div class="address">
+      <a routerLink="/address/{{transaction.data.from}}">
+        {{transaction.data.from}}
+      </a>
+    </div>
+  </div>
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <!-- To -->
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+  >
+    <div class="label" fxFlex.gt-sm="200px">
+      To
+    </div>
+    <div class="address">
+      <a routerLink="/address/{{transaction.data.to}}">
+        {{transaction.data.to}}
+      </a>
+    </div>
+  </div>
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+  >
+    <div class="label" fxFlex.gt-sm="200px">
+      Value
+    </div>
+    <div>
+      {{transaction.data.value | wei: 'ether'}} BCH
+    </div>
+  </div>
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+    *ngIf="txFee"
+  >
+    <div class="label" fxFlex.gt-sm="200px">
+      Transaction Fee
+    </div>
+    <div>
+      {{txFee.toString() | wei: 'ether'}} BCH ({{txFee.toString() | wei: 'gwei'}} sats)
+    </div>
+  </div>
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+    *ngIf="txFee"
+  >
+    <div class="label" fxFlex.gt-sm="200px">
+      Gas Price
+    </div>
+    <div>
+      {{transaction.data.gasPrice | wei: 'ether'}} BCH ({{gasPrice | wei: 'gwei'}} sats)
+    </div>
+  </div>
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+    *ngIf="txFee"
+  >
+    <div class="label" fxFlex.gt-sm="200px">
+      Gas Limit
+    </div>
+    <div>
+      {{transaction.data.gas | number: '0.'}}
+    </div>
+  </div>
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+  >
+    <div class="label" fxFlex.gt-sm="200px">
+      Gas Used by Transaction
+    </div>
+    <div>
+      {{transaction.receipt?.gasUsed | number: '0.'}} ({{gasPercentageUsed | number: '0.2-2'}}%)
+    </div>
+  </div>
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+  >
+    <div class="label" fxFlex.gt-sm="200px">
+      Nonce
+    </div>
+    <div>
+      {{transaction.data.nonce}}
+    </div>
+  </div>
+
+  <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  <div
+    fxLayout.lt-md="column"
+    fxLayoutAlign.lt-md="start start"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign.gt-sm="start center"
+  >
+    <div class="label" fxFlex.gt-sm="200px">
+      Position in block
+    </div>
+    <div>
+      {{transaction.data.transactionIndex}}
+    </div>
+  </div>
+
+  <!-- <ng-container *ngIf="inputData">
+    <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+    <div class="input-data" fxLayout="row" fxLayoutAlign="start center" fxFlex="100%" fxLayoutAlign="start start">
+      <div class="label" fxFlex="200px">
+        Input data
+      </div>
+      <div fxFlex="100%">
+        <textarea
+          matInput
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="1"
+          disabled="true"
+        >{{inputData}}</textarea>
+      </div>
+    </div>
+  </ng-container> -->
+</div>

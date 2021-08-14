@@ -1,11 +1,23 @@
-<div fxLayout="row" class="mt-2 pt-2">
-  <div fxFlex="25%" fxLayoutAlign="start center" class="px-2">
+<div
+  fxLayout.sm="column"
+  fxLayout.gt-sm="row"
+  class="mt-2 pt-2"
+>
+  <div
+    fxFlex.gt-sm="25%"
+    fxHide
+    fxShow.gt-sm
+    fxLayoutAlign="start center"
+    class="px-2">
     <a href="https://www.smartbch.org">
       <img class="smartbch-logo" src="assets/images/text_logo.png" />
     </a>
   </div>
 
-  <div fxFlex="50%">
+  <div
+    fxFlex.sm="100%"
+    fxFlex.gt-sm="50%"
+  >
     <div>
       SmartScan, a <a href="https://www.smartbch.org">SmartBCH</a> block explorer
     </div>
@@ -19,25 +31,42 @@
     </div>
   </div>
 
-  <div fxFlex="25%" class="links" fxLayoutAlign="end center">
-    <a title="smartBCH Community Chat" href="https://t.me/smartbch_community">
-      <img class="telegram" src="assets/images/telegram_logo.svg" />
-    </a>
+  <div
+  fxFlex.sm="100%"
+  fxFlex.gt-sm="25%"
+  class="links pt-2"
+  fxLayoutAlign="end center">
+    <div
+      fxLayout="row"
+      fxFlex="100%"
+    >
+      <div
+        fxFlex="50%"
+        fxHide.gt-sm
+        fxLayoutAlign="start center"
+      >
+        <a href="https://www.smartbch.org">
+          <img class="smartbch-logo" src="assets/images/text_logo.png" />
+        </a>
+      </div>
 
-    <a href="https://github.com/jay-bch/smartbch-explorer">
-      <img class="github" src="assets/images/github_logo.svg" />
-    </a>
+      <div
+        fxFlex="50%"
+        fxFlex.gt-sm="100%"
+        fxLayoutAlign="end center"
+      >
+        <a title="smartBCH Community Chat" href="https://t.me/smartbch_community">
+          <img class="telegram" src="assets/images/telegram_logo.svg" />
+        </a>
 
-    <a href="https://twitter.com/SmartBCHScan">
-      <img class="twitter" src="assets/images/twitter_logo.svg" />
-    </a>
+        <a href="https://github.com/jay-bch/smartbch-explorer">
+          <img class="github" src="assets/images/github_logo.svg" />
+        </a>
+
+        <a href="https://twitter.com/SmartBCHScan">
+          <img class="twitter" src="assets/images/twitter_logo.svg" />
+        </a>
+      </div>
+    </div>
   </div>
 </div>
-
-
-<!--
-<div>
-  Brought to you by JayDizzz, funded by the BCH community
-</div> -->
-
-

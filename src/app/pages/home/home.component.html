@@ -1,6 +1,10 @@
 <div class="page-wrapper">
   <div fxLayout="column" fxLayoutGap="20px" >
-    <div fxLayout="row" fxLayoutAlign="center center">
+    <div
+      fxHide
+      fxShow.gt-sm
+      fxLayout="row"
+      fxLayoutAlign="center center">
       <mat-card fxFlex="50" class="mat-elevation-z3">
         <app-search></app-search>
       </mat-card>

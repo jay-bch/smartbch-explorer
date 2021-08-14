@@ -2,7 +2,15 @@
   {{bchprice | currency}}
 </div> -->
 
-<div *ngIf="(blockHeight$ | async); let height;">
-  <h5>Height</h5>
-  <h5>{{height}}</h5>
+<div
+  *ngIf="(blockHeight$ | async); let height;">
+  <div
+  fxHide
+  fxShow.gt-sm
+  >
+    <h5 fxHide.sm>Height</h5>
+  </div>
+  <div>
+    <h5>{{height}}</h5>
+  </div>
 </div>

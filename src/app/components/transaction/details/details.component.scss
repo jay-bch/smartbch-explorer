@@ -14,6 +14,23 @@
   padding-left: 10px;
 }
 
+.title {
+  overflow-wrap: anywhere;
+  h2 {
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+}
+
+.label {
+  font-weight: 700;
+}
+
+.address {
+  overflow-wrap: anywhere;
+}
+
 // .input-data {
 //   textarea {
 //     width: 100%;

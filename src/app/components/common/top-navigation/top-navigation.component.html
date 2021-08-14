@@ -3,21 +3,60 @@
     <div fxFlex="50px" fxLayoutAlign="start center" routerLink="/" class="cursor-pointer">
       <img class="logo" src="assets/images/logo_smartscan.png" />
     </div>
-    <div fxFlex="150px" routerLink="/" class="headline cursor-pointer">
+    <div fxHide fxShow.gt-sm fxFlex="150px" routerLink="/" class="headline cursor-pointer">
       <h1>SmartScan</h1>
     </div>
-    <div fxFlex="auto" fxLayoutAlign="center center">
-      <div fxFlex="75%">
-        <app-search></app-search>
+
+    <div
+      fxLayout="column"
+      fxLayout.gt-sm="row"
+      fxFlex="100%"
+    >
+      <div
+      fxFlex="100%"
+      fxFlex.gt-sm="auto"
+      fxLayoutAlign="center center">
+        <div
+          fxFlex="100%"
+          fxFlex.gt-sm="75%"
+          class="pt-3"
+        >
+          <app-search></app-search>
+        </div>
+      </div>
+      <div
+        fxHide
+        fxShow.gt-sm
+        fxFlex="50px"
+        fxLayoutAlign="center center"
+      >
+        <app-meta-mask-connect></app-meta-mask-connect>
+      </div>
+
+      <div
+        fxLayout="row"
+        fxLayout.gt-sm="column"
+        fxLayoutAlign="end center"
+        fxLayoutAlign.gt-sm="center end"
+      >
+        <div
+          fxHide
+          fxShow.gt-sm
+        >
+          <app-height-ticker></app-height-ticker>
+          <a class="disconnect" href="#" (click)="disconnectFromNode()">Switch node</a>
+        </div>
+
+        <!-- <div
+          fxShow
+          fxHide.gt-sm
+          class="disconnect-mobile"
+        >
+          <button class="disconnect" href="#" (click)="disconnectFromNode()">Switch node</button>
+        </div> -->
       </div>
     </div>
-    <div fxFlex="50px" fxLayoutAlign="center center">
-      <app-meta-mask-connect></app-meta-mask-connect>
-    </div>
-    <div>
-      <app-height-ticker></app-height-ticker>
-      <a class="disconnect" href="#" (click)="disconnectFromNode()">Switch node</a>
-    </div>
+
   </div>
 </div>
 <!--

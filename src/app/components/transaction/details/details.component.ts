@@ -38,20 +38,23 @@ export class TransactionDetailsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.transaction) {
-      if(this.transaction.receipt) {
+    if(changes.transaction) {
+      if(this.transaction?.receipt) {
         this.statusStr = get(this.transaction.receipt, 'statusStr');
         this.txFee = (this.transaction.receipt.gasUsed * parseInt(this.transaction.data.gasPrice, 10)).toString();
-        console.log('>>>', this.transaction.receipt, this.txFee);
         this.gasPrice = this.transaction.data.gasPrice ?? '0';
         if(this.transaction.receipt?.gasUsed > 0) {
           this.gasPercentageUsed = (this.transaction.receipt?.gasUsed / this.transaction.data.gas) * 100 ;
         }
+
         if(this.transaction.data.input && this.transaction.data.input !== '0x') {
           this.inputData = this.transaction.data.input
         }
-        this.timestamp = Number(this.block?.timestamp) * 1000;
       }
+    }
+
+    if(changes.block) {
+      this.timestamp = Number(this.block?.timestamp) * 1000;
     }
   }
 

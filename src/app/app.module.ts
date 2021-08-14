@@ -124,7 +124,8 @@ export function appInit(sessionApiService: SessionService) {
     },
     SessionRouteGuard,
     TimeElapsedPipe,
-    ShorthashPipe
+    ShorthashPipe,
+    { provide: Window, useValue: window }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
