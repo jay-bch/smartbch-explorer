@@ -10,7 +10,7 @@ import { IAddress } from '../address/address-resource.service';
 import { ContractResourceService, IContract, IEventLog } from '../contract/contract-resource.service';
 import { IDecodedMethod } from '../../helpers/event-decoder/event-decoder';
 
-export const DEFAULT_SCOPE_SIZE = 1000000; // max block range scope
+export const DEFAULT_SCOPE_SIZE = 100000000; // max block range scope
 export const DEFAULT_PAGE_SIZE = 10;
 
 export type TransactionType = 'transaction' | 'contract-call' | 'contract-create' | 'sep20-transfer';
@@ -155,10 +155,19 @@ export class TransactionResourceService {
     if(!page) page = 1;
     if(!pageSize) pageSize = DEFAULT_PAGE_SIZE;
     if(!scopeSize) scopeSize =- DEFAULT_SCOPE_SIZE
-
-    const web3Txs = await this.apiService.getLatestTransactions(page, pageSize, searchFromBlock, scopeSize);
-
+    const blockHeader = await this.apiService.getBlockHeader();
+    const web3Txs = await this.apiService.getLatestTransactions(page, pageSize, blockHeader, scopeSize);
     const txs = this.sortTransactions(web3Txs.results);
+
+    const emptyBlock: number[] = [];
+
+    for(let i = blockHeader; i > 0; i--) {
+      if(!find(txs, {blockNumber: i})) {
+        emptyBlock.push(i);
+      }
+    }
+
+    console.log(txs);
 
     const addressTransactions: IAddressTransactions = {
       address: undefined,
@@ -166,7 +175,7 @@ export class TransactionResourceService {
       pageSize,
       isEmpty: web3Txs.isEmpty,
       total: web3Txs.total,
-      transactions: await this.mapTransactions(txs, false, false)
+      transactions: await this.mapTransactions(txs, true, true)
     }
 
     return addressTransactions;
@@ -208,6 +217,10 @@ export class TransactionResourceService {
   }
 
   private async mapTransactions(txs: Transaction[], includeReceipts?: boolean, discoverContracts?: boolean, includeBlock?: boolean): Promise<ITransaction[]> {
+    if(txs.length === 0) {
+      return Promise.resolve([]);
+    }
+
     const waitForPromises: Promise<any>[] = [];
 
     const mappedTransactions = map(txs, (tx) => {
@@ -229,7 +242,7 @@ export class TransactionResourceService {
         txFee: tx.gas * txGasPrice,
       };
 
-      if (tx.to && tx.to === '0x0000000000000000000000000000000000000000') {
+      if (tx.to && tx.to === '0x0000000000000000000000000000000000000000' && tx.input) {
         const method = { name: tx.input.substr(0, 10), value: tx.input }
         mappedTx.type = 'contract-create';
       } else if (tx.input && tx.input !== '0x') {
@@ -237,7 +250,7 @@ export class TransactionResourceService {
         mappedTx.type = 'contract-call';
       }
       if(!mappedTx.method) {
-        console.error('method', mappedTx);
+        // console.error('method', mappedTx);
       }
 
       return mappedTx;

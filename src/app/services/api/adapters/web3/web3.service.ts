@@ -61,7 +61,7 @@ export class Web3Adapter implements NodeAdapter{
     return this.apiConnector.getBlocks(blockIds);
   }
 
-  getTxsByBlock(blockId: string, start?: number, end?: number): Promise<Transaction[]> {
+  getTxsByBlock(blockId: string, start?: number, end?: number): Promise<TransactionReceipt[]> {
     if(!this.apiConnector) return Promise.reject();
     if(start !== undefined && end !== undefined) {
       return this.apiConnector.getTxListByHeightWithRange(blockId, start, end);
@@ -221,36 +221,42 @@ export class Web3Adapter implements NodeAdapter{
     if(!scopeSize) scopeSize = 0;
 
     let scope = searchFromBlock - scopeSize; // Will stop searching when this blockId is reached
+    if(scope < 0) scope = 0;
+
     let startIndex = (page - 1) * pageSize;
     let endIndex = (startIndex + pageSize);
     let txFound: string[] = [];
-    let txsFound: Transaction[] = [];
+    let txsFound: TransactionReceipt[] = [];
 
     let to = searchFromBlock;
     let from = to - 1;
 
-  let extendedQueryBy = 1;
+    let extendedQueryBy = 1;
 
     // console.log('scope', scope);
     // console.log('from', from);
     // console.log('to', to);
 
     do {
+      // console.log('scope', scope);
+      // console.log('from', from);
+      // console.log('to', to);
+
       // don't search beyond scope
       if(from < scope) from = scope;
       if(to < scope) to = scope;
 
       const ids: number[] = []
-      const promises: Promise<Transaction[]>[] = [];
-      for(let i = from; i < to; i++) {
+      for(let i = from; i <= to; i++) {
         ids.push(i)
       }
+
+      // console.log('ids', ids);
 
       const txs = await this.apiConnector.getTxListByHeights(map(ids, id => Web3.utils.numberToHex(id)));
 
       if (txs.length) {
         txsFound = txsFound.concat(txs);
-        // console.log(`Found ${txs.length} transactions. Total found: ${txsFound.length}`);
         extendedQueryBy = 1;
       } else {
         // if we didnt find anything, double query size
@@ -260,7 +266,7 @@ export class Web3Adapter implements NodeAdapter{
 
       to = from - 1;
       from = from - (1 * extendedQueryBy);
-    } while ( txsFound.length < (endIndex) && to > scope );
+    } while ( txsFound.length <= (endIndex) && to > scope );
 
 
     txsFound = orderBy(txsFound, ['blockNumber'], ['desc']);
@@ -271,9 +277,11 @@ export class Web3Adapter implements NodeAdapter{
     });
 
     const txResults = txsFound.slice(startIndex, endIndex);
+    const hashes = map(txResults, result => result.transactionHash);
+    const transactions = await this.apiConnector.getTransactions(hashes);
 
     return {
-      results: txResults,
+      results: transactions,
       page,
       pageSize,
       isEmpty: txResults.length === 0,

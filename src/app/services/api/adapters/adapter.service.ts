@@ -10,7 +10,7 @@ export abstract class NodeAdapter {
   abstract getBlockHeader(): Promise<number>
   abstract getBlock(blockId: BlockNumber): Promise<Block>;
   abstract getBlocks(blockIds: BlockNumber[]): Promise<Block[]>;
-  abstract getTxsByBlock(blockId: BlockNumber, start?: number, end?: number): Promise<Transaction[]>;
+  abstract getTxsByBlock(blockId: BlockNumber, start?: number, end?: number): Promise<TransactionReceipt[]>;
   abstract getTxByHash(hash: string): Promise<Transaction>;
   abstract getTxReceiptByHash(hash: string): Promise<TransactionReceipt>;
   abstract getTxReceiptsByHashes(hashes: string[]): Promise<TransactionReceipt[]>;

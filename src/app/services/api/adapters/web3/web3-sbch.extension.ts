@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { Transaction } from 'web3-core';
+import { Transaction, TransactionReceipt } from 'web3-core';
 import helpers from 'web3-core-helpers'
 import { Hex } from 'web3-utils';
 import { SBCHSource } from '../../node-api.service';
@@ -10,8 +10,8 @@ export interface smartBCHWeb3 extends Web3 {
     queryTxByDst(from: string, start: Hex | 'latest', end: Hex | 'latest', limit: string): Promise<any>;
     queryTxByAddr(from: string, start: Hex | 'latest', end: Hex | 'latest', limit: string): Promise<any>;
     queryLogs(address: string, data: any[], start: string | 'latest', end: string | 'latest', limit: string): Promise<any>;
-    getTxListByHeight(blockHeight: string): Promise<Transaction[]>;
-    getTxListByHeightWithRange(blockHeight: string, start: string, end: string): Promise<Transaction[]>;
+    getTxListByHeight(blockHeight: string): Promise<TransactionReceipt[]>;
+    getTxListByHeightWithRange(blockHeight: string, start: string, end: string): Promise<TransactionReceipt[]>;
     getAddressCount(type: SBCHSource, address: string): Promise<Hex>;
     getSep20AddressCount(type: SBCHSource, sepAddress: string, toAddress: string): Promise<Hex>;
     getCode(address: string):Promise<any>;

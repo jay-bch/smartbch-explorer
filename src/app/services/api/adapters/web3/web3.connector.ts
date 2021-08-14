@@ -104,12 +104,12 @@ export class Web3Connector {
     return Promise.all(promises);
   }
 
-  getTxListByHeight(blockId: string): Promise<Transaction[]> {
+  getTxListByHeight(blockId: string): Promise<TransactionReceipt[]> {
     if(!this.web3) return Promise.reject();
     return this.web3.sbch.getTxListByHeight(blockId);
   }
 
-  async getTxListByHeights(blockIds: string[]): Promise<Transaction[]> {
+  async getTxListByHeights(blockIds: string[]): Promise<TransactionReceipt[]> {
     if(!this.web3) return Promise.reject();
 
     const batch = new this.web3.BatchRequest();
@@ -136,7 +136,7 @@ export class Web3Connector {
     const txs = await Promise.all(promises)
 
 
-    return txs.reduce((a: any, b: any) => a.concat(b), []) as Transaction[];
+    return txs.reduce((a: any, b: any) => a.concat(b), []) as TransactionReceipt[];
     return Promise.all(promises);
   }
 
