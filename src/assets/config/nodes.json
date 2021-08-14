@@ -8,4 +8,8 @@
     "apiType": "web3",
     "apiVersion": "v1"
 
+},{
+  "apiEndpoint": "https://moeing.tech:9545",
+  "apiType": "web3",
+  "apiVersion": "v1"
 }]
