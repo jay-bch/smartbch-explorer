@@ -9,7 +9,7 @@ import { SessionService } from '../../session.service';
 import { Block } from 'web3-eth';
 import { BlockNumber } from 'web3-core';
 
-const REFRESH_INTERVAL = 50000;
+const REFRESH_INTERVAL = 5000;
 
 @Injectable({
   providedIn: 'root'
