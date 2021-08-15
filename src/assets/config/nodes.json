@@ -1,15 +1,18 @@
 [{
   "apiEndpoint": "wss://smartbch-wss.greyh.at",
   "apiType": "web3",
-  "apiVersion": "v1"
+  "apiVersion": "v1",
+  "network": "Mainnet"
 
 },{
     "apiEndpoint": "https://smartbch.fountainhead.cash/mainnet",
     "apiType": "web3",
-    "apiVersion": "v1"
+    "apiVersion": "v1",
+    "network": "Mainnet"
 
 },{
   "apiEndpoint": "https://moeing.tech:9545",
   "apiType": "web3",
-  "apiVersion": "v1"
+  "apiVersion": "v1",
+  "network": "Testnet (Amber)"
 }]
