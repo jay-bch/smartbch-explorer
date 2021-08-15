@@ -38,12 +38,16 @@
         fxLayout.gt-sm="column"
         fxLayoutAlign="end center"
         fxLayoutAlign.gt-sm="center end"
+        fxLayoutGap.gt-sm="1px"
       >
         <div
           fxHide
           fxShow.gt-sm
         >
           <app-height-ticker></app-height-ticker>
+          <div class="network-name" *ngIf="networkName">
+            <strong>{{networkName}}</strong>
+          </div>
           <a class="disconnect" href="#" (click)="disconnectFromNode()">Switch node</a>
         </div>
 

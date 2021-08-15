@@ -5,7 +5,7 @@
   width: 100%;
   top: 0;
   background-color: #ffffff;
-  z-index: 2000;
+  z-index: 6000;
 }
 
 .header {
@@ -41,6 +41,11 @@
 .disconnect-mobile {
   position: relative;
   top: -15px;
+}
+
+
+.network-name {
+  font-size: 11px;
 }
 
 // .left {

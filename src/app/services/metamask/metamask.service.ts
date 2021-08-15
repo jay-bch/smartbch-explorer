@@ -63,7 +63,7 @@ export class MetamaskService {
 
     if(this.chainId !== this.metaMaskChainId) {
       console.log('wrong chain');
-      this.notificationService.showToast(`Wrong network! Expected ID ${this.chainId}. Metamask is connected to ID ${this.metaMaskChainId}. Switch to a smartBCH chain.`, 'MetaMask', 'warning', 10000)
+      this.notificationService.showToast(`Wrong network! Expected ID ${this.chainId}. Metamask is connected to ID ${this.metaMaskChainId}. Switch to a smartBCH chain.`, 'MetaMask', 'warning', 5000)
       this.state$.next('error:wrongchain')
       return;
     }

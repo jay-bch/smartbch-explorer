@@ -6,6 +6,7 @@ export interface ApiConfig {
   apiEndpoint?: string | null;
   apiType?: string | null;
   apiVersion?: string | null;
+  network?: string;
 };
 
 export interface Session {
@@ -49,6 +50,7 @@ export class SessionService {
       apiEndpoint: loadedConfig?.apiEndpoint,
       apiType: loadedConfig?.apiType,
       apiVersion: loadedConfig?.apiVersion,
+      network: loadedConfig?.network
     }}});
 
     return Promise.resolve(true)

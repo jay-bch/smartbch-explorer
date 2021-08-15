@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { take, filter, startWith, map } from 'rxjs/operators';
+import { take, filter, startWith, map, tap, takeUntil } from 'rxjs/operators';
 import { SessionService } from 'src/app/services/session.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -9,7 +9,10 @@ import { get } from 'lodash';
 import nodes from '../../../assets/config/nodes.json';
 
 export interface INode {
-  apiEndpoint: string; apiType: string; apiVersion: string;
+  apiEndpoint: string;
+  apiType: string;
+  apiVersion: string;
+  network: string;
 }
 
 @Component({
@@ -21,12 +24,25 @@ export class ConnectToNodeComponent implements OnInit, OnDestroy {
   destroy$: Subject<boolean> = new Subject();
 
   endpointForm = new FormGroup({
-    endpoint: new FormControl(nodes[0].apiEndpoint),
+    endpointSelect: new FormControl(nodes[0]),
+    endpointCustom: new FormControl(undefined),
   });
   error: Error | undefined;
   nodes: INode[];
   errorNodeUrl: string | undefined;
   filteredOptions: Observable<INode[]> | undefined;
+
+  customNodeOption: INode = {
+    apiEndpoint: '',
+    apiType: '',
+    apiVersion: '',
+    network: 'custom'
+  }
+  showCustomInput: boolean = false;
+
+  get endpointCustom(): FormControl {
+    return this.endpointForm.get('endpointCustom') as FormControl;
+  }
 
   constructor(
     public dialogRef: MatDialogRef<ConnectToNodeComponent>,
@@ -49,19 +65,40 @@ export class ConnectToNodeComponent implements OnInit, OnDestroy {
           this.close();
         });
 
-    this.filteredOptions = this.endpointForm.controls['endpoint'].valueChanges.pipe(
-          startWith(""),
-          map(val => this.filter(val))
-        );
+    this.filteredOptions = this.endpointForm.controls['endpointCustom'].valueChanges.pipe(
+      startWith(""),
+      map(val => this.filter(val))
+    );
+
+    this.endpointForm.controls['endpointSelect'].valueChanges.pipe(
+      takeUntil(this.destroy$),
+      tap(node => this.showCustomInput = false),
+      filter(node => node.network === 'custom'),
+      tap(node => this.showCustomInput = true),
+    ).subscribe();
   }
 
   updateEndpoint() {
-    if(this.endpointForm.get('endpoint')?.value) {
-      this.sessionService.updateEndpoint({
-        apiEndpoint: this.endpointForm.get('endpoint')?.value,
-        apiType: 'web3',
-        apiVersion: 'v1',
-      });
+    if(this.endpointForm.get('endpointSelect')?.value) {
+      const node = this.endpointForm.get('endpointSelect')?.value;
+
+      if(node.network !== 'custom') {
+        this.sessionService.updateEndpoint({
+          apiEndpoint: node.apiEndpoint,
+          apiType: 'web3',
+          apiVersion: 'v1',
+          network: node.network
+        });
+      } else {
+        if(this.endpointForm.get('endpointCustom')?.value) {
+          this.sessionService.updateEndpoint({
+            apiEndpoint: this.endpointForm.get('endpointCustom')?.value,
+            apiType: 'web3',
+            apiVersion: 'v1',
+            network: 'custom'
+          });
+        }
+      }
     }
   }
 

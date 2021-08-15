@@ -4,12 +4,6 @@
 
 <div
   *ngIf="(blockHeight$ | async); let height;">
-  <div
-  fxHide
-  fxShow.gt-sm
-  >
-    <h5 fxHide.sm>Height</h5>
-  </div>
   <div>
     <h5>{{height}}</h5>
   </div>

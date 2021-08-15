@@ -1,8 +1,9 @@
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { AfterViewInit, HostBinding } from '@angular/core';
+import { AfterViewInit, HostBinding, OnDestroy } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { fromEvent } from 'rxjs';
-import { throttleTime, pairwise, distinctUntilChanged, share, map, filter } from 'rxjs/operators';
+import { fromEvent, Subject } from 'rxjs';
+import { throttleTime, pairwise, distinctUntilChanged, share, map, filter, takeUntil } from 'rxjs/operators';
+import { SessionService } from 'src/app/services/session.service';
 
 
 enum VisibilityState {
@@ -33,17 +34,21 @@ enum Direction {
     ])
   ]
 })
-export class TopNavigationComponent implements AfterViewInit {
+export class TopNavigationComponent implements AfterViewInit, OnDestroy {
   private isVisible = true;
+  networkName: string | undefined;
 
   @HostBinding('@toggle')
   get toggle(): VisibilityState {
     return this.isVisible ? VisibilityState.Visible : VisibilityState.Hidden;
   }
 
+  destroy$: Subject<boolean> = new Subject();
 
-
-  constructor(private window: Window) {
+  constructor(
+    private window: Window,
+    private sessionService: SessionService,
+  ) {
   }
 
   ngAfterViewInit() {
@@ -66,11 +71,22 @@ export class TopNavigationComponent implements AfterViewInit {
 
     scrollUp$.subscribe(() => (this.isVisible = true));
     scrollDown.subscribe(() => (this.isVisible = false));
+
+    this.sessionService.session$.pipe(
+      takeUntil(this.destroy$),
+      filter(session => session.bootstrapped === true)
+    ).subscribe( session => {
+      this.networkName = session.apiConfig.network;
+    })
   }
 
   disconnectFromNode() {
     localStorage.setItem('connection-config', JSON.stringify({}));
     window.location.reload();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
   }
 
 }
