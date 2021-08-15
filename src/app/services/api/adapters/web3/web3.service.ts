@@ -278,7 +278,10 @@ export class Web3Adapter implements NodeAdapter{
 
     const txResults = txsFound.slice(startIndex, endIndex);
     const hashes = map(txResults, result => result.transactionHash);
-    const transactions = await this.apiConnector.getTransactions(hashes);
+    let transactions: Transaction[] = [];
+    if (hashes.length) {
+      transactions = await this.apiConnector.getTransactions(hashes);
+    }
 
     return {
       results: transactions,

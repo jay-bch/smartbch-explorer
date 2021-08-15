@@ -167,8 +167,6 @@ export class TransactionResourceService {
       }
     }
 
-    console.log(txs);
-
     const addressTransactions: IAddressTransactions = {
       address: undefined,
       page,
