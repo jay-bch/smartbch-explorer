@@ -1,3 +1,8 @@
 [
-
+  {
+    "address": "0xc81aad1d00c06a28b626ea3433d41bac4d134bff",
+    "abiNames": ["sep20slp"],
+    "type": "sep20",
+    "name": "Be Your Own Bank"
+  }
 ]
