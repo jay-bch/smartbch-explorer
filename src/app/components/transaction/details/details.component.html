@@ -116,6 +116,28 @@
 
   <mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
 
+  <ng-container *ngIf="transaction.receipt?.contractAddress">
+    <!-- To -->
+    <div
+      fxLayout.lt-md="column"
+      fxLayoutAlign.lt-md="start start"
+      fxLayout.gt-sm="row"
+      fxLayoutAlign.gt-sm="start center"
+    >
+      <div class="label" fxFlex.gt-sm="200px">
+        Created Contract
+      </div>
+      <div class="address">
+        <a routerLink="/address/{{transaction.receipt?.contractAddress}}">
+          {{transaction.receipt?.contractAddress}}
+        </a>
+    </div>
+</div>
+
+<mat-divider class="mb-2 mt-2" [inset]="true" ></mat-divider>
+
+  </ng-container>
+
   <div
     fxLayout.lt-md="column"
     fxLayoutAlign.lt-md="start start"
