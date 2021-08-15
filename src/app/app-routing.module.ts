@@ -24,6 +24,11 @@ const routes: Routes = [
     canActivate: [ SessionRouteGuard ]
   },
   {
+    path: 'token/:addressId',
+    redirectTo: 'address/:addressId',
+    pathMatch: 'full',
+  },
+  {
     path: 'tx/:addressId',
     redirectTo: 'transaction/:addressId',
     pathMatch: 'full',
