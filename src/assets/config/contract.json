@@ -4,5 +4,11 @@
     "abiNames": ["sep20slp"],
     "type": "sep20",
     "name": "Be Your Own Bank"
+  },
+  {
+    "address": "0x0000000000000000000000000000000000002711",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "BCH (native SEP20 interface)"
   }
 ]

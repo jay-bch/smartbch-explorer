@@ -26,6 +26,7 @@ export class AddressComponent implements OnInit, OnDestroy {
   public contractName: string | undefined;
   loading: boolean = false;
   selectedTabIndex: number = 0;
+  isInternalContract = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,6 +47,9 @@ export class AddressComponent implements OnInit, OnDestroy {
 
 
         if(this.address) {
+          if(this.address === '0x0000000000000000000000000000000000002711') {
+            this.isInternalContract = true;
+          }
           // this.transactions = await this.transactionResource.getTxByAddress(this.address);
           await this.apiService.getAccountBalance(this.address).then( result => {
             this.balance = result;

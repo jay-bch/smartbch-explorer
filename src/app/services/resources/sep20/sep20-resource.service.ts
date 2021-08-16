@@ -74,7 +74,9 @@ export class Sep20ResourceService {
         Promise.all(promises).then(results => {
           results.forEach( contract => {
             if (contract && !find(currentContracts, {address: contract.address})) {
-              currentContracts.push(contract);
+              if(contract.address !== '0x0000000000000000000000000000000000002711') {
+                currentContracts.push(contract);
+              }
             }
           });
 

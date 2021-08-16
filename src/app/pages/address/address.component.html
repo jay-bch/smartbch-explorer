@@ -58,7 +58,7 @@
           <!-- <h2>Transactions</h2> -->
           <app-address-transactions-list *ngIf="selectedTabIndex === 0" [address]="address"></app-address-transactions-list>
         </mat-tab>
-        <mat-tab label="Event Logs" *ngIf="code">
+        <mat-tab label="Event Logs" *ngIf="code || isInternalContract">
           <app-event-log [address]="address"></app-event-log>
         </mat-tab>
         <!-- <mat-tab label="SEP20 Tokens">
