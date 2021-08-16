@@ -10,7 +10,8 @@ export class UtilHelperService {
   constructor() { }
 
   public convertValue(data: string, decimals: number) {
-    return ((Number(data)) / Math.pow(10, decimals)).toString(10);
+    const convertedValue = (BigInt(data)) / BigInt(Math.pow(10, decimals));
+    return convertedValue.toString(10);
   }
 
   public convertTopicAddress(data: string) {

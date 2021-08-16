@@ -2,14 +2,11 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { NodeApiService } from '../../api/node-api.service';
 import { compact, find, map, filter } from 'lodash';
-
 import { UtilHelperService } from '../../helpers/util/util-helper.service';
-import { TransactionReceipt } from 'web3-eth';
 import { ContractResourceService, IContract } from '../contract/contract-resource.service';
 import { map as rxMap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { Sep20HelperService } from '../../helpers/sep20-helper/sep20-helper.service';
-import { promise } from 'selenium-webdriver';
 
 export interface ISep20Contract {
   address: string,
