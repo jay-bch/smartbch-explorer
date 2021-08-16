@@ -24,8 +24,8 @@ export class TransactionDetailsComponent implements OnInit, OnChanges {
 
 
   statusStr: string | undefined;
-  txFee: string | undefined;
-  gasPrice: string = '0';
+  txFee: number = 0;
+  gasPrice: number = 0;
   gasPercentageUsed: number = 0;
   inputData: string | undefined;
   timestamp: number | undefined;
@@ -41,8 +41,8 @@ export class TransactionDetailsComponent implements OnInit, OnChanges {
     if(changes.transaction) {
       if(this.transaction?.receipt) {
         this.statusStr = get(this.transaction.receipt, 'statusStr');
-        this.txFee = (this.transaction.receipt.gasUsed * parseInt(this.transaction.data.gasPrice, 10)).toString();
-        this.gasPrice = this.transaction.data.gasPrice ?? '0';
+        this.txFee = (this.transaction.receipt.gasUsed * parseInt(this.transaction.data.gasPrice, 10));
+        this.gasPrice = parseInt(this.transaction.data.gasPrice, 10);
         if(this.transaction.receipt?.gasUsed > 0) {
           this.gasPercentageUsed = (this.transaction.receipt?.gasUsed / this.transaction.data.gas) * 100 ;
         }
