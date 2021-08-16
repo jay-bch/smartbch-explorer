@@ -165,7 +165,7 @@
       Transaction Fee
     </div>
     <div>
-      {{txFee.toString() | wei: 'ether'}} BCH ({{txFee * 1e-10}} sats)
+      {{txFee.toString() | wei: 'ether'}} BCH ({{txFeeSatoshi}} sats)
     </div>
   </div>
 
@@ -182,7 +182,7 @@
       Gas Price
     </div>
     <div>
-      {{transaction.data.gasPrice | wei: 'ether'}} BCH ({{gasPrice * 1e-10}} sats / {{transaction.data.gasPrice | wei: 'gwei'}} gwei)
+      {{transaction.data.gasPrice | wei: 'ether'}} BCH ({{gasPriceSatoshi}} sats / {{transaction.data.gasPrice | wei: 'gwei'}} gwei)
     </div>
   </div>
 
