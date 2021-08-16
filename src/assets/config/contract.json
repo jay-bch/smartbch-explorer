@@ -6,6 +6,12 @@
     "name": "Be Your Own Bank"
   },
   {
+    "address": "0xe11829a7d5d8806bb36e118461a1012588fafd89",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "SPICE"
+  },
+  {
     "address": "0x0000000000000000000000000000000000002711",
     "abiNames": ["sep20"],
     "type": "sep20",
