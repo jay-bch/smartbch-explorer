@@ -1,6 +1,6 @@
 {
   "name": "smart-bch-explorer",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200",
