@@ -55,6 +55,7 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
       const _address = this.address;
       this.loading = true;
       this.sep20recource.contracts$.pipe(takeUntil(this.stop$)).subscribe( async results => {
+        this.sep20BalanceList = [];
         const sep20contracts: ISep20Contract[] = [];
         // console.log('results', results);
 
@@ -62,7 +63,6 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
         for(let contract of results) {
           // const sep20contract = contract;
           const unformattedBalance = await this.sep20recource.getSep20BalanceForAddress(contract.address, _address);
-
           if (unformattedBalance && unformattedBalance !== '0') {
             this.sep20BalanceList.push({
               contract,
