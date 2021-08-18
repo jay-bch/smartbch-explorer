@@ -16,5 +16,29 @@
     "abiNames": ["sep20"],
     "type": "sep20",
     "name": "BCH (native SEP20 interface)"
+  },
+  {
+    "address": "0xa194133ED572D86fe27796F2feADBAFc062cB9E0",
+    "abiNames": ["benswaprouter"],
+    "type": "custom",
+    "name": "BenSwapRouter"
+  },
+  {
+    "address": "0x8d973bAD782c1FFfd8FcC9d7579542BA7Dd0998D",
+    "abiNames": ["benswapfactory"],
+    "type": "custom",
+    "name": "BenSwapFactory"
+  },
+  {
+    "address": "0x3743ec0673453e5009310c727ba4eaf7b3a1cc04",
+    "abiNames": ["weth"],
+    "type": "custom",
+    "name": "Wrapped BCH"
+  },
+  {
+    "address": "0x7850ec1815b18531f080d7d478613c718f4b5db7",
+    "abiNames": ["pancakepair"],
+    "type": "custom",
+    "name": "BenSwap LP - Spice / BCH"
   }
 ]
