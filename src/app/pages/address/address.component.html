@@ -22,8 +22,17 @@
               {{contractName}}
             </h3>
           </div>
-          <div class="ml-2 mr-2" fxFlex="50px" fxLayoutAlign="center center">
-            <app-hash-icon [address]="address" [diameter]="64" [type]="code ? 'contract' : 'address'"></app-hash-icon>
+
+          <div class="ml-2 mr-2" fxFlex="50px" fxLayoutAlign="center center" *ngIf="contract && contract.logo">
+            <img class="token-symbol" [src]="'/assets/images/tokens/' + contract.address + '.png' " />
+          </div>
+
+          <div class="ml-2 mr-2" fxFlex="50px" fxLayoutAlign="center center" *ngIf="contract && !contract.logo">
+            <app-hash-icon [address]="address" [diameter]="64" [type]="'contract'"></app-hash-icon>
+          </div>
+
+          <div class="ml-2 mr-2" fxFlex="50px" fxLayoutAlign="center center" *ngIf="!contract">
+            <app-hash-icon [address]="address" [diameter]="64" [type]="'address'"></app-hash-icon>
           </div>
         </div>
 

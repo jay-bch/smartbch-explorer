@@ -8,6 +8,7 @@ import { TransactionResourceService } from '../../services/resources/transaction
 import Web3 from 'web3';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { ContractResourceService, IContract } from 'src/app/services/resources/contract/contract-resource.service';
 
 
 @Component({
@@ -27,6 +28,7 @@ export class AddressComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   selectedTabIndex: number = 0;
   isInternalContract = false;
+  contract: IContract | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -34,6 +36,7 @@ export class AddressComponent implements OnInit, OnDestroy {
     private transactionResource: TransactionResourceService,
     private sep20ResourceService: Sep20ResourceService,
     private addressService: AddressResourceService,
+    private contractService: ContractResourceService
   ) {
 
   }
@@ -62,12 +65,15 @@ export class AddressComponent implements OnInit, OnDestroy {
             this.notFound = false;
           });
 
-          await this.apiService.getCode(this.address).then( code => {
+          await this.apiService.getCode(this.address).then( async code => {
             this.code = Web3.utils.stripHexPrefix(code);
 
             if (this.code && this.address) {
 
               this.contractName = this.addressService.getAddressName(this.address);
+              this.contract = await this.contractService.getContract(this.address);
+            } else {
+              this.contract = undefined;
             }
 
           });

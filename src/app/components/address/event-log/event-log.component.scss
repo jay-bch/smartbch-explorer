@@ -44,3 +44,21 @@ mat-paginator.hiderange {
 .loading-indicator-wrapper {
   min-height: 4px;
 }
+
+.method {
+  font-size: 13px;
+  flex-wrap: wrap;
+  .name {
+    font-weight: bold;
+  }
+
+  .param {
+    .param-name {
+      color: red;
+      font-weight: bold;
+    }
+    .param-type {
+      color: blue;
+    }
+  }
+}

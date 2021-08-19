@@ -18,6 +18,7 @@ export interface IContract {
   name: string;
   type: ContractType;
   sep20?: ISep20Contract | null;
+  logo: boolean;
 }
 
 export interface IEventLog {
@@ -68,7 +69,8 @@ export class ContractResourceService {
           address: contract.address.toLowerCase(),
           type,
           name: contract.name ?? contract.address.toLowerCase(),
-          abi
+          abi,
+          logo: contract.logo
         }
 
         contracts.push(newContract);
@@ -137,7 +139,8 @@ export class ContractResourceService {
       address,
       type,
       name,
-      abi
+      abi,
+      logo: false
     }
 
     if(type === 'sep20') {
@@ -158,7 +161,7 @@ export class ContractResourceService {
 
     // console.log('discover', address, this.discoveredAddresses, this.discoveredAddresses.includes(address.toLowerCase()));
     //sep20 discovery
-    const sep20ContractInfo = await this.sep20Helper.getSep20ContractInformation(address.toLowerCase());
+    const sep20ContractInfo = await this.sep20Helper.getSep20ContractInformation(address.toLowerCase(), false);
 
     if(sep20ContractInfo) {
       // console.log('sep20 contract discovery', sep20ContractInfo);

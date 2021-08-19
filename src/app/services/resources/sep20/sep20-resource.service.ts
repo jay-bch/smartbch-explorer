@@ -14,6 +14,7 @@ export interface ISep20Contract {
   symbol: string,
   totalSupply: string,
   decimals: number,
+  logo?: boolean
   // transactions?: any,
   // addressesWithBalance?: string[],
 }
@@ -51,7 +52,7 @@ export class Sep20ResourceService {
     this.contractResource.contracts$.pipe(
       rxMap( (contracts: IContract[]) => filter(contracts, contract => {
         return contract.type === 'sep20';
-      }) )
+      }))
       ).subscribe(contracts => {
         const currentContracts = this.contracts$.getValue();
 
@@ -61,8 +62,9 @@ export class Sep20ResourceService {
           if(!find(this.checkedAddresses, contract.address.toLowerCase())) {
             this.checkedAddresses.push(contract.address.toLowerCase());
             if (!contract.sep20) {
-              promises.push(this.sep20Helper.getSep20ContractInformation(contract.address.toLowerCase()))
+              promises.push(this.sep20Helper.getSep20ContractInformation(contract.address.toLowerCase(), contract.logo));
             } else {
+              contract.sep20;
               promises.push(Promise.resolve(contract.sep20));
             }
           }
@@ -70,6 +72,8 @@ export class Sep20ResourceService {
 
         Promise.all(promises).then(results => {
           results.forEach( contract => {
+
+
             if (contract && !find(currentContracts, {address: contract.address})) {
               if(contract.address !== '0x0000000000000000000000000000000000002711') {
                 currentContracts.push(contract);

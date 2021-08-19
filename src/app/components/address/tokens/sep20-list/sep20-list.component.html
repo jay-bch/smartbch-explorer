@@ -1,4 +1,4 @@
-<mat-card *ngIf="sep20contracts && sep20contracts.length > 0">
+<!-- <mat-card *ngIf="sep20contracts && sep20contracts.length > 0">
   <h3>Sep20 Tokens</h3>
 
   <mat-tab-group (selectedTabChange)="setActiveTab($event)">
@@ -61,7 +61,7 @@
       </div>
     </mat-tab>
   </mat-tab-group>
-</mat-card>
+</mat-card> -->
 
 <mat-card *ngIf="sep20BalanceList.length > 0">
   <div fxLayout="column" fxFlex="400px" class="token-wrapper">
@@ -75,9 +75,14 @@
     </div>
     <div fxLayout="column">
       <div fxLayout="row" *ngFor="let balance of sep20BalanceList"  fxLayoutAlign="start center">
-        <div fxFlex="50px">
+        <div fxFlex="50px" *ngIf="!balance.contract.logo">
           <app-hash-icon [address]="balance.contract.address" [diameter]="32"></app-hash-icon>
         </div>
+
+        <div fxFlex="50px" *ngIf="balance.contract.logo">
+          <img class="token-symbol" [src]="'/assets/images/tokens/' + balance.contract.address + '.png' " />
+        </div>
+
         <div fxFlex="100px">
           <a routerLink="/address/{{balance.contract.address}}">
             {{balance.contract.symbol}}

@@ -35,7 +35,7 @@ export class Sep20HelperService {
     private nodeApiService: NodeApiService,
   ) { }
 
-  public async getSep20ContractInformation(address: string): Promise<ISep20Contract | undefined> {
+  public async getSep20ContractInformation(address: string, logo: boolean): Promise<ISep20Contract | undefined> {
     try {
       const callParams = await this.nodeApiService.callMultiple( map(sep20Properties, property => {
         return {
@@ -85,7 +85,8 @@ export class Sep20HelperService {
         decimals: parseInt(decimals, 10),
         name,
         symbol,
-        totalSupply
+        totalSupply,
+        logo
       }
 
       return sep20Contract;
