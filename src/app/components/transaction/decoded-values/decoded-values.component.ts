@@ -22,9 +22,9 @@ export class DecodedValuesComponent implements OnInit, OnChanges {
   type: 'method' | 'log' = 'method';
 
   @Input()
-  showExtra = true;
+  showExtra = false;
 
-  tableDisplayedColumns: string[] = ['index', 'name', 'type', 'data', 'extra'];
+  tableDisplayedColumns: string[] = ['index', 'name', 'type', 'data'];
   tableData: IDecodedDataTableRow[] = [];
 
   constructor(
@@ -36,8 +36,8 @@ export class DecodedValuesComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if(this.params) {
-      if (this.showExtra === false) {
-        this.tableDisplayedColumns = defaultColumns.filter(column => column !== 'extra');
+      if (this.showExtra) {
+        this.tableDisplayedColumns.push('extra');
       }
       this.tableData = [];
       this.params.forEach( (param, index) => {

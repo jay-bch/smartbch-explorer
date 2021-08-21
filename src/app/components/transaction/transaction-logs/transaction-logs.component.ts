@@ -41,6 +41,7 @@ export class TransactionLogsComponent implements OnInit, OnChanges {
         this.logView = 'decoded';
       }
 
+      // TODO - move to service
       this.rawLogs = [];
 
       this.events.forEach( (event, index) => {
@@ -57,7 +58,7 @@ export class TransactionLogsComponent implements OnInit, OnChanges {
           rawLog += `\n[data]:  ${event.log.data}`;
         }
         this.rawLogs.push(rawLog)
-      })
+      });
     }
   }
 

@@ -100,11 +100,11 @@
       <!-- Data id -->
       <ng-container matColumnDef="data">
         <th mat-header-cell *matHeaderCellDef fxFlex="auto" fxLayoutAlign="start center">Event Data</th>
-        <td mat-cell *matCellDef="let element" fxFlex="auto" fxLayoutAlign="start start">
+        <td mat-cell *matCellDef="let element" fxFlex="auto" fxLayoutAlign="start center">
           <div fxLayout="column" fxFlex="auto" class="py-2">
             <div fxLayout="row" fxFlex="100%">
-              <div class="method" fxFlex="100%" fxLayout="row" fxLayoutAlign="start center">
-                <span class="name pr-1">{{element.decodedLog.name}}</span>
+              <div class="method" fxFlex="100%" fxLayout="row" fxLayoutAlign="start center" *ngIf="element.decodedLog">
+                <span class="name pr-1" *ngIf="element.decodedLog?.name">{{element.decodedLog.name}}</span>
                 <span class="pr-1">(</span>
                 <div class="param" *ngFor="let param of element.decodedLog.events; let last = last">
                   <span class="param-name pr-1">{{param.name}}</span>
@@ -119,11 +119,21 @@
             </span> -->
             <app-decoded-values
               *ngIf="element.decodedLog"
-              type="log"
               [log]="element.log"
-              [params]="element.decodedLog.events"
+              [params]="element.decodedLog?.events"
               [showExtra]="false">
             </app-decoded-values>
+
+            <textarea
+              *ngIf="!element.decodedLog"
+              matInput
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+              cdkAutosizeMinRows="1"
+              disabled="true"
+            >{{ element.rawLog }}</textarea>
+
+
           </div>
           <!-- <pre>
             {{element | json}}

@@ -34,7 +34,7 @@
           </div>
         </div>
 
-        <div fxLayout="row" fxFlex="100%" *ngIf="logView === 'decoded'">
+        <div fxLayout="row" fxFlex="100%" *ngIf="logView === 'decoded' && event.decodedLog">
           <div class="method" fxFlex="100%" fxLayout="row" fxLayoutAlign="start center">
             <span class="name pr-1">{{event.decodedLog?.name}}</span>
             <span class="pr-1">(</span>
@@ -47,7 +47,7 @@
           </div>
         </div>
 
-        <div fxLayout="row" *ngIf="logView === 'decoded'">
+        <div fxLayout="row" *ngIf="logView === 'decoded' && event.decodedLog">
           <app-decoded-values
             *ngIf="event.decodedLog"
             type="log"
@@ -55,7 +55,7 @@
             [params]="event.decodedLog.events"></app-decoded-values>
         </div>
 
-        <div fxLayout="row" *ngIf="logView === 'hex'">
+        <div fxLayout="row" *ngIf="logView === 'hex' || !event.decodedLog">
           <textarea
             matInput
             cdkTextareaAutosize

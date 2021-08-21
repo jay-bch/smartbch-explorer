@@ -16,6 +16,7 @@ const TABLECOUNT = 5;
 export interface IEventLogRow {
   blockId: string;
   log: Log;
+  rawLog: string;
   method: string;
   methodFunction?: string;
   tx: ITransaction | undefined;
@@ -70,6 +71,7 @@ export class EventLogComponent implements OnInit, OnChanges {
   contract: IContract | undefined;
   logDecoder: EventDecoder | undefined;
   blockHeight: number | undefined;
+  rawLogs: string[] | undefined;
 
   constructor(
     private blockService: BlockResourceService,
@@ -128,8 +130,24 @@ export class EventLogComponent implements OnInit, OnChanges {
 
       Promise.all(txPromises).then((txs) => {
         this.tableData = map(page, log => {
+          // TODO - move to service
+          let rawLog = '';
+
+          log.topics.forEach( (topic, index) => {
+
+          rawLog += `[${index}]:     ${topic}`;
+
+            if(index + 1 < log.topics.length) {
+              rawLog += `\n`;
+            }
+            if (log.data && log.data !== '0x') {
+              rawLog += `\n[data]:  ${topic}`;
+            }
+
+          });
+
           const tx = find(txs, { data: {hash: log.transactionHash} })
-          return this.mapTableRow(log, tx);
+          return this.mapTableRow(log, rawLog, tx);
         });
 
         this.loading = false;
@@ -168,7 +186,7 @@ export class EventLogComponent implements OnInit, OnChanges {
     this.loadLogs();
   }
 
-  private mapTableRow(row: Log, tx?: ITransaction) {
+  private mapTableRow(row: Log, rawLog: string, tx?: ITransaction) {
     let log: any | undefined = undefined;
 
     if(row.address === this.address && this.logDecoder) {
@@ -197,6 +215,7 @@ export class EventLogComponent implements OnInit, OnChanges {
       decodedLog: log,
       method: tx?.data.input.substring(0, 10),
       methodFunction: methodFunction,
+      rawLog,
       tx,
 
     } as IEventLogRow
