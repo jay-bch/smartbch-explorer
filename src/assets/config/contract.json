@@ -14,6 +14,20 @@
     "logo": true
   },
   {
+    "address": "0x265bd28d79400d55a1665707fa14a72978fa6043",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "CashCats",
+    "logo": true
+  },
+  {
+    "address": "0x77cb87b57f54667978eb1b199b28a0db8c8e1c0b",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "EBEN",
+    "logo": false
+  },
+  {
     "address": "0x0000000000000000000000000000000000002711",
     "abiNames": ["sep20"],
     "type": "sep20",
@@ -46,6 +60,27 @@
     "abiNames": ["pancakepair"],
     "type": "custom",
     "name": "BenSwap LP - Spice / BCH",
+    "logo": false
+  },
+  {
+    "address": "0x47c58bec061480bb6f6ce076a69f4d236d841a71",
+    "abiNames": ["pancakepair"],
+    "type": "custom",
+    "name": "BenSwap LP - $CATS / BCH",
+    "logo": false
+  },
+  {
+    "address": "0x727edbd86d079b087a132d3304799d921037a88f",
+    "abiNames": ["pancakepair"],
+    "type": "custom",
+    "name": "BenSwap LP - $CATS / EBEN",
+    "logo": false
+  },
+  {
+    "address": "0x0d4372acc0503fbcc7eb129e0de3283c348b82c3",
+    "abiNames": ["pancakepair"],
+    "type": "custom",
+    "name": "BenSwap LP - $WBCH / EBEN",
     "logo": false
   }
 ]
