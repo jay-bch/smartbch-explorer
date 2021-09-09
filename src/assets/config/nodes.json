@@ -3,13 +3,22 @@
   "apiType": "web3",
   "apiVersion": "v1",
   "network": "Mainnet"
-
 },{
     "apiEndpoint": "https://smartbch.fountainhead.cash/mainnet",
     "apiType": "web3",
     "apiVersion": "v1",
     "network": "Mainnet"
+},{
+  "apiEndpoint": "https://global.uat.cash",
+  "apiType": "web3",
+  "apiVersion": "v1",
+  "network": "Mainnet"
 
+},{
+  "apiEndpoint": "https://rpc.uatvo.com",
+  "apiType": "web3",
+  "apiVersion": "v1",
+  "network": "Mainnet"
 },{
   "apiEndpoint": "https://moeing.tech:9545",
   "apiType": "web3",
