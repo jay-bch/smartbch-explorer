@@ -17,6 +17,18 @@
       </app-transaction-logs>
     </mat-card>
 
+    <mat-card *ngIf="transaction.type === 'contract-create' && transaction.data.input">
+      <h2>Contract Creation Code</h2>
+
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="1"
+        disabled="true"
+      >{{ transaction.data.input }}</textarea>
+    </mat-card>
+
     <!-- <mat-card>
       <pre class="small-text">{{transaction | json}}</pre>
     </mat-card> -->

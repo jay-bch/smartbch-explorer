@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { ITransaction, TransactionResourceService } from '../../services/resources/transaction/transaction-resource.service';
 import { Block } from 'web3-eth';
 import { BlockResourceService } from 'src/app/services/resources/block/block-resource.service';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-transaction',
@@ -18,12 +19,13 @@ export class TransactionComponent implements OnInit {
   transaction: ITransaction | undefined;
   transactionBlock: Block | undefined;
   blockHeight$: BehaviorSubject<number | undefined> | undefined;
-
+  @ViewChild('autosize') autosize: CdkTextareaAutosize | undefined;
 
   constructor(
     private route: ActivatedRoute,
     private transactionResource: TransactionResourceService,
-    private blockResource: BlockResourceService
+    private blockResource: BlockResourceService,
+    private _ngZone: NgZone
   ) {
     this.route.params.pipe(takeUntil(this.stop$)).subscribe( async params => {
       if (params && params.transactionId) {
@@ -37,6 +39,16 @@ export class TransactionComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.blockHeight$ = this.blockResource.blockHeight$;
+  }
+
+  triggerResize() {
+    // Wait for changes to be applied, then trigger textarea resize.
+    this._ngZone.onStable.pipe(take(1))
+      .subscribe(() =>  {
+        if (this.autosize) {
+          this.autosize.resizeToFitContent(true);
+        }
+    });
   }
 
 }
