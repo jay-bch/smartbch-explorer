@@ -117,7 +117,8 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   numberWithCommas(x: any) {
-    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    return x.toString().split('').reverse().join('')
+    .replace(/(\d{3}(?!.*\.|$))/g, '$1,').split('').reverse().join('')
   }
 
   ngOnDestroy(): void {
