@@ -89,7 +89,16 @@
           </a>
         </div>
         <div fxFlex="auto">
-          {{balance.balance}}
+          <div fxLayout="row">
+            <div class="balance-whole">
+              {{balance.balanceWhole}}
+            </div>
+            <ng-container *ngIf="balance.balanceFraction">
+              <div class="balance-fraction">
+                .{{balance.balanceFraction}}
+              </div>
+            </ng-container>
+          </div>
         </div>
         <!-- {{balance | json}} -->
       </div>

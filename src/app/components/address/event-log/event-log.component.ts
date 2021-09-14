@@ -3,7 +3,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { PageEvent } from '@angular/material/paginator';
 import { find, first, map } from 'lodash';
 import { Subject } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { EventDecoder } from 'src/app/services/helpers/event-decoder/event-decoder';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
 import { BlockResourceService } from 'src/app/services/resources/block/block-resource.service';
@@ -69,7 +69,8 @@ export class EventLogComponent implements OnInit, OnChanges {
   tableMinSize = TABLECOUNT;
   stop$ = new Subject();
   contract: IContract | undefined;
-  logDecoder: EventDecoder | undefined;
+  inputLogDecoder: EventDecoder | undefined;
+  eventLogDecoder: EventDecoder | undefined;
   blockHeight: number | undefined;
   rawLogs: string[] | undefined;
 
@@ -85,6 +86,8 @@ export class EventLogComponent implements OnInit, OnChanges {
     this.blockService.blockHeight$.pipe( filter( (height) => !!height ), take(1) ).subscribe( (height) => {
       this.blockHeight = height;
     });
+
+
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -93,8 +96,10 @@ export class EventLogComponent implements OnInit, OnChanges {
     if(this.address) {
       this.contract = await this.contractService.getContract(this.address);
       if (this.contract && this.contract.abi) {
-        this.logDecoder = new EventDecoder(this.contract.abi);
+        this.inputLogDecoder = new EventDecoder(this.contract.abi);
       }
+
+      this.eventLogDecoder = this.contractService.eventLogDecoder;
 
       this.lastPage = undefined;
       this.tableCurrentPage = 0;
@@ -189,8 +194,8 @@ export class EventLogComponent implements OnInit, OnChanges {
   private mapTableRow(row: Log, rawLog: string, tx?: ITransaction) {
     let log: any | undefined = undefined;
 
-    if(row.address === this.address && this.logDecoder) {
-      const _log = this.logDecoder.decodeLogs([row]);
+    if(row.address === this.address && this.eventLogDecoder) {
+      const _log = this.eventLogDecoder.decodeLogs([row]);
       log = first(_log);
     }
 

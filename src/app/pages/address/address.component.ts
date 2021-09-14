@@ -7,10 +7,8 @@ import { Sep20ResourceService } from '../../services/resources/sep20/sep20-resou
 import { TransactionResourceService } from '../../services/resources/transaction/transaction-resource.service';
 import Web3 from 'web3';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { ContractResourceService, IContract } from 'src/app/services/resources/contract/contract-resource.service';
-
-
+import { toChecksumAddress } from 'ethereum-checksum-address';
 @Component({
   selector: 'app-address',
   templateUrl: './address.component.html',
@@ -45,7 +43,7 @@ export class AddressComponent implements OnInit, OnDestroy {
     this.route.params.pipe(takeUntil(this.stop$)).subscribe( async params => {
       if (params && params.addressId) {
         this.loading = true;
-        this.address = params.addressId.toLowerCase();
+        this.address = toChecksumAddress(params.addressId);
         this.contractName = undefined;
 
 

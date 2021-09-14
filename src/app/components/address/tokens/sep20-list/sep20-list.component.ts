@@ -10,6 +10,8 @@ import { Sep20ResourceService, ISep20Contract } from 'src/app/services/resources
 export interface ISep20ContractListItem {
   contract: ISep20Contract,
   balance: string,
+  balanceWhole: string,
+  balanceFraction: string | undefined
 }
 
 @Component({
@@ -55,7 +57,7 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
       const _address = this.address;
       this.loading = true;
       this.sep20recource.contracts$.pipe(takeUntil(this.stop$)).subscribe( async results => {
-        this.sep20BalanceList = [];
+        const sep20BalanceList = [];
         const sep20contracts: ISep20Contract[] = [];
         // console.log('results', results);
 
@@ -64,9 +66,13 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
           // const sep20contract = contract;
           const unformattedBalance = await this.sep20recource.getSep20BalanceForAddress(contract.address, _address);
           if (unformattedBalance && unformattedBalance !== '0') {
-            this.sep20BalanceList.push({
+            const balance = this.utilHelper.convertValue(unformattedBalance, contract.decimals);
+            const splitBalance = balance.split('.');
+            sep20BalanceList.push({
               contract,
-              balance: this.utilHelper.convertValue(unformattedBalance, contract.decimals)
+              balance,
+              balanceWhole: this.numberWithCommas(splitBalance[0]),
+              balanceFraction: splitBalance[1] ? splitBalance[1] : undefined
             });
           }
 
@@ -82,7 +88,7 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
           //   }
           // }
         }
-
+        this.sep20BalanceList = sep20BalanceList;
         this.sep20contracts = sep20contracts;
         this.loading = false;
       });
@@ -108,6 +114,10 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
     // console.log('set active contract', contract);
     this.setActiveContract(contract);
 
+  }
+
+  numberWithCommas(x: any) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   }
 
   ngOnDestroy(): void {

@@ -13,12 +13,12 @@
           <div fxFlex="450px" fxLayoutAlign="start center">
             <h3 class="no-margin">
               <strong>
-                {{address}}
+                {{address | address}}
               </strong>
             </h3>
           </div>
           <div fxFlex="auto">
-            <h3 class="no-margin" *ngIf="contractName">
+            <h3 class="no-margin" *ngIf="contractName && contractName !== address">
               {{contractName}}
             </h3>
           </div>

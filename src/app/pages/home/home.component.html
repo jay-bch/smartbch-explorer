@@ -28,7 +28,7 @@
         </div>
 
         <div fxFlex="auto" fxLayoutAlign="end start">
-          <h3><a routerLink="/address/{{linkedAddress}}">{{linkedAddress}}</a></h3>
+          <h3><a routerLink="/address/{{linkedAddress}}">{{linkedAddress | address}}</a></h3>
         </div>
         <div class="ml-2">
           <app-hash-icon [address]="linkedAddress" [diameter]="32" type="address"></app-hash-icon>

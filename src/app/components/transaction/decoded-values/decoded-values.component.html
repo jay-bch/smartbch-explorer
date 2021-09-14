@@ -33,7 +33,7 @@
           <div *ngIf="element.type === 'address' || element.type === 'address[]' else default" matTooltip="{{element.extraData[i]?.name}}">
             <ng-container *ngIf="value !== '0x0000000000000000000000000000000000000000' else default">
               <a routerLink="/address/{{value}}">
-                {{value}}
+                {{value | address}}
               </a>
             </ng-container>
           </div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import contractAbis from '../../../../assets/config/contract-abi.json';
 import configuredContracts from '../../../../assets/config/contract.json'
-
+import { toChecksumAddress } from 'ethereum-checksum-address';
 import { find, first, map, noop, uniq } from 'lodash';
 import { ISep20Contract } from '../sep20/sep20-resource.service';
 import { BehaviorSubject } from 'rxjs';
@@ -43,6 +43,8 @@ export class ContractResourceService {
 
   discoveredAddresses: string[] = [];
 
+  eventLogDecoder: EventDecoder | undefined;
+
   constructor(
     private sep20Helper: Sep20HelperService,
     private notificationService: NotificationService
@@ -50,7 +52,7 @@ export class ContractResourceService {
     this.loadContracts();
   }
 
-  async loadContracts() {
+  loadContracts() {
     const contracts: IContract[] = [];
 
     if(configuredContracts && configuredContracts.length > 0) {
@@ -66,9 +68,9 @@ export class ContractResourceService {
         });
 
         const newContract: IContract = {
-          address: contract.address.toLowerCase(),
+          address: toChecksumAddress(contract.address),
           type,
-          name: contract.name ?? contract.address.toLowerCase(),
+          name: contract.name ?? toChecksumAddress(contract.address),
           abi,
           logo: contract.logo
         }
@@ -77,62 +79,27 @@ export class ContractResourceService {
       });
     }
 
-
-
-
-    // this._addABI(this.sep20Resource.getAbi());
-
-    // const sep20Promises: Promise<ISep20Contract | undefined>[] = [];
-
-    // contractConfig.forEach(async (contract: any) => {
-
-    //   const newContract: IContract = {
-    //     address: contract.address.toLowerCase(),
-    //     type: contract.type,
-    //     name: contract.name,
-    //     abi: contract.abi ?? undefined
-    //   }
-
-    //   contracts.push(newContract);
-    // });
-
-    // await Promise.all(sep20Promises).then( results => {
-    //   // console.log('RESULTS', results);
-
-    //   results.forEach( sep20Contract => {
-    //     if(sep20Contract) {
-    //       const contract = find(this.contracts, {address: sep20Contract.address})
-    //       if(contract) {
-    //         // console.log('>>>', contract)
-    //         // contract.sep20 = sep20Contract
-    //         contract.abi = this.sep20Resource.getAbi();
-    //         contract.name = contract.name ?? sep20Contract.name
-    //       }
-
-    //     }
-    //   })
-    // })
-
     if(contracts.length > 0) {
+      this.eventLogDecoder = new EventDecoder();
+
+      contracts.forEach( contract => {
+        if(contract.abi) this.eventLogDecoder?.addABI(contract.abi)
+      });
+
       this.contracts$.next(contracts);
     }
 
     this.contracts$.subscribe(contracts => {
-      // contracts.forEach(async contract => {
-      //   if(contract.type === 'sep20' && !contract.abi) {
-      //     contract.sep20 = await this.sep20Resource.getSep20ContractInformation(contract.address);
-      //     if(contract.sep20) {
-      //       contract.name = contract.name ?? contract.sep20.name
-      //     }
-      //   }
-      // });
-      // console.log('LOADED METHODIDS', this._getMethodIDs());
-      console.log('LOADED CONTRACTS', contracts);
+      this.eventLogDecoder = new EventDecoder();
+
+      contracts.forEach( contract => {
+        if(contract.abi) this.eventLogDecoder?.addABI(contract.abi)
+      });
     })
   }
 
   addContract(address: string, type: 'sep20' | 'custom', name: string, abi?: any, data?: any) {
-    const existing = find(this.contracts$.getValue(), {address: address.toLowerCase()});
+    const existing = find(this.contracts$.getValue(), {address: toChecksumAddress(address)});
     if(existing) return existing;
 
     const newContract: IContract = {
@@ -157,25 +124,25 @@ export class ContractResourceService {
   }
 
   async discover(address: string) {
-    this.discoveredAddresses.push(address.toLowerCase());
+    this.discoveredAddresses.push(toChecksumAddress(address));
 
     // console.log('discover', address, this.discoveredAddresses, this.discoveredAddresses.includes(address.toLowerCase()));
     //sep20 discovery
-    const sep20ContractInfo = await this.sep20Helper.getSep20ContractInformation(address.toLowerCase(), false);
+    const sep20ContractInfo = await this.sep20Helper.getSep20ContractInformation(toChecksumAddress(address), false);
 
     if(sep20ContractInfo) {
       // console.log('sep20 contract discovery', sep20ContractInfo);
       this.notificationService.showToast(`${sep20ContractInfo.name} (${sep20ContractInfo.symbol}) Discovered!`, 'SEP20', 'info' );
-      return Promise.resolve(this.addContract(address.toLowerCase(), 'sep20', sep20ContractInfo.name, null, sep20ContractInfo));
+      return Promise.resolve(this.addContract(toChecksumAddress(address), 'sep20', sep20ContractInfo.name, null, sep20ContractInfo));
     }
 
     return Promise.resolve(undefined);
   }
 
   async getContract(address: string): Promise<IContract | undefined> {
-    let contract = find(this.contracts$.getValue(), {address: address.toLowerCase()});
+    let contract = find(this.contracts$.getValue(), {address: toChecksumAddress(address)});
 
-    if(!contract && !this.discoveredAddresses.includes(address.toLowerCase())) {
+    if(!contract && !this.discoveredAddresses.includes(toChecksumAddress(address))) {
       contract = await this.discover(address);
     }
 
@@ -183,34 +150,35 @@ export class ContractResourceService {
   }
 
   getContractName(address: string) {
-    const contract = find(this.contracts$.getValue(), {address: address.toLowerCase()});
+    const contract = find(this.contracts$.getValue(), {address: toChecksumAddress(address)});
     return contract?.name ?? null;
   }
 
   getLogsForContract(contractAddress: string, logs: any) {
-    const contractsInLog: string[] = uniq(map(logs, log => log.address));
+
+    // const contractsInLog: string[] = uniq(map(logs, log => log.address));
     // console.log("contracts in log", contractsInLog);
 
     const eventLogs: IEventLog[] = [];
 
     for(let log of logs) {
       const eventLog: IEventLog = {
-        contractAddress: log.address.toLowerCase(),
+        contractAddress: toChecksumAddress(log.address),
         log,
         logIndex: log.logIndex,
       }
-      const contract = find(this.contracts$.getValue(), {address: log.address.toLowerCase()});
+      const contract = find(this.contracts$.getValue(), {address: toChecksumAddress(log.address)});
 
-      if (contract?.abi) {
-        const decoder = new EventDecoder(contract.abi);
+      if (contract) {
         // console.log(`logByContract ${contract.name}`, decoder.decodeLogs([log]));
-
         eventLog.contractName = contract.name;
-
-        const decodedLog = decoder.decodeLogs([log]);
-        eventLog.decodedLog = first(decodedLog);
       } else {
         // console.warn('no abi for contract', log.address.toLowerCase())
+      }
+
+      if(this.eventLogDecoder) {
+        const decodedLog = this.eventLogDecoder.decodeLogs([log]);
+        eventLog.decodedLog = first(decodedLog);
       }
 
       eventLogs.push(eventLog);
@@ -223,7 +191,7 @@ export class ContractResourceService {
 
   getMethodForContract(contractAddress: string, input: any) {
     // console.log('getMethodForContract', input);
-    const contract = find(this.contracts$.getValue(), {address: contractAddress.toLowerCase()});
+    const contract = find(this.contracts$.getValue(), {address: toChecksumAddress(contractAddress)});
     let decodedMethod: IDecodedMethod | undefined = undefined
     if (contract?.abi) {
       const decoder = new EventDecoder(contract.abi);

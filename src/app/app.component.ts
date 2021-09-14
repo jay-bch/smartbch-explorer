@@ -5,6 +5,7 @@ import { filter, take } from 'rxjs/operators';
 import { ConnectToNodeComponent } from './components/connect-to-node/connect-to-node.component';
 import { MetamaskService } from './services/metamask/metamask.service';
 import { BlockResourceService } from './services/resources/block/block-resource.service';
+import { ContractResourceService } from './services/resources/contract/contract-resource.service';
 import { Session, SessionService } from './services/session.service';
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private dialogService: MatDialog,
     private metaMaskService: MetamaskService,
     private blockResource: BlockResourceService,
+    private contractResource: ContractResourceService,
     private router: Router
   ) {
 

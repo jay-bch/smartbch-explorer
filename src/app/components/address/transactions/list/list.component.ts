@@ -10,6 +10,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { SBCHSource } from 'src/app/services/api/node-api.service';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
 import { IDecodedMethod } from 'src/app/services/helpers/event-decoder/event-decoder';
+import { toChecksumAddress } from 'ethereum-checksum-address';
 
 const TABLECOUNT = 10;
 export interface ITransactionTableRow {
@@ -105,7 +106,7 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
     this.tableCurrentPage = 0;
     if(this.address) {
       this.initialized = false;
-      this.address = this.address.toLowerCase();
+      this.address = toChecksumAddress(this.address) as string;
       await this.getTransactionsByAddress(this.address, 0, this.tableCurrentSize, this.selectedType);
       this.initialized = true;
     }

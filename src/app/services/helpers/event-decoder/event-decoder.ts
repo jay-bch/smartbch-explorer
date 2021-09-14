@@ -26,9 +26,9 @@ export interface IDecodedLog {
 export class EventDecoder {
   methodIDs: any = {};
 
-  constructor(abi: any) {
+  constructor(abi?: any) {
     if(abi) {
-      this._addABI(abi);
+      this.addABI(abi);
     }
   }
 
@@ -181,7 +181,7 @@ export class EventDecoder {
     return input.type;
   }
 
-  private _addABI(abiArray: any[]) {
+  public addABI(abiArray: any[]) {
 
     if (Array.isArray(abiArray)) {
       // Iterate new abi to generate method id"s

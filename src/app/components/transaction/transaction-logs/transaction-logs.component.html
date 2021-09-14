@@ -18,7 +18,7 @@
             <app-general-chip [value]="event.logIndex" class="mr-2"></app-general-chip>
             <h3 class="no-margin">
               <a routerLink="/address/{{event.contractAddress}}">
-                {{event.contractAddress}}
+                {{event.contractAddress | address}}
               </a>
             </h3>
           </div>

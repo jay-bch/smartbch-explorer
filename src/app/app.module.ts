@@ -54,6 +54,7 @@ import { RichTooltipComponent } from './components/ui/rich-tooltip/rich-tooltip.
 import { RichTooltipDirective } from './components/ui/rich-tooltip/richt-tooltip.directive';
 import { TextAreaComponent } from './components/ui/text-area/text-area.component';
 import { FooterComponent } from './componenents/common/footer/footer.component';
+import { AddressPipe } from './pipes/address/address.pipe';
 
 
 export function appInit(sessionApiService: SessionService) {
@@ -101,7 +102,8 @@ export function appInit(sessionApiService: SessionService) {
     RichTooltipComponent,
     RichTooltipDirective,
     TextAreaComponent,
-    FooterComponent
+    FooterComponent,
+    AddressPipe
   ],
   imports: [
     BrowserModule,

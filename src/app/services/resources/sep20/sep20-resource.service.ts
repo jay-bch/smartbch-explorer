@@ -59,10 +59,10 @@ export class Sep20ResourceService {
         const promises: Promise<ISep20Contract | undefined>[] = [];
 
         contracts.forEach(async (contract) => {
-          if(!find(this.checkedAddresses, contract.address.toLowerCase())) {
-            this.checkedAddresses.push(contract.address.toLowerCase());
+          if(!find(this.checkedAddresses, contract.address)) {
+            this.checkedAddresses.push(contract.address);
             if (!contract.sep20) {
-              promises.push(this.sep20Helper.getSep20ContractInformation(contract.address.toLowerCase(), contract.logo));
+              promises.push(this.sep20Helper.getSep20ContractInformation(contract.address, contract.logo));
             } else {
               contract.sep20;
               promises.push(Promise.resolve(contract.sep20));
@@ -97,7 +97,7 @@ export class Sep20ResourceService {
   }
 
   public async getSep20Contract(address: string): Promise<ISep20Contract | undefined> {
-    const contract = find(this.contracts$.getValue(), {address: address.toLowerCase()});
+    const contract = find(this.contracts$.getValue(), {address: address});
     return Promise.resolve(contract);
   }
 

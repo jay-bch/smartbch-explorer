@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import Web3 from 'web3';
 import { Block } from 'web3-eth';
+import BigNumber from 'bignumber.js';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +10,8 @@ export class UtilHelperService {
   constructor() { }
 
   public convertValue(data: string, decimals: number) {
-    const convertedValue = (BigInt(data)) / BigInt(Math.pow(10, decimals));
-    return convertedValue.toString(10);
+    const convertedValue = new BigNumber(data).dividedBy(new BigNumber(`1e${decimals}`)).toFixed(decimals);
+    return convertedValue.toString();
   }
 
   public convertTopicAddress(data: string) {

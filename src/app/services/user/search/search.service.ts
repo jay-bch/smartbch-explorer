@@ -5,6 +5,7 @@ import Web3 from 'web3';
 import { AddressResourceService } from '../../resources/address/address-resource.service';
 import { BlockResourceService } from '../../resources/block/block-resource.service';
 import { TransactionResourceService } from '../../resources/transaction/transaction-resource.service';
+import { toChecksumAddress } from 'ethereum-checksum-address';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,7 @@ export class SearchService {
     const txRegex = /^0x([A-Fa-f0-9]{64})$/; //64 char hex with prefix
     const blockRegex = /^\d+$/; // positive number
 
-    let isAddress = Web3.utils.isAddress(query);
+    let isAddress = Web3.utils.isAddress(toChecksumAddress(query));
     let isTx = txRegex.test(query);
 
 
@@ -58,11 +59,12 @@ export class SearchService {
     }
 
     if(isAddress) {
+      const address = toChecksumAddress(query);
       const addressResult: ISearchResultAddress = {
-        query,
+        query: address,
         type: 'address',
-        url: `/address/${query}`,
-        data: await this.addressService.getAddressInfo(query)
+        url: `/address/${address}`,
+        data: await this.addressService.getAddressInfo(address)
       }
       this.addResult(addressResult);
     }

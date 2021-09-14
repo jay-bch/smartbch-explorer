@@ -67,11 +67,11 @@
           <th mat-header-cell *matHeaderCellDef fxFlex="200px" fxLayoutAlign="start center">From</th>
           <td mat-cell *matCellDef="let element" fxFlex="200px" fxLayoutAlign="start center">
             <div *ngIf="address && element.fromToLabel === 'IN'">
-              <a routerLink="/address/{{element.from}}">{{element.fromName | shorthash}}</a>
+              <a routerLink="/address/{{element.from}}">{{element.fromName | address | shorthash}}</a>
             </div>
             <div *ngIf="element.fromToLabel !== 'IN'">
               <i>
-                {{element.fromName | shorthash}}
+                {{element.fromName | address | shorthash}}
               </i>
             </div>
 
@@ -92,7 +92,7 @@
           <td mat-cell *matCellDef="let element" fxFlex="200px" fxLayoutAlign="start center">
             <ng-container *ngIf="element.type !== 'contract-create'">
               <div *ngIf="element.fromToLabel === 'OUT'">
-                <a routerLink="/address/{{element.to}}">{{element.toName | shorthash}}</a>
+                <a routerLink="/address/{{element.to}}">{{element.toName | address | shorthash}}</a>
               </div>
               <div *ngIf="element.fromToLabel !== 'OUT'">
                 <i>
@@ -101,7 +101,7 @@
               </div>
             </ng-container>
             <ng-container *ngIf="element.type === 'contract-create' && element.contractAddress">
-              <a routerLink="/address/{{element.contractAddress}}">{{element.contractAddress | shorthash}}</a>
+              <a routerLink="/address/{{element.contractAddress}}">{{element.contractAddress | address | shorthash}}</a>
             </ng-container>
           </td>
         </ng-container>
