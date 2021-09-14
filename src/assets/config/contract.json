@@ -1,13 +1,6 @@
 [
   {
-    "address": "0xc81aad1d00c06a28b626ea3433d41bac4d134bff",
-    "abiNames": ["sep20slp"],
-    "type": "sep20",
-    "name": "Be Your Own Bank",
-    "logo": false
-  },
-  {
-    "address": "0xe11829a7d5d8806bb36e118461a1012588fafd89",
+    "address": "0xE11829A7D5d8806BB36E118461a1012588faFD89",
     "abiNames": ["sep20"],
     "type": "sep20",
     "name": "SPICE",
@@ -21,11 +14,157 @@
     "logo": true
   },
   {
+    "address": "0x7b2B3C5308ab5b2a1d9a94d20D35CCDf61e05b72",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "flexUSD",
+    "logo": true
+  },
+  {
     "address": "0x77cb87b57f54667978eb1b199b28a0db8c8e1c0b",
     "abiNames": ["sep20"],
     "type": "sep20",
     "name": "EBEN",
-    "logo": false
+    "logo": true
+  },
+  {
+    "address": "0x675E1d6FcE8C7cC091aED06A68D079489450338a",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "Bitcoin Cash Argentina",
+    "logo": true
+  },
+  {
+    "address": "0x7eBeAdb95724a006aFaF2F1f051B13F4eBEBf711",
+    "abiNames": ["sep20"],
+    "name": "CashKitten",
+    "logo": true
+  },
+  {
+    "address": "0xF2d4D9c65C2d1080ac9e1895F6a32045741831Cd",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "HONK",
+    "logo": true
+  },
+  {
+    "address": "0xc70c7718C7f1CCd906534C2c4a76914173EC2c44",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "Knuth",
+    "logo": true
+  },
+  {
+    "address": "0xc2100c9486B320B6db2Fc6D1f2BeAAB713fF069D",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "🌩",
+    "logo": true
+  },
+  {
+    "address": "0xc2100c9486B320B6db2Fc6D1f2BeAAB713fF069D",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "🌩",
+    "logo": true
+  },
+  {
+    "address": "0x481De06DCA0198844faA36FCa04Db364e5c2f86C",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "MAZE",
+    "logo": true
+  },
+  {
+    "address": "0x8f66C730e383Bb412a9a3cB58178BAb2f432d194",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "sVNT Token",
+    "logo": true
+  },
+  {
+    "address": "0x2a886b947d5a8f0e09408C9069914Fa44C06ed7e",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "VANDALS",
+    "logo": true
+  },
+  {
+    "address": "0x2a886b947d5a8f0e09408C9069914Fa44C06ed7e",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "VANDALS",
+    "logo": true
+  },
+  {
+    "address": "0x80453ACDfE0073D6743B27D72e06F48777EeAd80",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "ZOMBIE",
+    "logo": true
+  },
+  {
+    "address": "0x0D8b355f9CEDeB612f2df4B39CdD87059A244567",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "CandyMan",
+    "logo": true
+  },
+  {
+    "address": "0x252fd94f3Fb53D3D62F4FEc708501ACd59A57e52",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "HAM",
+    "logo": true
+  },
+  {
+    "address": "0xB24D7763516bca9656779d760be9a32490f46E27",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "HODL",
+    "logo": true
+  },
+  {
+    "address": "0x0b00366fBF7037E9d75E4A569ab27dAB84759302",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "LAW",
+    "logo": true
+  },
+  {
+    "address": "0x5a3bB59F34D60E9EB5643Fb80C8D712275F6a96A",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "PHA",
+    "logo": true
+  },
+  {
+    "address": "0x9288df32951386A8254aEaF80a66B78cCaf75b82",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "sBUSD",
+    "logo": true
+  },
+  {
+    "address": "0xFfA2394B61D3dE16538a2Bbf3491297Cc5a7C79a",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "UAT",
+    "logo": true
+  },
+  {
+    "address": "0x445B3712A09f8102Dd0c1ffb6B3b0dE4D3B643b7",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "WRS",
+    "logo": true
+  },
+  {
+    "address": "0xFf3ed63bf8bC9303eA0A7E1215bA2f82D569799e",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "ORB - Enter The Sphere",
+    "logo": true
   },
   {
     "address": "0x0000000000000000000000000000000000002711",
@@ -49,11 +188,11 @@
     "logo": false
   },
   {
-    "address": "0x3743ec0673453e5009310c727ba4eaf7b3a1cc04",
+    "address": "0x3743eC0673453E5009310C727Ba4eaF7b3a1cc04",
     "abiNames": ["weth"],
     "type": "sep20",
     "name": "Wrapped BCH",
-    "logo": false
+    "logo": true
   },
   {
     "address": "0x7850ec1815b18531f080d7d478613c718f4b5db7",
