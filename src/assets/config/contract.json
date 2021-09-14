@@ -221,5 +221,12 @@
     "type": "custom",
     "name": "BenSwap LP - $WBCH / EBEN",
     "logo": false
+  },
+  {
+    "address": "0xDEa721EFe7cBC0fCAb7C8d65c598b21B6373A2b6",
+    "abiNames": ["masterbreeder"],
+    "type": "custom",
+    "name": "MasterBreeder",
+    "logo": false
   }
 ]
