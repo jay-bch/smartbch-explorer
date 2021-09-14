@@ -16,6 +16,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   session: Session | undefined;
   modal: MatDialogRef<any> | undefined;
 
+  dismissDonation = true;
+
   constructor(
     private sessionService: SessionService,
     private dialogService: MatDialog,
@@ -46,6 +48,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    if(!localStorage.getItem('dismissDonationMessage')) {
+      this.dismissDonation = false;
+    }
+  }
 
+  dismissDonationMessage() {
+    this.dismissDonation = true;
+    localStorage.setItem('dismissDonationMessage', 'true');
   }
 }

@@ -3,6 +3,29 @@
 </div>
 
 <div class="page-wrapper">
+  <mat-card class="donation-message mb-3" *ngIf="!dismissDonation">
+    <div fxLayout="row" >
+      <div fxFlex="auto">
+        <div class="title" fxLayoutAlign="start end">
+          <strong>
+            Please consider a small donation to support the future development of SmartScan.
+          </strong>
+        </div>
+      </div>
+      <div fxFlex="10%" fxLayoutAlign="end" fxLayoutAlign="end" (click)="dismissDonationMessage()">
+        <mat-icon class="close-button">highlight_off</mat-icon>
+      </div>
+    </div>
+    <div class="message">
+      <div class="pt-2">
+        Thank you very much for your support!
+      </div>
+
+      <div class="pt-2">
+        <strong>0x3061cA0fa50F96db071D433F9d8eDF5Cf56392FA</strong>
+      </div>
+    </div>
+  </mat-card>
   <router-outlet></router-outlet>
 </div>
 

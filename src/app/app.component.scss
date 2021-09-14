@@ -32,3 +32,21 @@
   // padding-bottom: 96px;
   min-height: calc(100vh - 316px);
 }
+
+.donation-message {
+  width: 500px;
+  margin: 0 auto;
+  background-color: rgba(116, 221, 84, 0.5);
+
+  .title {
+    margin-top: 5px;
+  }
+
+  .message {
+    margin-top: 10px;
+  }
+
+  .close-button {
+    cursor: pointer;
+  }
+}
