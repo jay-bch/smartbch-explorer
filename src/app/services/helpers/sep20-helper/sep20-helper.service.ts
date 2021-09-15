@@ -35,6 +35,25 @@ export class Sep20HelperService {
     private nodeApiService: NodeApiService,
   ) { }
 
+  public async getTokenBalances(address: string, tokenAddresses: string[]) {
+    try {
+      const callParams = await this.nodeApiService.callMultiple( map(tokenAddresses, tokenAddress => {
+        return {
+          transactionConfig: {
+            to: tokenAddress,
+            data: Web3.utils.sha3("balanceOf(address)")?.slice(0,10) + "000000000000000000000000" + Web3.utils.stripHexPrefix(address)
+          },
+          returnType: 'uint256'
+        };
+
+      }));
+
+      return callParams;
+    } catch (error) {
+      return null;
+    }
+  }
+
   public async getSep20ContractInformation(address: string, logo: boolean): Promise<ISep20Contract | undefined> {
     try {
       const callParams = await this.nodeApiService.callMultiple( map(sep20Properties, property => {

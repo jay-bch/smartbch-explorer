@@ -159,7 +159,6 @@ export class Web3Connector {
       return new Promise((res, rej) => {
         if(this.web3) {
           const getTransaction: any = this.web3.eth.getTransaction as any;
-          // const request = this.web3.eth.getBlock['request'] as any;
           const req = getTransaction.request(id, (err: any, data: any) => {
             if(err) rej(err);
             else res(data)
@@ -173,7 +172,6 @@ export class Web3Connector {
 
     batch.execute();
     return Promise.all(promises);
-
   }
 
   queryTxByAddr(address: string, from: string | number | 'latest', to: string | number | 'latest', limit = 0): Promise<Transaction[]> {

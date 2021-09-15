@@ -130,15 +130,16 @@ export class Sep20ResourceService {
   // }
 
   public async getSep20BalanceForAddress(contractAddress: string, address: string) {
-    const count = await this.nodeApiService.getSep20AddressCount(address, contractAddress, 'both');
-    // console.log('getBALANCE', address, contractAddress, count);
-
     const data: string = Web3.utils.sha3("balanceOf(address)")?.slice(0,10) + "000000000000000000000000" + Web3.utils.stripHexPrefix(address);
     return await this.nodeApiService.call({
       to: contractAddress,
       data
     },
     'uint256') as string;
+  }
+
+  public async getSep20BalancesForaddress(address: string, tokenAddresses: string[]) {
+    return this.sep20Helper.getTokenBalances(address, tokenAddresses);
   }
 
   // public async getSep20TransactionsForAddress(contractAddress: string, address?: string) {

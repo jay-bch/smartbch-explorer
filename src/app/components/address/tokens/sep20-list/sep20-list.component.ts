@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
-import { find } from 'lodash';
+import { find, map } from 'lodash';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UtilHelperService } from 'src/app/services/helpers/util/util-helper.service';
@@ -61,10 +61,13 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
         const sep20contracts: ISep20Contract[] = [];
         // console.log('results', results);
 
+        const balances = await this.sep20recource.getSep20BalancesForaddress(_address, map(results, (contract: any) => contract.address));
+
         // for(let i = 0; i < result.length; i++) {
-        for(let contract of results) {
+        for(let [index, contract] of results.entries()) {
           // const sep20contract = contract;
-          const unformattedBalance = await this.sep20recource.getSep20BalanceForAddress(contract.address, _address);
+          // const unformattedBalance = await this.sep20recource.getSep20BalanceForAddress(contract.address, _address);
+          const unformattedBalance = balances[index];
           if (unformattedBalance && unformattedBalance !== '0') {
             const balance = this.utilHelper.convertValue(unformattedBalance, contract.decimals);
             const splitBalance = balance.split('.');
