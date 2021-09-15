@@ -40,8 +40,6 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
     private utilHelper: UtilHelperService
   ) { }
 
-
-
   async ngOnInit(): Promise<void> {
 
   }
@@ -74,7 +72,7 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
             sep20BalanceList.push({
               contract,
               balance,
-              balanceWhole: this.numberWithCommas(splitBalance[0]),
+              balanceWhole: this.utilHelper.numberWithCommas(splitBalance[0]),
               balanceFraction: splitBalance[1] ? splitBalance[1] : undefined
             });
           }
@@ -117,11 +115,6 @@ export class AddressSEP20ListComponent implements OnInit, OnDestroy, OnChanges {
     // console.log('set active contract', contract);
     this.setActiveContract(contract);
 
-  }
-
-  numberWithCommas(x: any) {
-    return x.toString().split('').reverse().join('')
-    .replace(/(\d{3}(?!.*\.|$))/g, '$1,').split('').reverse().join('')
   }
 
   ngOnDestroy(): void {

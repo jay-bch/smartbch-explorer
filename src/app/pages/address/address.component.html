@@ -3,12 +3,13 @@
     <mat-card *ngIf="initialized">
       <div fxLayout="column">
         <div fxLayout="row" fxLayoutAlign="start start">
-          <div fxFlex="200px">
+          <div fxFlex="250px">
             <h1 class="no-margin" *ngIf="!code">Address</h1>
-            <h1 class="no-margin" *ngIf="code">Contract</h1>
+            <h1 class="no-margin" *ngIf="code">
+              <span *ngIf="sep20Contract">SEP 20</span>
+              Contract
+            </h1>
           </div>
-
-
 
           <div fxFlex="450px" fxLayoutAlign="start center">
             <h3 class="no-margin">
@@ -33,6 +34,37 @@
 
           <div class="ml-2 mr-2" fxFlex="50px" fxLayoutAlign="center center" *ngIf="!contract">
             <app-hash-icon [address]="address" [diameter]="64" [type]="'address'"></app-hash-icon>
+          </div>
+        </div>
+
+        <div fxLayout="row"  *ngIf="sep20Contract">
+          <div fxLayout="column" fxFlex="300px" fxLayoutGap="5px">
+            <strong>SEP 20 Information</strong>
+            <div class="pt-2" fxLayout="row">
+              <div fxFlex="125px"><strong>Name</strong></div>
+              <div fxFlex="auto">{{sep20Contract.name}}</div>
+            </div>
+            <div fxLayout="row">
+              <div fxFlex="125px"><strong>Symbol</strong></div>
+              <div fxFlex="auto">{{sep20Contract.symbol}}</div>
+            </div>
+            <div fxLayout="row">
+              <div fxFlex="125px"><strong>Total Supply</strong></div>
+              <div fxLayout="row" fxFlex="auto">
+                <div class="balance-whole">
+                  {{sep20SupplyWhole}}
+                </div>
+                <ng-container *ngIf="sep20SupplyFraction">
+                  <div class="balance-fraction">
+                    .{{sep20SupplyFraction}}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div fxLayout="row">
+              <div fxFlex="125px"><strong>Decimals</strong></div>
+              <div fxFlex="auto">{{sep20Contract.decimals}}</div>
+            </div>
           </div>
         </div>
 

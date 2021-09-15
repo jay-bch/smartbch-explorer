@@ -21,4 +21,9 @@ export class UtilHelperService {
   public getGasPercentageUsed(block: Block) {
     return ( (block.gasUsed / block.gasLimit) * 100).toFixed(5)
   }
+
+  public numberWithCommas(x: any) {
+    return x.toString().split('').reverse().join('')
+    .replace(/(\d{3}(?!.*\.|$))/g, '$1,').split('').reverse().join('')
+  }
 }

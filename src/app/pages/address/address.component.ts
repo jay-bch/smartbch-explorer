@@ -1,14 +1,16 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { NodeApiService } from 'src/app/services/api/node-api.service';
-import { Sep20ResourceService } from '../../services/resources/sep20/sep20-resource.service';
-import { TransactionResourceService } from '../../services/resources/transaction/transaction-resource.service';
+import { ISep20Contract } from '../../services/resources/sep20/sep20-resource.service';
 import Web3 from 'web3';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
 import { ContractResourceService, IContract } from 'src/app/services/resources/contract/contract-resource.service';
 import { toChecksumAddress } from 'ethereum-checksum-address';
+import { find } from 'lodash';
+import { Sep20HelperService } from 'src/app/services/helpers/sep20-helper/sep20-helper.service';
+import { UtilHelperService } from 'src/app/services/helpers/util/util-helper.service';
 @Component({
   selector: 'app-address',
   templateUrl: './address.component.html',
@@ -27,14 +29,17 @@ export class AddressComponent implements OnInit, OnDestroy {
   selectedTabIndex: number = 0;
   isInternalContract = false;
   contract: IContract | undefined;
+  sep20Contract: ISep20Contract | undefined | null;
+  sep20SupplyWhole: string | undefined;
+  sep20SupplyFraction: string | undefined;
 
   constructor(
     private route: ActivatedRoute,
     private apiService: NodeApiService,
-    private transactionResource: TransactionResourceService,
-    private sep20ResourceService: Sep20ResourceService,
     private addressService: AddressResourceService,
-    private contractService: ContractResourceService
+    private contractService: ContractResourceService,
+    private utilHelper: UtilHelperService,
+    private sep20Helper: Sep20HelperService
   ) {
 
   }
@@ -45,6 +50,9 @@ export class AddressComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.address = toChecksumAddress(params.addressId);
         this.contractName = undefined;
+        this.sep20Contract = undefined;
+        this.sep20SupplyWhole = undefined;
+        this.sep20SupplyFraction = undefined;
 
 
         if(this.address) {
@@ -70,6 +78,29 @@ export class AddressComponent implements OnInit, OnDestroy {
 
               this.contractName = this.addressService.getAddressName(this.address);
               this.contract = await this.contractService.getContract(this.address);
+
+              if(this.contract?.type === 'sep20') {
+                this.contractService.contracts$.pipe(map(contracts => {
+                  const contract = find(contracts, {address: toChecksumAddress(this.address)})
+                  if(contract) return contract;
+                  return false;
+
+                })).subscribe(async (contract) => {
+                  if(this.address && contract) {
+                    if(!contract.sep20) {
+                      contract.sep20 = await this.sep20Helper.getSep20ContractInformation(this.address, contract.logo)
+                    }
+
+                    if(contract.sep20) {
+                      this.sep20Contract = contract.sep20;
+                      const sep20Supply = this.utilHelper.numberWithCommas(this.utilHelper.convertValue(contract.sep20.totalSupply, contract.sep20.decimals));
+                      const splitBalance = sep20Supply.split('.');
+                      this.sep20SupplyWhole = splitBalance[0]
+                      this.sep20SupplyFraction = splitBalance[1] ?? undefined;
+                    }
+                  }
+                })
+              }
             } else {
               this.contract = undefined;
             }
