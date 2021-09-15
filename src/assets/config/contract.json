@@ -37,6 +37,7 @@
   {
     "address": "0x7eBeAdb95724a006aFaF2F1f051B13F4eBEBf711",
     "abiNames": ["sep20"],
+    "type": "sep20",
     "name": "CashKitten",
     "logo": true
   },
