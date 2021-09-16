@@ -168,6 +168,20 @@
     "logo": true
   },
   {
+    "address": "0x98Dd7eC28FB43b3C4c770AE532417015fa939Dd3",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "FLEX Coin",
+    "logo": true
+  },
+  {
+    "address": "0x7DF65F158126898725f262378538B60db543C11A",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "MGOT",
+    "logo": true
+  },
+  {
     "address": "0x0000000000000000000000000000000000002711",
     "abiNames": ["sep20"],
     "type": "sep20",
