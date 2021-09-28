@@ -48,13 +48,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    if(!localStorage.getItem('dismissDonationMessage')) {
+    if(!localStorage.getItem('dismissDonationMessage1')) {
       this.dismissDonation = false;
     }
   }
 
   dismissDonationMessage() {
     this.dismissDonation = true;
-    localStorage.setItem('dismissDonationMessage', 'true');
+    localStorage.setItem('dismissDonationMessage1', 'true');
   }
 }
