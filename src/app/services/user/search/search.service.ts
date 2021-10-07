@@ -40,7 +40,10 @@ export class SearchService {
     const txRegex = /^0x([A-Fa-f0-9]{64})$/; //64 char hex with prefix
     const blockRegex = /^\d+$/; // positive number
 
-    let isAddress = Web3.utils.isAddress(toChecksumAddress(query));
+    let isAddress = false;
+    try {
+      isAddress = Web3.utils.isAddress(toChecksumAddress(query));
+    } catch {}
     let isTx = txRegex.test(query);
 
 
