@@ -1,7 +1,10 @@
 
 <div fxLayout="row" fxFlex="auto" fxLayoutAlign="start center" class="method-chip py-1 px-3 mr-2" [ngClass]="method?.name">
   <div fxLayout="row" fxLayoutAlign="center center" *ngIf="method && method.name !== 'Transaction'">
-    <div>{{method.name}}</div>
+    <div>
+      <span>{{method.name.substring(0, 25)}}</span>
+      <span *ngIf="method.name.length > 25">...</span>
+    </div>
   </div>
 
   <div fxLayout="row" fxLayoutAlign="center center" *ngIf="!method || method.name === 'Transaction'">
