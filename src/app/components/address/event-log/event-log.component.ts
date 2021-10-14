@@ -72,6 +72,8 @@ export class EventLogComponent implements OnInit, OnChanges {
   inputLogDecoder: EventDecoder | undefined;
   eventLogDecoder: EventDecoder | undefined;
   blockHeight: number | undefined;
+  minBlockHeight: number = 0;
+  retries: number = 0;
   rawLogs: string[] | undefined;
 
   constructor(
@@ -113,10 +115,20 @@ export class EventLogComponent implements OnInit, OnChanges {
 
       // console.log('>> ', this.tableCurrentPage * this.tableCurrentSize, (this.tableCurrentPage + 1) * this.tableCurrentSize)
       const limit = (this.tableCurrentPage + 1) * this.tableCurrentSize;
-      const response = await this.addressService.getEventLogs(this.address, this.blockHeight, 0, limit);
+      let response:Log[] = [];
+      try {
+        response = await this.addressService.getEventLogs(this.address, this.blockHeight, this.minBlockHeight, limit);
+      } catch (error: any) {
+        if(error.toString().includes('too many candidicate entries')) {
+          this.retries++;
+          this.minBlockHeight = Math.ceil((this.retries * 100000) );
+          this.loadLogs()
+          return;
+        }
+      }
 
       if(this.lastPage === undefined) {
-        if(response.length === limit - this.tableCurrentSize) {
+        if(response && response.length === limit - this.tableCurrentSize) {
           this.tableLength = limit - this.tableCurrentSize;
           this.lastPage = this.tableCurrentPage - 1;
           this.previousPage();
@@ -192,9 +204,10 @@ export class EventLogComponent implements OnInit, OnChanges {
   }
 
   private mapTableRow(row: Log, rawLog: string, tx?: ITransaction) {
+
     let log: any | undefined = undefined;
 
-    if(row.address === this.address && this.eventLogDecoder) {
+    if(row.address.toLowerCase() === this.address?.toLowerCase() && this.eventLogDecoder) {
       const _log = this.eventLogDecoder.decodeLogs([row]);
       log = first(_log);
     }

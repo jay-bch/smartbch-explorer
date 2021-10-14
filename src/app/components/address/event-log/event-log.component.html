@@ -1,6 +1,7 @@
 <div fxFlex="auto" fxLayout="column">
   <div fxFlex="auto" fxLayoutAlign="space-between center">
-    <span class="page-label">Showing most recent events</span>
+    <span class="page-label">Showing most recent events </span>
+    <span class="page-label" *ngIf="minBlockHeight">(Blocks {{blockHeight}} to {{minBlockHeight}})</span>
     <span class="page-label" *ngIf="lastPage === undefined">Page {{tableCurrentPage + 1}}</span>
   </div>
   <div fxFlex="auto" class="table-wrapper">
