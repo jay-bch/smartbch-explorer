@@ -1,4 +1,5 @@
 import { map } from "lodash";
+import { filter } from "rxjs/operators";
 import Web3 from "web3";
 import { AbiCoder } from "web3-eth-abi";
 import { IContract } from "../../resources/contract/contract-resource.service";
@@ -104,64 +105,93 @@ export class EventDecoder {
     return logs.filter((log: any) => log.topics.length > 0).map((logItem: any) => {
       const methodID = logItem.topics[0].slice(2);
       const method = this.methodIDs[methodID];
+
       if (method) {
-        // console.log('METHOD', method, methodID, this.methodIDs);
-        const logData = logItem.data;
+        let logData = logItem.data;
+        // fix/hack for ERC721 transfer events
+        if(logData === '0x' && methodID === 'ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' ) {
+          method.inputs[2] = {
+            indexed: true,
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256"
+          }
+        }
+
+        // fix/hack for ERC721 approval events
+        if(logData === '0x' && methodID === '8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925' ) {
+          method.inputs[2] = {
+            indexed: true,
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256"
+          }
+        }
+
+
         let decodedParams: IDecodedValue[] = [];
         let dataIndex = 0;
         let topicsIndex = 1;
 
         let dataTypes: string[] = [];
         method.inputs.map((input: any) => {
-          // console.log(input);
           if (!input.indexed) {
             dataTypes.push(input.type);
           }
         });
 
-        // console.log('>>>', dataTypes, logData, logData.slice(2));
-        const decodedData = abicoder.decodeParameters(
-          dataTypes,
-          logData.slice(2)
-        );
+        let decodedData: {[key:string]: any} | undefined;
+
+        try {
+          decodedData = abicoder.decodeParameters(
+            dataTypes,
+            logData.slice(2)
+          );
+        }  catch {
+          console.log('Error parsing log', method, methodID);
+        }
 
         // Loop topic and data to get the params
         method.inputs.map((param: any) => {
-          let decodedP: IDecodedValue = {
-            name: param.name,
-            type: param.type,
-          };
+            if(decodedData) {
+              let decodedP: IDecodedValue = {
+                name: param.name,
+                type: param.type,
+              };
 
-          if (param.indexed) {
-            decodedP.value = logItem.topics[topicsIndex];
-            topicsIndex++;
-          } else {
-            decodedP.value = decodedData[dataIndex];
-            dataIndex++;
-          }
+              if (param.indexed) {
+                decodedP.value = logItem.topics[topicsIndex];
+                topicsIndex++;
+              } else {
+                decodedP.value = decodedData[dataIndex];
+                dataIndex++;
+              }
 
-          if (param.type === "address") {
-            decodedP.value = decodedP.value?.toLowerCase();
-            // 42 because len(0x) + 40
-            if (decodedP.value && decodedP.value.length > 42) {
-              let toRemove = decodedP.value.length - 42;
-              let temp = decodedP.value.split("");
-              temp.splice(2, toRemove);
-              decodedP.value = temp.join("");
+              if (param.type === "address") {
+                decodedP.value = decodedP.value?.toLowerCase();
+                // 42 because len(0x) + 40
+                if (decodedP.value && decodedP.value.length > 42) {
+                  let toRemove = decodedP.value.length - 42;
+                  let temp = decodedP.value.split("");
+                  temp.splice(2, toRemove);
+                  decodedP.value = temp.join("");
+                }
+              }
+
+              if (
+                param.type === "uint256" ||
+                param.type === "uint8" ||
+                param.type === "int"
+              ) {
+                // ensure to remove leading 0x for hex numbers
+                if(decodedP.value) decodedP.value = Web3.utils.toBN(decodedP.value).toString(10);
+              }
+
+              decodedParams.push(decodedP);
             }
-          }
+          });
 
-          if (
-            param.type === "uint256" ||
-            param.type === "uint8" ||
-            param.type === "int"
-          ) {
-            // ensure to remove leading 0x for hex numbers
-            if(decodedP.value) decodedP.value = Web3.utils.toBN(decodedP.value).toString(10);
-          }
 
-          decodedParams.push(decodedP);
-        });
 
         return {
           name: method.name,
