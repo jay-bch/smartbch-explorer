@@ -294,6 +294,13 @@
     "logo": false
   },
   {
+    "address": "0xa36C479eEAa25C0CFC7e099D3bEbF7A7F1303F40",
+    "abiNames": ["chaincheque"],
+    "type": "custom",
+    "name": "ChainCheque (Checkbook V2)",
+    "logo": false
+  },
+  {
     "address": "0x72cd8c0B5169Ff1f337E2b8F5b121f8510b52117",
     "abiNames": ["benswapfactory"],
     "type": "custom",
