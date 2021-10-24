@@ -334,6 +334,20 @@
     "type": "custom",
     "name": "MISTbar",
     "logo": true
-  }
+  },
+  {
+    "address": "0x7642Df81b5BEAeEb331cc5A104bd13Ba68c34B91",
+    "abiNames": ["celery", "sep20"],
+    "type": "sep20",
+    "name": "Celery",
+    "logo": true
+  },
+  {
+    "address": "0x516Ef15d906466F75E50A0e6Edd3E6Ce5908cB13",
+    "abiNames": ["tokensale"],
+    "type": "custom",
+    "name": "Celery Presale Contract",
+    "logo": false
 
+  }
 ]
