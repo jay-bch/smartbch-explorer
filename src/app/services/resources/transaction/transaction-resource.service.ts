@@ -240,7 +240,7 @@ export class TransactionResourceService {
         txFee: tx.gas * txGasPrice,
       };
 
-      if (tx.to && tx.to === '0x0000000000000000000000000000000000000000' && tx.input) {
+      if (tx.to === null && tx.input) {
         const method = { name: tx.input.substr(0, 10), value: tx.input }
         mappedTx.type = 'contract-create';
       } else if (tx.input && tx.input !== '0x') {
