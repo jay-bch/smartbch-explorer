@@ -348,6 +348,26 @@
     "type": "custom",
     "name": "Celery Presale Contract",
     "logo": false
-
+  },
+  {
+    "address": "0x1C00b18A71802d13D93C76Be60B716099CC06C55",
+    "abiNames": ["crosschaintransfer"],
+    "type": "custom",
+    "name": "CrossChainTransfer",
+    "logo": false
+  },
+  {
+    "address": "0x657061bf5D268F70eA3eB1BCBeb078234e5Df19d",
+    "abiNames": ["nftex"],
+    "type": "custom",
+    "name": "OASIS NFT DEX",
+    "logo": false
+  },
+  {
+    "address": "0xE765026Cad648785b080E78700cBF6fa1C050d7C",
+    "abiNames": ["oasisnft"],
+    "type": "custom",
+    "name": "CashCats NFT",
+    "logo": false
   }
 ]
