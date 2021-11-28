@@ -220,7 +220,14 @@
     "address": "0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129",
     "abiNames": ["sushitoken"],
     "type": "sep20",
-    "name": "MistToken",
+    "name": "Mist",
+    "logo": true
+  },
+  {
+    "address": "0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91",
+    "abiNames": ["sushitoken"],
+    "type": "sep20",
+    "name": "Tango",
     "logo": true
   },
   {
@@ -333,6 +340,27 @@
     "abiNames": ["sushibar"],
     "type": "custom",
     "name": "MISTbar",
+    "logo": true
+  },
+  {
+    "address": "0xb93184fB3eEDb4d32150763578cA305488240c8e",
+    "abiNames": ["uniswapV2Router02"],
+    "type": "custom",
+    "name": "TANGO Router",
+    "logo": false
+  },
+  {
+    "address": "0x38cC060DF3a0498e978eB756e44BD43CC4958aD9",
+    "abiNames": ["masterchef"],
+    "type": "custom",
+    "name": "TANGO MasterChef",
+    "logo": false
+  },
+  {
+    "address": "0x98Ff640323C059d8C4CB846976973FEEB0E068aA",
+    "abiNames": ["sushibar"],
+    "type": "custom",
+    "name": "TANGObar",
     "logo": true
   },
   {
