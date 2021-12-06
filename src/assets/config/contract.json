@@ -404,5 +404,19 @@
     "type": "custom",
     "name": "Incinerate",
     "logo": true
+  },
+  {
+    "address": "0x7858F2821F5135DC07F0D70aA8fc5aCa776A19B3",
+    "abiNames": ["viegagepresale"],
+    "type": "custom",
+    "name": "Viegage Presale",
+    "logo": false
+  },
+  {
+    "address": "0xd8DE06b017857A821BA873D4F174B9580454f6c4",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "Viegage Token",
+    "logo": true
   }
 ]
