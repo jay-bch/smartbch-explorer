@@ -418,5 +418,12 @@
     "type": "sep20",
     "name": "Viegage Token",
     "logo": true
+  },
+  {
+    "address": "0x659F04F36e90143fCaC202D4BC36C699C078fC98",
+    "abiNames": ["sep20", "catsluck"],
+    "type": "sep20",
+    "name": "CatsLuck",
+    "logo": true
   }
 ]
