@@ -425,5 +425,12 @@
     "type": "sep20",
     "name": "CatsLuck",
     "logo": true
+  },
+  {
+    "address": "0x6e6D4ECE35EEd638A1153339F69E543B7ae5F776",
+    "abiNames": ["sep20", "smartdoge"],
+    "type": "sep20",
+    "name": "SmartDoge",
+    "logo": true
   }
 ]
