@@ -425,5 +425,12 @@
     "type": "sep20",
     "name": "CatsLuck",
     "logo": true
+  },
+  {
+    "address": "0xd2597a0bde31Ddec2440E256d8AA35eb63F1A9e3",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "Game",
+    "logo": true
   }
 ]
