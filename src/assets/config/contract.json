@@ -433,4 +433,11 @@
     "name": "Game",
     "logo": true
   }
+  {
+    "address": "0x5cf98281EAaA7a0C332B3515b274739ed92B1849",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "Biogesic",
+    "logo": true
+  }
 ]
