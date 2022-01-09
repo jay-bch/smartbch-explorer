@@ -432,5 +432,12 @@
     "type": "sep20",
     "name": "Game",
     "logo": true
+  },
+  {
+    "address": "0xA27BB6F9D6b8fCCB3bD2b0cAf69c7Ce97549857f",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "Zapit",
+    "logo": true
   }
 ]
