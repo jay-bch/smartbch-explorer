@@ -392,6 +392,13 @@
     "logo": false
   },
   {
+    "address": "0x3b968177551a2aD9fc3eA06F2F41d88b22a081F7",
+    "abiNames": ["nftexv2"],
+    "type": "custom",
+    "name": "OASIS NFT DEX V2",
+    "logo": false
+  },
+  {
     "address": "0xE765026Cad648785b080E78700cBF6fa1C050d7C",
     "abiNames": ["oasisnft"],
     "type": "custom",
