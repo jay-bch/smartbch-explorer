@@ -439,5 +439,12 @@
     "type": "sep20",
     "name": "Game",
     "logo": true
+  },
+  {
+    "address": "0xB0c59E4B2249123b014c1C39D012BFCA58a8E1b7",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "SPACE",
+    "logo": true
   }
 ]
