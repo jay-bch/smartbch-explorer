@@ -439,5 +439,12 @@
     "type": "sep20",
     "name": "Game",
     "logo": true
+  },
+  {
+    "address": "0x08D47684FB18B18ee71929f80e646cf979bbc846"
+    "abiNames": ["trolls"]
+    "type": "sep20",
+    "name": "TROLLS",
+    "logo": true
   }
 ]
