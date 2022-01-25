@@ -439,5 +439,12 @@
     "type": "sep20",
     "name": "Game",
     "logo": true
-  }
+  },
+  {
+    "address": "0x5E6A4DA7Ed44bb4F1a06A2909a44Cd0824A21919",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "Cryptogesic",
+    "logo": true
+  }  
 ]
