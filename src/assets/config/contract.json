@@ -439,5 +439,12 @@
     "type": "sep20",
     "name": "Game",
     "logo": true
+  },
+  {
+    "address": "0x7b82A3b1417Cd21E67f745917a80cC0f53277B8C",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "EVE",
+    "logo": true
   }
 ]
