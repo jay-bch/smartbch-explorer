@@ -25,6 +25,10 @@ export interface ISearchResultAddress extends ISearchResult {
   data: any;
 }
 
+export interface ISearchResultEnsName extends ISearchResult {
+  data: any;
+}
+
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',

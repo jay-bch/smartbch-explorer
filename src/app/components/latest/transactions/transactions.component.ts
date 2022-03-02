@@ -7,6 +7,7 @@ import { map, get, isNumber } from 'lodash';
 import Web3 from 'web3';
 import { timingSafeEqual } from 'crypto';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
+import { NodeApiService } from 'src/app/services/api/node-api.service';
 
 const TABLECOUNT = 10;
 const REFRESH_INTERVAL = 60000;
@@ -59,7 +60,8 @@ export class LatestTransactionsComponent implements OnInit, OnChanges, OnDestroy
 
   constructor(
     private transactionResource: TransactionResourceService,
-    private addressResource: AddressResourceService
+    private addressResource: AddressResourceService,
+    private apiService: NodeApiService,
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -101,22 +103,24 @@ export class LatestTransactionsComponent implements OnInit, OnChanges, OnDestroy
     this.loading = true;
     const txPage = await this.transactionResource.getLatestTransactions(this.tableCurrentPage + 1, this.tableCurrentSize, undefined, this.blockScope);
     this.loading = false;
-    this.tableData = map(txPage.transactions, tx => this.mapTableRow(tx));
+    this.tableData = await Promise.all(map(txPage.transactions, (tx) => this.mapTableRow(tx)));
 
     return Promise.resolve();
   }
 
-  private mapTableRow(tx: ITransaction): ITransactionTableRow {
+  private async mapTableRow(tx: ITransaction): Promise<ITransactionTableRow> {
     const value = tx.data.value ? tx.data.value : '0';
+    const ensNameFrom = await this.apiService.ensNameLookup(tx.data.from);
+    const ensNameTo = tx.data.to ? await this.apiService.ensNameLookup(tx.data.to) : "";
 
     return {
       swatch: `#${tx.data.hash.substring(tx.data.hash.length - 6, tx.data.hash.length)}`,
       blockId: tx.data.blockNumber,
       nonce: tx.data.nonce,
       from: tx.data.from,
-      fromName: this.addressResource.getAddressName(tx.data.from),
+      fromName: !!ensNameTo ? ensNameTo : this.addressResource.getAddressName(tx.data.from),
       to: tx.data.to,
-      toName: tx.data.to ? this.addressResource.getAddressName(tx.data.to) : tx.data.to,
+      toName: !!ensNameFrom ? ensNameFrom : (tx.data.to ? this.addressResource.getAddressName(tx.data.to) : tx.data.to),
       hash: tx.data.hash,
       method: tx.method,
       type: tx.type,

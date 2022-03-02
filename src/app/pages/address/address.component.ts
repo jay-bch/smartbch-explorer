@@ -32,6 +32,7 @@ export class AddressComponent implements OnInit, OnDestroy {
   sep20Contract: ISep20Contract | undefined | null;
   sep20SupplyWhole: string | undefined;
   sep20SupplyFraction: string | undefined;
+  ensName: string | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,12 +54,19 @@ export class AddressComponent implements OnInit, OnDestroy {
         this.sep20Contract = undefined;
         this.sep20SupplyWhole = undefined;
         this.sep20SupplyFraction = undefined;
-
+        this.ensName = undefined;
 
         if(this.address) {
           if(this.address === '0x0000000000000000000000000000000000002711') {
             this.isInternalContract = true;
           }
+
+          await this.apiService.ensNameLookup(this.address).then(result => {
+            this.ensName = result;
+          }).catch(() => {
+            this.ensName = "";
+          });
+
           // this.transactions = await this.transactionResource.getTxByAddress(this.address);
           await this.apiService.getAccountBalance(this.address).then( result => {
             this.balance = result;

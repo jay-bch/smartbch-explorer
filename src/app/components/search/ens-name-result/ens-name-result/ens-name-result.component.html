@@ -1,0 +1,16 @@
+<div fxLayout="row" fxLayoutAlign="start center" fxFlex="100" *ngIf="data">
+  <div fxLayout="column" fxFlex="50%">
+    <div class="title">LNS Domain Name</div>
+    <div>
+      <h5>
+        {{data.ensName}}
+      </h5>
+    </div>
+    <div>
+      <h5>
+        {{data.ensAddress | address}}
+      </h5>
+    </div>
+  </div>
+</div>
+

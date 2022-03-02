@@ -44,6 +44,7 @@ import { SearchComponent } from './components/search/search.component';
 import { BlockResultComponent } from './components/search/block-result/block-result/block-result.component';
 import { TxResultComponent } from './components/search/tx-result/tx-result/tx-result.component';
 import { AddressResultComponent } from './components/search/address-result/address-result/address-result.component';
+import { EnsNameResultComponent } from './components/search/ens-name-result/ens-name-result/ens-name-result.component';
 import { EmptyResultComponent } from './components/search/empty-result/empty-result.component';
 import { TransactionMethodComponent } from './components/transaction/transaction-method/transaction-method.component';
 import { TransactionLogsComponent } from './components/transaction/transaction-logs/transaction-logs.component';
@@ -93,6 +94,7 @@ export function appInit(sessionApiService: SessionService) {
     BlockResultComponent,
     TxResultComponent,
     AddressResultComponent,
+    EnsNameResultComponent,
     EmptyResultComponent,
     TransactionMethodComponent,
     TransactionLogsComponent,

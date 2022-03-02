@@ -7,7 +7,7 @@ import { map, get } from 'lodash';
 import { MatSelectChange } from '@angular/material/select';
 import Web3 from 'web3';
 import { PageEvent } from '@angular/material/paginator';
-import { SBCHSource } from 'src/app/services/api/node-api.service';
+import { NodeApiService, SBCHSource } from 'src/app/services/api/node-api.service';
 import { AddressResourceService } from 'src/app/services/resources/address/address-resource.service';
 import { IDecodedMethod } from 'src/app/services/helpers/event-decoder/event-decoder';
 import { toChecksumAddress } from 'ethereum-checksum-address';
@@ -87,7 +87,8 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
 
   constructor(
     private transactionResource: TransactionResourceService,
-    private addressResource: AddressResourceService
+    private addressResource: AddressResourceService,
+    private apiService: NodeApiService,
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -167,7 +168,7 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
       this.emptyAddress = true;
     }
 
-    this.tableData = map(txPage.transactions, tx => this.mapTableRow(tx));
+    this.tableData = await Promise.all(map(txPage.transactions, tx => this.mapTableRow(tx)));
 
     this.loading = false;
     return Promise.resolve();
@@ -191,20 +192,23 @@ export class AddressTransactionsListComponent implements OnInit, OnChanges, OnDe
     }
   }
 
-  private mapTableRow(tx: ITransaction): ITransactionTableRow {
+  private async mapTableRow(tx: ITransaction): Promise<ITransactionTableRow> {
     let fromToLabel = this.address?.toLowerCase() === tx.data.from.toLowerCase() ? 'OUT' : 'IN';
     if(tx.data.to && tx.data.from.toLowerCase() === tx.data.to.toLowerCase()) {
       fromToLabel = 'SELF';
     }
+
+    const ensNameFrom = await this.apiService.ensNameLookup(tx.data.from);
+    const ensNameTo = tx.data.to ? await this.apiService.ensNameLookup(tx.data.to) : "";
 
     return {
       swatch: `#${tx.data.hash.substring(tx.data.hash.length - 6, tx.data.hash.length)}`,
       blockId: tx.data.blockNumber,
       nonce: tx.data.nonce,
       from: tx.data.from,
-      fromName: this.addressResource.getAddressName(tx.data.from),
+      fromName: !!ensNameFrom ? ensNameFrom : this.addressResource.getAddressName(tx.data.from),
       to: tx.data.to,
-      toName: tx.data.to ? this.addressResource.getAddressName(tx.data.to) : tx.data.to,
+      toName: !!ensNameTo ? ensNameTo : (tx.data.to ? this.addressResource.getAddressName(tx.data.to) : tx.data.to),
       fromToLabel,
       hash: tx.data.hash,
       method: tx.method,

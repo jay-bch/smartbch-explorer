@@ -6,6 +6,11 @@
         {{address.address | address}}
       </h5>
     </div>
+    <div *ngIf="!!address.ensName">
+      <h5>
+        {{address.ensName}}
+      </h5>
+    </div>
   </div>
 
   <div fxLayout="column" fxFlex="50%" fxLayoutAlign="center end">
