@@ -19,7 +19,7 @@ const namehash = require('eth-ens-namehash');
 
 const ENS_REGISTRY_ADDRESS_MAP: {[chainId: number]: string} = {
   [10000]: "0x3596f09d70B454049Ce11390A3eeBfBf6a9e3945",
-  [10001]: "0x2Ced35ee5cB0596D40D51cec8fdd12e1057b5Db7",
+  [10001]: "0x32f1FBE59D771bdB7FB247FE97A635f50659202b",
 }
 
 export const DEFAULT_QUERY_SIZE = 100000; // max block range per request
