@@ -6,6 +6,7 @@ import { ITransaction, TransactionResourceService } from '../transaction/transac
 
 export interface IAddress {
   address: string;
+  ensName: string;
   balance: string;
   type?: string;
   code?: string;
@@ -32,8 +33,10 @@ export class AddressResourceService {
   async getAddressInfo(address: string): Promise<IAddress> {
     const code = await this.apiService.getCode(address);
     const balance = await this.apiService.getAccountBalance(address);
+    const ensName = await this.apiService.ensNameLookup(address)
     return {
       address,
+      ensName,
       balance,
       type: code !== '0x' ? 'contract' : 'address',
       code,

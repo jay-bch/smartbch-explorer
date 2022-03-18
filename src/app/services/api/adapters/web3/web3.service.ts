@@ -11,6 +11,17 @@ import { Block } from 'web3-eth';
 import { PagedResponse, SBCHSource } from '../../node-api.service';
 import { Hex } from 'web3-utils';
 
+import { Mutex } from 'async-mutex';
+const nameMutex = new Mutex();
+const addressMutex = new Mutex();
+
+const namehash = require('eth-ens-namehash');
+
+const ENS_REGISTRY_ADDRESS_MAP: {[chainId: number]: string} = {
+  [10000]: "0xCfb86556760d03942EBf1ba88a9870e67D77b627",
+  [10001]: "0x32f1FBE59D771bdB7FB247FE97A635f50659202b",
+}
+
 export const DEFAULT_QUERY_SIZE = 100000; // max block range per request
 @Injectable({
   providedIn: 'root'
@@ -19,9 +30,14 @@ export class Web3Adapter implements NodeAdapter{
   apiConnector?: Web3Connector;
 
   constructor() {}
+  nameCache: Map<string, string> = new Map<string,string>();
+  addressCache: Map<string, string> = new Map<string,string>();
 
   init(endpoint: string) {
     if(!endpoint) return Promise.reject();
+
+    this.nameCache.clear();
+    this.addressCache.clear();
 
     console.log('[Node Adapter:Web3] Initializing web3', endpoint);
     let connectorType: Web3ConnectorType = null;
@@ -29,7 +45,11 @@ export class Web3Adapter implements NodeAdapter{
     endpoint.startsWith('ws://') || endpoint.startsWith('wss://') ? connectorType = 'ws' : noop();
     endpoint.startsWith('http://') || endpoint.startsWith('https://') ? connectorType = 'http' : noop();
     try {
-      this.apiConnector = new Web3Connector(endpoint, connectorType)
+      this.apiConnector = new Web3Connector(endpoint, connectorType);
+      const web3 = this.apiConnector.web3!;
+      web3.eth.getChainId().then(chainId => {
+        web3.eth.ens.registryAddress = ENS_REGISTRY_ADDRESS_MAP[chainId];
+      });
     } catch(error) {
       console.log('[Node Adapter:Web3] Error connecting to node', error);
       localStorage.removeItem('connection-config');
@@ -429,5 +449,55 @@ export class Web3Adapter implements NodeAdapter{
     // }
 
     return Promise.resolve(false);
+  }
+
+  async ensNameLookup(address: string): Promise<string> {
+    if(!this.apiConnector) return Promise.reject();
+
+    const cached = this.nameCache.get(address);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const result = await nameMutex.runExclusive<string>(async () => {
+      const cached = this.nameCache.get(address);
+      if (cached !== undefined) {
+        return cached;
+      }
+
+      const reverseName = (address?.substring(2).toLowerCase() ?? "") + ".addr.reverse";
+      const resolver = await this.apiConnector!.web3!.eth.ens.getResolver(reverseName);
+      let name = "";
+      try {
+        name = await resolver.methods.name(namehash.hash(reverseName)).call();
+      } catch {}
+      this.nameCache.set(address, name);
+      return name;
+    });
+    return result;
+  }
+
+  async ensAddressLookup(name: string): Promise<string> {
+    if(!this.apiConnector) return Promise.reject();
+
+    const cached = this.addressCache.get(name);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const result = await addressMutex.runExclusive<string>(async () => {
+      const cached = this.addressCache.get(name);
+      if (cached !== undefined) {
+        return cached;
+      }
+
+      let address = "";
+      try {
+        address = await this.apiConnector!.web3!.eth.ens.getAddress(name);
+      } catch {}
+      this.addressCache.set(name, address);
+      return address;
+    });
+    return result;
   }
 }

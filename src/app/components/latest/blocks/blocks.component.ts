@@ -8,6 +8,7 @@ import { TimeElapsedPipe } from 'src/app/pipes/time-elapsed/time-elapsed.pipe';
 import { BlockResourceService } from '../../../services/resources/block/block-resource.service';
 import { Block } from 'web3-eth';
 import { UtilHelperService } from 'src/app/services/helpers/util/util-helper.service';
+import { NodeApiService } from 'src/app/services/api/node-api.service';
 
 const CAROUSELCOUNT = 6;
 const TABLECOUNT = 10;
@@ -116,6 +117,7 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
     private blockResource: BlockResourceService,
     private timeElapsedPipe: TimeElapsedPipe,
     private helper: UtilHelperService,
+    private apiService: NodeApiService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -250,9 +252,9 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
     for(let i = startBlock; i > (startBlock - pageSize) && i > 0; i--) {
       ids.push(i);
     }
-    this.tableData = map(await this.blockResource.getBlocks(ids), block => {
+    this.tableData = await Promise.all(map(await this.blockResource.getBlocks(ids), block => {
       return this.mapTableRow(block);
-    });
+    }));
 
     this.tableData$.next(this.tableData);
 
@@ -285,14 +287,15 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
     } as ICarouselBlock
   }
 
-  private mapTableRow(block: Block): IBlockTableRow {
+  private async mapTableRow(block: Block): Promise<IBlockTableRow> {
+    const ensNameValidator = await this.apiService.ensNameLookup(block.miner);
     return {
       swatch: `#${block.hash.substring(block.hash.length - 6, block.hash.length)}`,
       block: block.number,
       hash: block.hash,
       age: this.timeElapsedPipe.transform(block.timestamp),
       date: new Date(block.timestamp),
-      validator: block.miner,
+      validator: !!ensNameValidator ? ensNameValidator : block.miner,
       count: block.transactions.length,
       gasLimit: block.gasLimit,
       gasUsed: block.gasUsed,

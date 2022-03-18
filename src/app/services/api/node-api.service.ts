@@ -181,4 +181,12 @@ export class NodeApiService {
   public async getLatestTransactions(page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number) {
     return await this.apiAdapter?.getLatestTransactions(page, pageSize, searchFromBlock, scopeSize);
   }
+
+  public async ensNameLookup(address: string): Promise<string> {
+    return await this.apiAdapter?.ensNameLookup(address);
+  }
+
+  public async ensAddressLookup(name: string): Promise<string> {
+    return await this.apiAdapter?.ensAddressLookup(name);
+  }
 }

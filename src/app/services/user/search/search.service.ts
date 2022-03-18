@@ -1,11 +1,12 @@
 import { ElementRef, Injectable, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ISearchResult, ISearchResultAddress, ISearchResultBlock } from 'src/app/components/search/search.component';
+import { ISearchResult, ISearchResultAddress, ISearchResultBlock, ISearchResultEnsName } from 'src/app/components/search/search.component';
 import Web3 from 'web3';
 import { AddressResourceService } from '../../resources/address/address-resource.service';
 import { BlockResourceService } from '../../resources/block/block-resource.service';
 import { TransactionResourceService } from '../../resources/transaction/transaction-resource.service';
 import { toChecksumAddress } from 'ethereum-checksum-address';
+import { NodeApiService } from '../../api/node-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class SearchService {
   constructor(
     private blockResource: BlockResourceService,
     private transactionResource: TransactionResourceService,
-    private addressService: AddressResourceService
+    private addressService: AddressResourceService,
+    private apiService: NodeApiService,
   ) {
 
   }
@@ -44,15 +46,22 @@ export class SearchService {
     try {
       isAddress = Web3.utils.isAddress(toChecksumAddress(query));
     } catch {}
-    let isTx = txRegex.test(query);
 
+    let isEnsName = false;
+    let ensAddress = "";
+    try {
+      ensAddress = await this.apiService.ensAddressLookup(query.toLowerCase());
+      isEnsName = !!ensAddress;
+    } catch {}
+
+    let isTx = txRegex.test(query);
 
     let blocknumber = blockRegex.test(query) ? parseInt(query, 10) : undefined;
     if (!blocknumber && Web3.utils.isHexStrict(query) && query.length < 8) {
        blocknumber = Web3.utils.hexToNumber(query);
     }
 
-    if(!isAddress && !isTx && !blocknumber) {
+    if(!isAddress && !isEnsName && !isTx && !blocknumber) {
       const emptyResult: ISearchResult = {
         query,
         type: 'empty-result'
@@ -68,6 +77,16 @@ export class SearchService {
         type: 'address',
         url: `/address/${address}`,
         data: await this.addressService.getAddressInfo(address)
+      }
+      this.addResult(addressResult);
+    }
+
+    if (isEnsName) {
+      const addressResult: ISearchResultEnsName = {
+        query: query,
+        type: 'ensName',
+        url: `/address/${ensAddress}`,
+        data: { ensName: query, ensAddress: ensAddress }
       }
       this.addResult(addressResult);
     }

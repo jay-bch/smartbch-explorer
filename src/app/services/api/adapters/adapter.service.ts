@@ -44,4 +44,7 @@ export abstract class NodeAdapter {
 
   abstract getLatestTransactions(page: number, pageSize: number, searchFromBlock?: number, scopeSize?: number): Promise<PagedResponse<Transaction>>;
   abstract hasMethodFromAbi(address: string, method: string, abi: any): Promise<boolean>;
+
+  abstract ensNameLookup(address: string): Promise<string>;
+  abstract ensAddressLookup(name: string): Promise<string>;
 }

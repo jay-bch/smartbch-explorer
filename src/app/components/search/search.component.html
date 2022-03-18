@@ -1,7 +1,7 @@
 <form [formGroup]="form">
 
   <mat-form-field fxFlex="100">
-    <mat-label>Search by address / txn hash / block number</mat-label>
+    <mat-label>Search by address / LNS name / txn hash / block number</mat-label>
     <input #autoCompleteInput matInput formControlName="query" [matAutocomplete]="auto">
     <mat-autocomplete
       autoActiveFirstOption
@@ -15,6 +15,7 @@
           <app-block-result *ngIf="option.type === 'block'" [block]="option.data"></app-block-result>
           <app-tx-result *ngIf="option.type === 'tx'" [tx]="option.data"></app-tx-result>
           <app-address-result *ngIf="option.type === 'address'" [address]="option.data"></app-address-result>
+          <app-ens-name-result *ngIf="option.type === 'ensName'" [data]="option.data"></app-ens-name-result>
         </div>
 
       </mat-option>

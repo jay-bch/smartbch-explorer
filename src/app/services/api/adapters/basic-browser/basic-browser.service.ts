@@ -125,7 +125,11 @@ export class BasicBrowserAdapter implements NodeAdapter {
     return this.httpClient.get(`${session.apiConfig.apiEndpoint}/${session.apiConfig.apiVersion}/bch_price`, {}).toPromise() as Promise<string>;
   }
 
+  ensNameLookup(address: string): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
 
-
-
+  ensAddressLookup(name: string): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
 }
