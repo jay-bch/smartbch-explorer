@@ -446,5 +446,12 @@
     "type": "sep20",
     "name": "EVE",
     "logo": true
+  },
+  {
+    "address": "0x288B6Ca2eFCF39C9B68052B0088A0cB3f3D3B5f2",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "PDA",
+    "logo": false
   }
 ]
