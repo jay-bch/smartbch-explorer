@@ -453,5 +453,26 @@
     "type": "sep20",
     "name": "PDA",
     "logo": false
+  },
+  {
+    "address": "0x6732E55Ac3ECa734F54C26Bd8DF4eED52Fb79a6E",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "Joystick",
+    "logo": true
+  },
+  {
+    "address": "0x71df12B5A718e0110991BB641cb379077d9e8Ef7",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "Points",
+    "logo": true
+  },
+  {
+    "address": "0x5B75B5eb28bEceDBB0A5A3cfeE6cdb4327E1856B",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "CST",
+    "logo": true
   }
 ]
