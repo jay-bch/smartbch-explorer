@@ -474,5 +474,12 @@
     "type": "sep20",
     "name": "CST",
     "logo": true
+  },
+  {
+    "address": "0x11e34Ee274929d607E06C5e49bB0dc26Ca920BF2",
+    "abiNames": ["xhedge"],
+    "type": "custom",
+    "name": "XHedge",
+    "logo": true
   }
 ]
