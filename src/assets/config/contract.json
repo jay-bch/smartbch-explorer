@@ -474,5 +474,12 @@
     "type": "sep20",
     "name": "CST",
     "logo": true
+  },
+  {
+    "address": "0x23203d435e857EA63dEA5d43Fc098D29e3535FC5",
+    "abiNames": ["sep20"],
+    "type": "sep20",
+    "name": "ZAPT",
+    "logo": true
   }
 ]
